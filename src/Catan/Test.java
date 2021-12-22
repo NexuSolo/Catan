@@ -21,7 +21,7 @@ public class Test {
         // Plateau p = new Plateau(cc);
         // p.affiche();
         Jeu j = new Jeu();
-        j.initialisation(7);
+        j.initialisation(8);
     }
     
 }

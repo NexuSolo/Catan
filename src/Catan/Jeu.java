@@ -29,17 +29,8 @@ public class Jeu {
                 }
             }
         }
-        LinkedList<int[]> coordonées = new LinkedList<int[]>();
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                int[] a = new int[2];
-                a[0] = i;
-                a[1] = j;
-                coordonées.add(a);
-            }
-        }
         LinkedList<Ressource> ressources = new LinkedList<Ressource>();
-        for (int i = 0; i < n-1; i++) {
+        for (int i = 0; i < ((n*n)-1)/5; i++) {
             ressources.add(Ressource.BOIS);
             ressources.add(Ressource.BLE);
             ressources.add(Ressource.LAINE);
@@ -88,10 +79,40 @@ public class Jeu {
             numeros.add(numerosReste.get(random));
             numerosReste.remove(random);
         }
-        for (Integer integer : numeros) {
-            System.out.println(integer);
+        Case[][] c = new Case[n+1][n+1];
+        int randomDesertX = new Random().nextInt(n) + 1;
+        int randomDesertY = new Random().nextInt(n) + 1;
+        System.out.println(randomDesertX +" " + randomDesertY);
+        Intersection dHG = inter.get("" + randomDesertX + randomDesertY);
+        Intersection dHD = inter.get("" + (randomDesertX+1) + randomDesertY);
+        Intersection dBG = inter.get("" + randomDesertX + (randomDesertY+1));
+        Intersection dBD = inter.get("" + (randomDesertX+1) + (randomDesertY+1));
+        Chemin dH = dHG.cheminD;
+        Chemin dB = dBG.cheminD;
+        Chemin dG = dHG.cheminB;
+        Chemin dD = dHD.cheminB;
+        c[randomDesertY][randomDesertX] = new Case(0, randomDesertX ,randomDesertY, null, true, dH, dB, dG, dD, dHG, dHD, dBG, dBD);
+        for (int y = 1; y <= n; y++) {
+            for (int x = 1; x <= n; x++) {
+                if(c[y][x] == null) {
+                    int randomRessource = new Random().nextInt(ressources.size());
+                    int randomNumero = new Random().nextInt(numeros.size());
+                    Intersection HG = inter.get("" + x + y);
+                    Intersection HD = inter.get("" + (x+1) + y);
+                    Intersection BG = inter.get("" + x + (y+1));
+                    Intersection BD = inter.get("" + (x+1) + (y+1));
+                    Chemin H = HG.cheminD;
+                    Chemin B = BG.cheminD;
+                    Chemin G = HG.cheminB;
+                    Chemin D = HD.cheminB;
+                    c[y][x] = new Case(numeros.get(randomNumero), x, y, ressources.get(randomRessource), false, H, B, G, D, HG, HD, BG, BD);
+                    numeros.remove(randomNumero);
+                    ressources.remove(randomRessource);
+                }
+            }
         }
-        System.out.println(numeros.size());
+        plateau = new Plateau(c);
+        plateau.affiche();
     }
     
 }
