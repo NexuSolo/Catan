@@ -43,12 +43,12 @@ public class Case {
     public void affichage() {
         
         System.out.println("●-------●");
-        System.out.print("|  ");
+        System.out.print("|");
         if(numero > 9) {
-            System.out.println(numero + "   |");
+            System.out.println(numero + "|");
         }
         else {
-            System.out.println(" " + numero + "   |");
+            System.out.println(numero + "  |");
         }
         if(ressource == null) {
             System.out.println("|DESERT |");
@@ -94,7 +94,7 @@ public class Case {
 
     public void affichageNum() {
         if(numero > 9) {
-            System.out.print("    " + numero + "   |");
+            System.out.print("  " + numero + "   |");
         }
         else {
             System.out.print("   " + numero + "   |");
@@ -129,6 +129,9 @@ public class Case {
 
     public void affichagePts() {
         switch (Math.abs(7 - numero)) {
+            default:
+                System.out.print("       |");
+                break;
             case 1:
                 System.out.print(" ●●●●● |");
                 break;
