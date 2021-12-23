@@ -11,5 +11,9 @@ public class Joueur {
     int point;
     LinkedList<Colonie> propriete;
     LinkedList<Port> ports;
+
+    public Joueur(Color c) {
+        couleur = c;
+    }
     
 }

@@ -112,7 +112,6 @@ public class Jeu {
             }
         }
         plateau = new Plateau(c);
-        plateau.affiche();
     }
     
 }

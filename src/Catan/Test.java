@@ -1,6 +1,7 @@
 package Catan;
 
 import java.util.Random;
+import java.awt.Color;
 
 public class Test {
 
@@ -21,7 +22,11 @@ public class Test {
         // Plateau p = new Plateau(cc);
         // p.affiche();
         Jeu j = new Jeu();
-        j.initialisation(8);
+        j.initialisation(5);
+        Joueur joueur = new Joueur(Color.RED);
+        j.plateau.cases[1][1].HG.colonie = new Colonie(joueur);
+        j.plateau.cases[5][1].BG.colonie = new Colonie(joueur);
+        j.plateau.affiche();
     }
     
 }
