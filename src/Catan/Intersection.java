@@ -35,6 +35,9 @@ public class Intersection {
     }
 
     public String toString() {
+        if (port != null) {
+            return "P";
+        }
         if(colonie == null) {
             return "?";
         }
@@ -52,5 +55,63 @@ public class Intersection {
         }
         return null; // code qui ne peut s'executer
     }
+
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public Chemin getCheminH() {
+        return cheminH;
+    }
+
+    public Chemin getCheminG() {
+        return cheminG;
+    }
+
+    public Chemin getCheminB() {
+        return cheminB;
+    }
+
+    public Chemin getCheminD() {
+        return cheminD;
+    }
+
+    public Colonie getColonie() {
+        return colonie;
+    }
+
+    public Port getPort() {
+        return port;
+    }
+
+    public void setCheminH(Chemin cheminH) {
+        this.cheminH = cheminH;
+    }
+
+    public void setCheminG(Chemin cheminG) {
+        this.cheminG = cheminG;
+    }
+
+    public void setCheminB(Chemin cheminB) {
+        this.cheminB = cheminB;
+    }
+
+    public void setCheminD(Chemin cheminD) {
+        this.cheminD = cheminD;
+    }
+
+    public void setColonie(Colonie colonie) {
+        this.colonie = colonie;
+    }
+
+    public void setPort(Port port) {
+        this.port = port;
+    }
+
 
 }

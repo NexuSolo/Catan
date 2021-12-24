@@ -115,6 +115,43 @@ public class Plateau {
             }
         }
         cases = c;
+        ressources.clear();
+        ressources.add(Ressource.BOIS);
+        ressources.add(Ressource.BLE);
+        ressources.add(Ressource.LAINE);
+        ressources.add(Ressource.ARGILE);
+        ressources.add(Ressource.ROCHE);
+        switch (n) {
+            case 4 : cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                break;
+            case 5 :
+                for (int i = 0; i < 2; i++) {
+                    ressources.add(null); 
+                }
+                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                break;
+            case 6 :  
+                for (int i = 0; i < 3; i++) {
+                    ressources.add(null); 
+                }
+                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                break;
+            case 7 : 
+                for (int i = 0; i < 4; i++) {
+                    ressources.add(null); 
+                }
+                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                break;
+            case 8 :
+                for (int i = 0; i < 6; i++) {
+                    ressources.add(null); 
+                }
+                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                break;
+            
+
+        }
+
     }
 
     public void affiche() {
