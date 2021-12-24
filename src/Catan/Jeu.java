@@ -4,14 +4,137 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
+
+import Catan.Joueurs.Humain;
+import Catan.Joueurs.IA;
 
 public class Jeu {
-    LinkedList<Joueur> joueurs;
-    Joueur chevalierLePlusPuissant;
-    Joueur RouteLaPlusLongue;
+    LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
+    Joueur chevalierLePlusPuissant = null;
+    Joueur RouteLaPlusLongue = null;
     Plateau plateau;
 
-    public void initialisation(int n) {
+    public Jeu() {
+        String reponse; 
+        while (true) {
+            System.out.println("Voullez vous une interface graphique ? [Oui][Non]");
+            reponse = MotToMotMinuscule(scan());
+            if(reponse.equals("oui")) {
+                break;
+            }
+            else if(reponse.equals("non")) {
+                break;
+            }
+        }
+        while (true) {
+            System.out.println("Combien voullez vous de joueur ? [3][4]");
+            reponse = MotToMotMinuscule(scan());
+            if(reponse.equals("3")) {
+                break;
+            }
+            else if(reponse.equals("4")) {
+                break;
+            }
+        }
+        int nbrJoueur = Integer.valueOf(reponse);
+        LinkedList<String> couleurDisponible = new LinkedList<String>();
+        couleurDisponible.add("bleue");
+        couleurDisponible.add("rouge");
+        couleurDisponible.add("jaune");
+        couleurDisponible.add("vert");
+        for (int i = 1; i <= nbrJoueur; i++) {
+            boolean IA = true;
+            while (IA) {
+                if(i == 1) {
+                    IA = false;
+                    break;
+                }
+                System.out.println("Le joueur " + i + " est il une IA ? [Oui][Non]");
+                reponse = MotToMotMinuscule(scan());
+                if(reponse.equals("oui")) {
+                    break;
+                }
+                else if(reponse.equals("non")) {
+                    IA = false;
+                    break;
+                }
+            }
+            String pseudo;
+            if(!IA) {
+                System.out.println("Quelle est le pseudo du joueur " + i + " ?");
+                pseudo = scan();
+            }
+            else {
+                pseudo = "Bot " + i;
+            }
+            while (true) {
+                System.out.print("Quelle est la couleur du joueur " + i + " ? ");
+                for (String string : couleurDisponible) {
+                    System.out.print("[" + Character.toUpperCase(string.charAt(0)));
+                    System.out.print(string.substring(1, string.length()) + "]");
+                }
+                System.out.println();
+                reponse = MotToMotMinuscule(scan());
+                if(couleurDisponible.contains(reponse)) {
+                    couleurDisponible.remove(reponse);
+                    if(reponse.equals("bleue")) {
+    
+                        break;
+                    }
+                    if(reponse.equals("rouge")) {
+    
+                        break;
+                    }
+                    if(reponse.equals("jaune")) {
+    
+                        break;
+                    }
+                    if(reponse.equals("vert")) {
+    
+                        break;
+                    }
+                }
+            }
+            System.out.println("pseudo = " + pseudo);
+            System.out.println("couleur = " + reponse);
+            if(IA) {
+                joueurs.add(new IA(pseudo, reponse));
+            }
+            else {
+                joueurs.add(new Humain(pseudo, reponse));
+            }
+        }
+        int taille = 0;
+        while (true) {
+            if(joueurs.size() == 3) {
+                System.out.println("Quelle taille de plateau souhaitez-vous ? [5][6][7][8][9][10]");
+            }
+            else {
+                System.out.println("Quelle taille de plateau souhaitez-vous ? [6][7][8][9][10][11]");
+            }
+            reponse = scan();
+            if(estNombre(reponse) && Integer.valueOf(reponse) >= 5 && Integer.valueOf(reponse) <= 11) {
+                if(reponse.equals("5") && joueurs.size() == 3) {
+                    taille = 5;
+                    break;
+                }
+                if(reponse.equals("11") && joueurs.size() == 4) {
+                    taille = 11;
+                    break;
+                }
+                if(!reponse.equals("5") && !reponse.equals("11")) {
+                    taille = Integer.valueOf(reponse);
+                    break;
+                }
+            }
+        }
+        // while (true) {
+        //     plateau = new Plateau(taille);
+        // }
+    }
+
+    public void initialisationPlateau(int n) {
         Map<String,Intersection> inter = new HashMap<String,Intersection>();
         for (int i = 1; i <= n+1; i++) {
             for (int j = 1; j <= n+1; j++) {
@@ -112,6 +235,29 @@ public class Jeu {
             }
         }
         plateau = new Plateau(c);
+    }
+
+    public static boolean estNombre(String s) {
+        try {
+            Integer.valueOf(s);
+        }
+        catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static String scan() {
+        Scanner sc = new Scanner(System.in);
+        return sc.next();
+    }
+
+    public static String MotToMotMinuscule(String s) {
+        return s.toLowerCase();
+    }
+
+    public static void main(String[] args) {
+        new Jeu();
     }
     
 }
