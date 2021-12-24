@@ -26,6 +26,9 @@ public class Test {
         Joueur joueur = new Joueur(Color.RED);
         j.plateau.cases[1][1].HG.colonie = new Colonie(joueur);
         j.plateau.cases[5][1].BG.colonie = new Colonie(joueur);
+        j.plateau.cases[1][1].G.route = joueur;
+        j.plateau.cases[1][1].B.route = joueur;
+        j.plateau.cases[2][2].G.route = joueur;
         j.plateau.affiche();
     }
     

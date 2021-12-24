@@ -94,33 +94,33 @@ public class Case {
 
     public void affichageNum() {
         if(numero > 9) {
-            System.out.print("  " + numero + "   |");
+            System.out.print("  " + numero + "   ");
         }
         else {
-            System.out.print("   " + numero + "   |");
+            System.out.print("   " + numero + "   ");
         }
     }
 
     public void affichageRes() {
         if(ressource == null) {
-            System.out.print("DESERT |");
+            System.out.print("DESERT ");
         }
         else {
             switch (ressource) {
                 case BLE:
-                    System.out.print("  BLÉ  |");
+                    System.out.print("  BLÉ  ");
                     break;
                 case ROCHE:
-                    System.out.print(" ROCHE |");
+                    System.out.print(" ROCHE ");
                     break;
                 case ARGILE:
-                    System.out.print("ARGILE |");
+                    System.out.print("ARGILE ");
                     break;
                 case BOIS:
-                    System.out.print(" BOIS  |");
+                    System.out.print(" BOIS  ");
                     break;
                 case LAINE:
-                    System.out.print(" LAINE |");
+                    System.out.print(" LAINE ");
                     break;
             }
         }
@@ -130,22 +130,22 @@ public class Case {
     public void affichagePts() {
         switch (Math.abs(7 - numero)) {
             default:
-                System.out.print("       |");
+                System.out.print("       ");
                 break;
             case 1:
-                System.out.print(" ●●●●● |");
+                System.out.print(" ●●●●● ");
                 break;
             case 2: 
-                System.out.print(" ●●●●  |");
+                System.out.print(" ●●●●  ");
                 break;
             case 3:
-                System.out.print("  ●●●  |");
+                System.out.print("  ●●●  ");
                 break;
             case 4:
-                System.out.print("  ●●   |");
+                System.out.print("  ●●   ");
                 break;
             case 5:
-                System.out.print("   ●   |");
+                System.out.print("   ●   ");
                 break;
         }
     }

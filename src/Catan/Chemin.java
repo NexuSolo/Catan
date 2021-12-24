@@ -1,7 +1,16 @@
 package Catan;
+
+import java.awt.Color;
+
 public class Chemin {
     Intersection intersection1, intersection2;
-    Route route = null;
+    Joueur route = null;
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
 
     public Chemin(Intersection intersection1, Intersection intersection2) {
         if(intersection1.y < intersection2.y) {
@@ -34,6 +43,44 @@ public class Chemin {
     @Override
     public String toString() {
         return "Intersection1 = (" + intersection1.toString() + ") intersection 2 = (" + intersection2.toString() + ")";
+    }
+
+    public String toStringH() {
+        if(intersection1.cheminD.route == null) {
+            return "-------";
+        }
+        else if(intersection1.cheminD.route.couleur == Color.BLUE) {
+            return ANSI_BLUE + "-------" + ANSI_RESET;
+        }
+        else if(intersection1.cheminD.route.couleur == Color.RED) {
+            return ANSI_RED + "-------" + ANSI_RESET;
+        }
+        else if(intersection1.cheminD.route.couleur == Color.GREEN) {
+            return ANSI_GREEN + "-------" + ANSI_RESET;
+        }
+        else if(intersection1.cheminD.route.couleur == Color.GREEN) {
+            return ANSI_GREEN + "-------" + ANSI_RESET;
+        }
+        return null;
+    }
+
+    public String toStringV() {
+        if(intersection1.cheminB.route == null) {
+            return "|";
+        }
+        else if(intersection1.cheminB.route.couleur == Color.BLUE) {
+            return ANSI_BLUE + "|" + ANSI_RESET;
+        }
+        else if(intersection1.cheminB.route.couleur == Color.RED) {
+            return ANSI_RED + "|" + ANSI_RESET;
+        }
+        else if(intersection1.cheminB.route.couleur == Color.GREEN) {
+            return ANSI_GREEN + "|" + ANSI_RESET;
+        }
+        else if(intersection1.cheminB.route.couleur == Color.GREEN) {
+            return ANSI_GREEN + "|" + ANSI_RESET;
+        }
+        return null;
     }
     
 }
