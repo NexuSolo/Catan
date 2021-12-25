@@ -9,7 +9,7 @@ public abstract class Joueur {
     LinkedList<Ressource> ressources;
     LinkedList<Carte> cartes;
     int point;
-    LinkedList<Colonie> propriete = new LinkedList<Colonie>();
+    protected LinkedList<Colonie> propriete = new LinkedList<Colonie>();
     LinkedList<Port> ports;
 
     public Joueur(String pseudo, String couleur) {

@@ -25,16 +25,16 @@ public class Humain extends Joueur{
                             plateau.cases[y][x].HG.colonie = new Colonie(this);
                             propriete.add(plateau.cases[y][x].HG.colonie);
                         }
-                        else if(x == plateau.cases.length + 1 && y == plateau.cases.length + 1) {
-                            plateau.cases[y - 1][x - 1].BD.colonie = new Colonie(this);
-                            propriete.add(plateau.cases[y - 1][x - 1].HG.colonie);
-                        }
-                        else if(x == 1 && y == plateau.cases.length + 1) {
+                        else if(x == 1) {
                             plateau.cases[y - 1][x].BG.colonie = new Colonie(this);
-                            propriete.add(plateau.cases[y - 1][x].BG.colonie);
+                            propriete.add(plateau.cases[y - 1][x - 1].BG.colonie);
                         }
-                        else if(x == plateau.cases.length + 1 && y == 1) {
-                            plateau.cases[y][x - 1].BD.colonie = new Colonie(this);
+                        else if(y == 1) {
+                            plateau.cases[y][x - 1].BG.colonie = new Colonie(this);
+                            propriete.add(plateau.cases[y - 1][x].HD.colonie);
+                        }
+                        else {
+                            plateau.cases[y - 1][x - 1].BD.colonie = new Colonie(this);
                             propriete.add(plateau.cases[y][x - 1].BD.colonie);
                         }
                         System.out.println("Colonie placé en " + x + ":" + y);
