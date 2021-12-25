@@ -3,13 +3,13 @@ package Catan;
 import java.awt.Color;
 import java.util.LinkedList;
 
-public class Joueur {
+public abstract class Joueur {
     Color couleur;
     String pseudo;
     LinkedList<Ressource> ressources;
     LinkedList<Carte> cartes;
     int point;
-    LinkedList<Colonie> propriete;
+    LinkedList<Colonie> propriete = new LinkedList<Colonie>();
     LinkedList<Port> ports;
 
     public Joueur(String pseudo, String couleur) {
@@ -32,5 +32,11 @@ public class Joueur {
         }
         return null;
     }
+
+    public String toString() {
+        return (pseudo + " " + couleur);
+    }
+
+    public abstract boolean placerColonie(Plateau plateau,boolean premierTour, boolean gratuit);
     
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class Plateau {
-    Case[][] cases;
+    public Case[][] cases;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";

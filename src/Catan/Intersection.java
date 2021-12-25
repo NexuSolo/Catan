@@ -4,9 +4,9 @@ import java.awt.Color;
 
 public class Intersection {
     int x, y;
-    Colonie colonie = null;
+    public Colonie colonie = null;
     Port port = null;
-    Chemin cheminH, cheminB, cheminG, cheminD;
+    public Chemin cheminH, cheminB, cheminG, cheminD;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";

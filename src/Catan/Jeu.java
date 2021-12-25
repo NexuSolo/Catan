@@ -128,7 +128,6 @@ public class Jeu {
         while (true) {
             plateau = new Plateau(taille);
             plateau.affiche();
-
             System.out.println("\n" +"Voullez-vous jouer sur ce plateau ? [Oui][Non]");
             while (true) {
                 reponse = MotToMotMinuscule(scan());
@@ -166,7 +165,9 @@ public class Jeu {
     }
 
     public static void main(String[] args) {
-        new Jeu();
+        Jeu j = new Jeu();
+        j.joueurs.get(0).placerColonie(j.plateau, true, true);
+        j.plateau.affiche();
     }
     
 }

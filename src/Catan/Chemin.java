@@ -3,7 +3,7 @@ package Catan;
 import java.awt.Color;
 
 public class Chemin {
-    Intersection intersection1, intersection2;
+    public Intersection intersection1, intersection2;
     Joueur route = null;
 
     public static final String ANSI_RESET = "\u001B[0m";
