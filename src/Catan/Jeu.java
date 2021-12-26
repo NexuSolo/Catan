@@ -10,10 +10,10 @@ import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
 public class Jeu {
-    LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
-    Joueur chevalierLePlusPuissant = null;
-    Joueur RouteLaPlusLongue = null;
-    Plateau plateau;
+    private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
+    private Joueur chevalierLePlusPuissant = null;
+    private Joueur RouteLaPlusLongue = null;
+    private Plateau plateau;
 
     public Jeu() {
         String reponse; 
@@ -167,6 +167,7 @@ public class Jeu {
     public static void main(String[] args) {
         Jeu j = new Jeu();
         j.joueurs.get(0).placerColonie(j.plateau, true, true);
+        j.joueurs.get(1).placerColonie(j.plateau, true, true);
         j.plateau.affiche();
     }
     

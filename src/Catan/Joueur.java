@@ -4,13 +4,14 @@ import java.awt.Color;
 import java.util.LinkedList;
 
 public abstract class Joueur {
-    Color couleur;
-    String pseudo;
-    LinkedList<Ressource> ressources;
-    LinkedList<Carte> cartes;
-    int point;
-    protected LinkedList<Colonie> propriete = new LinkedList<Colonie>();
-    LinkedList<Port> ports;
+    public final Color couleur;
+    public final String pseudo;
+    private LinkedList<Ressource> ressources;
+    private LinkedList<Carte> cartes;
+    private int point;
+    public int nombreColonies = 0;
+    public int nombreVilles = 0;
+    private LinkedList<Port> ports;
 
     public Joueur(String pseudo, String couleur) {
         this.pseudo = pseudo;
@@ -38,5 +39,13 @@ public abstract class Joueur {
     }
 
     public abstract boolean placerColonie(Plateau plateau,boolean premierTour, boolean gratuit);
+
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
     
 }

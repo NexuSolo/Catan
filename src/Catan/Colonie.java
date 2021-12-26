@@ -1,9 +1,11 @@
 package Catan;
 public class Colonie {
-    Joueur joueur;
+    public final Joueur joueur;
 
     public Colonie(Joueur joueur) {
         this.joueur = joueur;
+        joueur.setPoint(joueur.getPoint() + 1);
+        joueur.nombreColonies++;
     }
     
 }
