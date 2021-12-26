@@ -8,4 +8,7 @@ public class Colonie {
         joueur.nombreColonies++;
     }
     
+    public Joueur getJoueur() {
+        return joueur;
+    }
 }

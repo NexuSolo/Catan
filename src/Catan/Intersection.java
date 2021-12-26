@@ -94,4 +94,8 @@ public class Intersection {
         this.colonie = colonie;
     }
 
+
+    public Colonie getColonie() {
+        return colonie;
+    }
 }

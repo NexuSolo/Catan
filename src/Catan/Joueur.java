@@ -34,18 +34,47 @@ public abstract class Joueur {
         return null;
     }
 
-    public String toString() {
-        return (pseudo + " " + couleur);
+    public boolean possede(Ressource ressource,int nombre){
+        for(Ressource r : ressources){
+            if (r == ressource){
+                nombre--;
+                if (nombre < 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public abstract boolean placerColonie(Plateau plateau,boolean premierTour, boolean gratuit);
-
-    public int getPoint() {
-        return point;
+    public void addRessource(Ressource ressource,int nombre) {
+        while(nombre != 0) {
+           this.ressources.add(ressource);
+           nombre--; 
+        }
     }
 
-    public void setPoint(int point) {
-        this.point = point;
+    public void removeRessource(Ressource ressource,int nombre) {
+        if (possede(ressource,nombre)) {
+            while(nombre != 0) {
+                this.ressources.remove(ressource);
+                nombre--; 
+             }
+        }
+        else {
+            System.out.println("Erreur : Pas Assez de Ressources !");
+        }
+    }
+
+    public LinkedList<Ressource> getRessources() {
+        return ressources;
     }
     
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    @Override
+    public String toString() {
+        return this.pseudo + " ("+this.couleur+")";
+    }
 }
