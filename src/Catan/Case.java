@@ -1,13 +1,13 @@
 package Catan;
 
 public class Case {
-    int numero;
-    int x;
-    int y;
-    Ressource ressource;
-    boolean voleur;
-    Chemin H, B, G, D;
-    Intersection HG, HD, BG, BD;
+    public final int numero;
+    public final int x;
+    public final int y;
+    public final Ressource ressource;
+    private boolean voleur;
+    private Chemin H, B, G, D;
+    private Intersection HG, HD, BG, BD;
 
     public Case(int numero, int x, int y, Ressource ressource, boolean voleur, Chemin H, Chemin B, Chemin G, Chemin D, Intersection HG, Intersection HD, Intersection BG, Intersection BD) {
         this.numero = numero;

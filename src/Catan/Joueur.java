@@ -3,14 +3,15 @@ package Catan;
 import java.awt.Color;
 import java.util.LinkedList;
 
-public class Joueur {
-    Color couleur;
-    String pseudo;
-    LinkedList<Ressource> ressources = new LinkedList<Ressource>();
-    LinkedList<Carte> cartes;
-    int point;
-    LinkedList<Colonie> propriete;
-    LinkedList<Port> ports;
+public abstract class Joueur {
+    public final Color couleur;
+    public final String pseudo;
+    private LinkedList<Ressource> ressources;
+    private LinkedList<Carte> cartes;
+    private int point;
+    public int nombreColonies = 0;
+    public int nombreVilles = 0;
+    private LinkedList<Port> ports;
 
     public Joueur(String pseudo, String couleur) {
         this.pseudo = pseudo;

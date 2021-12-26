@@ -109,10 +109,10 @@ public class Plateau {
                     Intersection HD = inter.get("" + (x+1) + y);
                     Intersection BG = inter.get("" + x + (y+1));
                     Intersection BD = inter.get("" + (x+1) + (y+1));
-                    Chemin H = HG.cheminD;
-                    Chemin B = BG.cheminD;
-                    Chemin G = HG.cheminB;
-                    Chemin D = HD.cheminB;
+                    Chemin H = HG.getCheminD();
+                    Chemin B = BG.getCheminD();
+                    Chemin G = HG.getCheminB();
+                    Chemin D = HD.getCheminB();
                     c[y][x] = new Case(numeros.get(randomNumero), x, y, ressources.get(randomRessource), false, H, B, G, D, HG, HD, BG, BD);
                     numeros.remove(randomNumero);
                     ressources.remove(randomRessource);
@@ -206,36 +206,44 @@ public class Plateau {
     }
     public void affiche() {
         for (int y = 1; y < cases.length; y++) {
-            System.out.print(cases[y][1].HG);
+            System.out.print(cases[y][1].getHG());
             for (int x = 1; x < cases.length; x++) {
-                System.out.print(cases[y][x].H.toStringH());
-                System.out.print(cases[y][x].HD);
+                System.out.print(cases[y][x].getH().toStringH());
+                System.out.print(cases[y][x].getHD());
             }
             System.out.println();
-            System.out.print(cases[y][1].G.toStringV());
+            System.out.print(cases[y][1].getG().toStringV());
             for (int x = 1; x < cases[y].length; x++) {
                 cases[y][x].affichageNum();
-                System.out.print(cases[y][x].D.toStringV());
+                System.out.print(cases[y][x].getD().toStringV());
             }
             System.out.println();
-            System.out.print(cases[y][1].G.toStringV());
+            System.out.print(cases[y][1].getG().toStringV());
             for (int x = 1; x < cases[y].length; x++) {
                 cases[y][x].affichageRes();
-                System.out.print(cases[y][x].D.toStringV());
+                System.out.print(cases[y][x].getD().toStringV());
             }
             System.out.println();
-            System.out.print(cases[y][1].G.toStringV());
+            System.out.print(cases[y][1].getG().toStringV());
             for (int x = 1; x < cases[y].length; x++) {
                 cases[y][x].affichagePts();
-                System.out.print(cases[y][x].D.toStringV());
+                System.out.print(cases[y][x].getD().toStringV());
             }
             System.out.println();
         }
-        System.out.print(cases[cases.length -1][1].BG);
+        System.out.print(cases[cases.length -1][1].getBG());
         for (int x = 1; x < cases.length; x++) {
-            System.out.print(cases[cases.length - 1][x].B.toStringH());
-            System.out.print(cases[cases.length -1][x].BD);
+            System.out.print(cases[cases.length - 1][x].getB().toStringH());
+            System.out.print(cases[cases.length -1][x].getBD());
         }
+    }
+
+    public Case getCase(int x, int y) {
+        return cases[y][x];
+    }
+
+    public int getLength() {
+        return cases.length;
     }
     
 }

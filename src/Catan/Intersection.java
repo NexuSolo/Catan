@@ -3,10 +3,10 @@ package Catan;
 import java.awt.Color;
 
 public class Intersection {
-    int x, y;
-    Colonie colonie = null;
-    Port port = null;
-    Chemin cheminH, cheminB, cheminG, cheminD;
+    public final int x, y;
+    private Colonie colonie = null;
+    public Port port = null;
+    private Chemin cheminH, cheminB, cheminG, cheminD;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -38,19 +38,60 @@ public class Intersection {
         if(colonie == null) {
             return "?";
         }
-        else if(colonie.joueur.couleur == Color.BLUE) {
+        else if(colonie.joueur.couleur.equals(Color.BLUE)) {
+            System.out.println(colonie.joueur.couleur);
             return ANSI_BLUE + "●" + ANSI_RESET;
         }
-        else if(colonie.joueur.couleur == Color.RED) {
+        else if(colonie.joueur.couleur.equals(Color.RED)) {
             return ANSI_RED + "●" + ANSI_RESET;
         }
-        else if(colonie.joueur.couleur == Color.YELLOW) {
+        else if(colonie.joueur.couleur.equals(Color.YELLOW)) {
             return ANSI_YELLOW + "●" + ANSI_RESET;
         }
-        else if(colonie.joueur.couleur == Color.GREEN) {
+        else if(colonie.joueur.couleur.equals(Color.GREEN)) {
             return ANSI_GREEN + "●" + ANSI_RESET;
         }
-        return null; // code qui ne peut s'executer
+        return "ERREUR INTERSECTION"; // code qui ne peut s'executer
+    }
+
+    public Chemin getCheminB() {
+        return cheminB;
+    }
+
+    public Chemin getCheminD() {
+        return cheminD;
+    }
+
+    public Chemin getCheminG() {
+        return cheminG;
+    }
+
+    public Chemin getCheminH() {
+        return cheminH;
+    }
+
+    public void setCheminB(Chemin cheminB) {
+        this.cheminB = cheminB;
+    }
+
+    public void setCheminD(Chemin cheminD) {
+        this.cheminD = cheminD;
+    }
+    
+    public void setCheminG(Chemin cheminG) {
+        this.cheminG = cheminG;
+    }
+
+    public void setCheminH(Chemin cheminH) {
+        this.cheminH = cheminH;
+    }
+
+    public Colonie getColonie() {
+        return colonie;
+    }
+
+    public void setColonie(Colonie colonie) {
+        this.colonie = colonie;
     }
 
 
