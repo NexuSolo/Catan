@@ -53,4 +53,8 @@ public class Intersection {
         return null; // code qui ne peut s'executer
     }
 
+
+    public Colonie getColonie() {
+        return colonie;
+    }
 }

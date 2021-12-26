@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class Joueur {
     Color couleur;
     String pseudo;
-    LinkedList<Ressource> ressources;
+    LinkedList<Ressource> ressources = new LinkedList<Ressource>();
     LinkedList<Carte> cartes;
     int point;
     LinkedList<Colonie> propriete;
@@ -32,5 +32,48 @@ public class Joueur {
         }
         return null;
     }
+
+    public boolean possede(Ressource ressource,int nombre){
+        for(Ressource r : ressources){
+            if (r == ressource){
+                nombre--;
+                if (nombre < 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void addRessource(Ressource ressource,int nombre) {
+        while(nombre != 0) {
+           this.ressources.add(ressource);
+           nombre--; 
+        }
+    }
+
+    public void removeRessource(Ressource ressource,int nombre) {
+        if (possede(ressource,nombre)) {
+            while(nombre != 0) {
+                this.ressources.remove(ressource);
+                nombre--; 
+             }
+        }
+        else {
+            System.out.println("Erreur : Pas Assez de Ressources !");
+        }
+    }
+
+    public LinkedList<Ressource> getRessources() {
+        return ressources;
+    }
     
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    @Override
+    public String toString() {
+        return this.pseudo + " ("+this.couleur+")";
+    }
 }

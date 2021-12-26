@@ -25,6 +25,48 @@ public class Case {
         this.BD = BD;
     }
 
+
+    public void production() {
+        System.out.println("Case "+x+y+" production");
+        if (!voleur) {
+            if(HG.getColonie() != null) {
+                if (HG.getColonie() instanceof Ville) {
+                    HG.getColonie().getJoueur().addRessource(this.ressource,2);
+                }
+                else {
+                    HG.getColonie().getJoueur().addRessource(this.ressource,1);
+                }
+            }
+            if(HD.getColonie() != null) {
+                if (HD.getColonie() instanceof Ville) {
+                    HD.getColonie().getJoueur().addRessource(this.ressource,2);
+                }
+                else {
+                    HD.getColonie().getJoueur().addRessource(this.ressource,1);
+                }
+            }
+            if(BG.getColonie() != null) {
+                if (BG.getColonie() instanceof Ville) {
+                    BG.getColonie().getJoueur().addRessource(this.ressource,2);
+                }
+                else {
+                    BG.getColonie().getJoueur().addRessource(this.ressource,1);
+                }
+            }
+            if(BD.getColonie() != null) {
+                if (BD.getColonie() instanceof Ville) {
+                    BD.getColonie().getJoueur().addRessource(this.ressource,2);
+                }
+                else {
+                    BD.getColonie().getJoueur().addRessource(this.ressource,1);
+                }
+            }
+        }
+        else {
+            System.out.println("Le voleur s'est emparé des ressources !");
+        }
+
+    }
     // ●-------●-------●-------●-------●-------●-------●
     // |   2   |   3   |   4   |  15   |   6   |   7   |
     // | ROCHE |  BLÉ  | BOIS  |ARGILE | LAINE |DESERT |
@@ -148,6 +190,62 @@ public class Case {
                 System.out.print("   ●   ");
                 break;
         }
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public Ressource getRessource() {
+        return ressource;
+    }
+
+    public boolean getVoleur() {
+        return this.voleur;
+    }
+
+    public Chemin getH() {
+        return H;
+    }
+
+    public Chemin getB() {
+        return B;
+    }
+
+    public Chemin getG() {
+        return G;
+    }
+
+    public Chemin getD() {
+        return D;
+    }
+
+    public Intersection getHG() {
+        return HG;
+    }
+    
+    public Intersection getHD() {
+        return HD;
+    }
+
+    public Intersection getBG() {
+        return BG;
+    }
+    
+    public Intersection getBD() {
+        return BD;
+    }
+
+    public void setVoleur(boolean voleur) {
+        this.voleur = voleur;
     }
 
 }
