@@ -6,4 +6,7 @@ public class Colonie {
         this.joueur = joueur;
     }
     
+    public Joueur getJoueur() {
+        return joueur;
+    }
 }

@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Plateau {
     Case[][] cases;
+    Map<String,LinkedList<Case>> valDe = new HashMap<String,LinkedList<Case>>();
+    Case voleur;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -83,6 +86,7 @@ public class Plateau {
             numeros.add(numerosReste.get(random));
             numerosReste.remove(random);
         }
+        creationValDe();
         Case[][] c = new Case[n+1][n+1];
         int randomDesertX = new Random().nextInt(n) + 1;
         int randomDesertY = new Random().nextInt(n) + 1;
@@ -94,7 +98,8 @@ public class Plateau {
         Chemin dB = dBG.cheminD;
         Chemin dG = dHG.cheminB;
         Chemin dD = dHD.cheminB;
-        c[randomDesertY][randomDesertX] = new Case(0, randomDesertX ,randomDesertY, null, true, dH, dB, dG, dD, dHG, dHD, dBG, dBD);
+        voleur = new Case(0, randomDesertX ,randomDesertY, null, true, dH, dB, dG, dD, dHG, dHD, dBG, dBD);
+        c[randomDesertY][randomDesertX] = voleur;
         for (int y = 1; y <= n; y++) {
             for (int x = 1; x <= n; x++) {
                 if(c[y][x] == null) {
@@ -111,12 +116,94 @@ public class Plateau {
                     c[y][x] = new Case(numeros.get(randomNumero), x, y, ressources.get(randomRessource), false, H, B, G, D, HG, HD, BG, BD);
                     numeros.remove(randomNumero);
                     ressources.remove(randomRessource);
+                    ajouteValDe(c[y][x]);
                 }
             }
         }
         cases = c;
     }
+    public void az(){
+        for(String s : valDe.keySet()) {
+            System.out.println("VALEUR "+s);
+            for(Case c : valDe.get(s)) {
+                System.out.println(" X : " + c.getX() + " Y : " + c.getY() + "");
+            }
+        }
+    }
+    private void ajouteValDe(Case case1) {
+        String s = String.valueOf(case1.getNumero());
+        valDe.get(s).add(case1);
+    }
 
+    private void creationValDe() {
+        LinkedList<Case> deux = new LinkedList<Case>();
+        LinkedList<Case> trois = new LinkedList<Case>();
+        LinkedList<Case> quatre = new LinkedList<Case>();
+        LinkedList<Case> cinq = new LinkedList<Case>();
+        LinkedList<Case> six = new LinkedList<Case>();
+        LinkedList<Case> huit = new LinkedList<Case>();
+        LinkedList<Case> neuf = new LinkedList<Case>();
+        LinkedList<Case> dix = new LinkedList<Case>();
+        LinkedList<Case> onze = new LinkedList<Case>();
+        LinkedList<Case> douze = new LinkedList<Case>();
+        valDe.put("2",deux);
+        valDe.put("3",trois);
+        valDe.put("4",quatre);
+        valDe.put("5",cinq);
+        valDe.put("6",six);
+        valDe.put("8",huit);
+        valDe.put("9",neuf);
+        valDe.put("10",dix);
+        valDe.put("11",onze);
+        valDe.put("12",douze);
+    }
+
+    public void LancerDes(Joueur J) {
+        int de1 = new Random().nextInt(6)+1;
+        int de2 = new Random().nextInt(6)+1;
+        int total = de1 + de2;
+        String valeur = String.valueOf(total);
+        if (total != 7) {
+            LinkedList<Case> lol = valDe.get(valeur);
+            for (Case c : lol) {
+                c.production();
+            }
+        }
+        else {
+            deplaceVoleur(J);
+        }     
+       System.out.println(total);
+    }
+
+    private void deplaceVoleur(Joueur j) {
+        System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur "+j.pseudo);
+        volRessource(j);
+    }
+    private void volRessource(Joueur j) {
+        Map<String,Joueur> cibles = new HashMap<String,Joueur>();
+        if (voleur.HG.getColonie() != null) {
+            cibles.put(voleur.HG.getColonie().getJoueur().getPseudo(),voleur.HG.getColonie().getJoueur());
+        }
+        if (voleur.HD.getColonie() != null) {
+            cibles.put(voleur.HD.getColonie().getJoueur().getPseudo(),voleur.HD.getColonie().getJoueur());
+        }
+        if (voleur.BG.getColonie() != null) {
+            cibles.put(voleur.BG.getColonie().getJoueur().getPseudo(),voleur.BG.getColonie().getJoueur());
+        }
+        if (voleur.BD.getColonie() != null) {
+            cibles.put(voleur.BD.getColonie().getJoueur().getPseudo(),voleur.BD.getColonie().getJoueur());
+        }
+        if (!cibles.isEmpty()) {
+            if (cibles.size() > 1) {
+                System.out.print("Veuillez choisir un joueur à qui voler une ressource aléatoire : ");
+                for (String s : cibles.keySet()) {
+                        System.out.print(cibles.get(s) + " " );
+                }
+            }
+        }
+
+
+    }
     public void affiche() {
         for (int y = 1; y < cases.length; y++) {
             System.out.print(cases[y][1].HG);
