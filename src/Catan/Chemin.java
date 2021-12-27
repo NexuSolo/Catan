@@ -1,6 +1,8 @@
 package Catan;
 
 import java.awt.Color;
+import java.util.LinkedList;
+import java.util.Random;
 
 public class Chemin {
     private final Intersection intersection1, intersection2;
@@ -83,20 +85,53 @@ public class Chemin {
         return null;
     }
 
-    public Intersection getIntersection1() {
-        return intersection1;
-    }
+    public void ajoutPort(LinkedList<Ressource> ressources,int espace,Plateau plateau,String sens) {
+        if(!ressources.isEmpty()) {
+            if(espace == 0) {
+                int random = new Random().nextInt(ressources.size());
+                Ressource ressource = ressources.get(random);
+                ressources.remove(random);
+                Port p = new Port(ressource);
+                this.intersection1.setPort(p);
+                this.intersection2.setPort(p);
+                espace = 3;
+            } 
+            switch(sens) {
+                case "Haut" : 
+                    if (this.intersection2.getX() == plateau.cases.length ) {
+                        sens = "Droite";
+                        this.intersection2.getCheminB().ajoutPort(ressources, espace-1, plateau, sens);
+                    } 
+                    else {
+                        this.intersection2.getCheminD().ajoutPort(ressources, espace-1, plateau, sens);
+                    }
+                    break;
+                case "Gauche" :
+                    this.intersection1.getCheminH().ajoutPort(ressources, espace-1, plateau, sens);
+                break;
+                case "Bas" :
+                    if (this.intersection1.getX() == 1 ) {
+                        sens = "Gauche";
+                        this.intersection1.getCheminH().ajoutPort(ressources, espace-1, plateau, sens);
+                    }
+                    else {
+                        this.intersection1.getCheminG().ajoutPort(ressources, espace-1, plateau, sens);
+                    }
+                    break;
+                case "Droite" :
+                    if (this.intersection2.getY() == plateau.cases.length ) {
+                        sens = "Bas";
+                        this.intersection2.getCheminG().ajoutPort(ressources, espace-1, plateau, sens);
+                    } 
+                    else {
+                        this.intersection2.getCheminB().ajoutPort(ressources, espace-1, plateau, sens);
+                    }
+                    break; 
+            }
+            
+        }
 
-    public Intersection getIntersection2() {
-        return intersection2;
     }
-
-    public Joueur getRoute() {
-        return route;
-    }
-
-    public void setRoute(Joueur route) {
-        this.route = route;
-    }
+    
     
 }

@@ -35,6 +35,9 @@ public class Intersection {
     }
 
     public String toString() {
+        if (port != null) {
+            return "P";
+        }
         if(colonie == null) {
             return "?";
         }
@@ -54,6 +57,23 @@ public class Intersection {
         return "ERREUR INTERSECTION"; // code qui ne peut s'executer
     }
 
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public Chemin getCheminH() {
+        return cheminH;
+    }
+
+    public Chemin getCheminG() {
+        return cheminG;
+    }
+
     public Chemin getCheminB() {
         return cheminB;
     }
@@ -62,12 +82,20 @@ public class Intersection {
         return cheminD;
     }
 
-    public Chemin getCheminG() {
-        return cheminG;
+    public Colonie getColonie() {
+        return colonie;
     }
 
-    public Chemin getCheminH() {
-        return cheminH;
+    public Port getPort() {
+        return port;
+    }
+
+    public void setCheminH(Chemin cheminH) {
+        this.cheminH = cheminH;
+    }
+
+    public void setCheminG(Chemin cheminG) {
+        this.cheminG = cheminG;
     }
 
     public void setCheminB(Chemin cheminB) {
@@ -77,25 +105,14 @@ public class Intersection {
     public void setCheminD(Chemin cheminD) {
         this.cheminD = cheminD;
     }
-    
-    public void setCheminG(Chemin cheminG) {
-        this.cheminG = cheminG;
-    }
-
-    public void setCheminH(Chemin cheminH) {
-        this.cheminH = cheminH;
-    }
-
-    public Colonie getColonie() {
-        return colonie;
-    }
 
     public void setColonie(Colonie colonie) {
         this.colonie = colonie;
     }
 
-
-    public Colonie getColonie() {
-        return colonie;
+    public void setPort(Port port) {
+        this.port = port;
     }
+
+
 }
