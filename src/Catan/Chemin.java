@@ -132,6 +132,14 @@ public class Chemin {
         }
 
     }
+
+    public Intersection getIntersection1() {
+        return intersection1;
+    }
+
+    public Intersection getIntersection2() {
+        return intersection2;
+    }
     
     
 }

@@ -73,8 +73,18 @@ public abstract class Joueur {
         return pseudo;
     }
 
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
+
     @Override
     public String toString() {
         return this.pseudo + " ("+this.couleur+")";
     }
+
+    public abstract boolean placerColonie(Plateau plateau, boolean b, boolean c);
 }
