@@ -140,6 +140,10 @@ public class Chemin {
     public Intersection getIntersection2() {
         return intersection2;
     }
+
+    public Joueur getRoute() {
+        return route;
+    }
     
     
 }

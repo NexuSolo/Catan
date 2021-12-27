@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public abstract class Joueur {
     public final Color couleur;
     public final String pseudo;
-    private LinkedList<Ressource> ressources;
+    private LinkedList<Ressource> ressources = new LinkedList<Ressource>();
     private LinkedList<Carte> cartes;
     private int point;
     public int nombreColonies = 0;
@@ -46,6 +46,10 @@ public abstract class Joueur {
         return false;
     }
 
+    public boolean possede(Ressource ressource){
+        return possede(ressource, 1);
+    }
+
     public void addRessource(Ressource ressource,int nombre) {
         while(nombre != 0) {
            this.ressources.add(ressource);
@@ -66,6 +70,12 @@ public abstract class Joueur {
     }
 
     public abstract boolean placerColonie(Plateau plateau,boolean premierTour, boolean gratuit);
+
+    public void afficheRessource() {
+        for (Ressource r : ressources) {
+            System.out.print(r + " ");
+        }
+    }
 
     public LinkedList<Ressource> getRessources() {
         return ressources;

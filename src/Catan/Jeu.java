@@ -164,6 +164,14 @@ public class Jeu {
         return s.toLowerCase();
     }
 
+    public LinkedList<Joueur> getJoueurs() {
+        return joueurs;
+    }
+
+    public Plateau getPlateau() {
+        return plateau;
+    }
+
     public static void main(String[] args) {
         Jeu j = new Jeu();
         j.joueurs.get(0).placerColonie(j.plateau, true, true);

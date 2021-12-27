@@ -273,6 +273,7 @@ public class Plateau {
             System.out.print(cases[cases.length - 1][x].getB().toStringH());
             System.out.print(cases[cases.length -1][x].getBD());
         }
+        System.out.println();
     }
 
     public Case getCase(int x, int y) {
