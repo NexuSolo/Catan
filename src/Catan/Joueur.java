@@ -3,14 +3,15 @@ package Catan;
 import java.awt.Color;
 import java.util.LinkedList;
 
-public class Joueur {
-    Color couleur;
-    String pseudo;
-    LinkedList<Ressource> ressources;
-    LinkedList<Carte> cartes;
-    int point;
-    LinkedList<Colonie> propriete;
-    LinkedList<Port> ports;
+public abstract class Joueur {
+    public final Color couleur;
+    public final String pseudo;
+    private LinkedList<Ressource> ressources;
+    private LinkedList<Carte> cartes;
+    private int point;
+    public int nombreColonies = 0;
+    public int nombreVilles = 0;
+    private LinkedList<Port> ports;
 
     public Joueur(String pseudo, String couleur) {
         this.pseudo = pseudo;
@@ -32,5 +33,48 @@ public class Joueur {
         }
         return null;
     }
+
+    public boolean possede(Ressource ressource,int nombre){
+        for(Ressource r : ressources){
+            if (r == ressource){
+                nombre--;
+                if (nombre < 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void addRessource(Ressource ressource,int nombre) {
+        while(nombre != 0) {
+           this.ressources.add(ressource);
+           nombre--; 
+        }
+    }
+
+    public void removeRessource(Ressource ressource,int nombre) {
+        if (possede(ressource,nombre)) {
+            while(nombre != 0) {
+                this.ressources.remove(ressource);
+                nombre--; 
+             }
+        }
+        else {
+            System.out.println("Erreur : Pas Assez de Ressources !");
+        }
+    }
+
+    public LinkedList<Ressource> getRessources() {
+        return ressources;
+    }
     
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    @Override
+    public String toString() {
+        return this.pseudo + " ("+this.couleur+")";
+    }
 }

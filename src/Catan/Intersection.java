@@ -3,10 +3,10 @@ package Catan;
 import java.awt.Color;
 
 public class Intersection {
-    int x, y;
-    Colonie colonie = null;
-    Port port = null;
-    Chemin cheminH, cheminB, cheminG, cheminD;
+    public final int x, y;
+    private Colonie colonie = null;
+    public Port port = null;
+    private Chemin cheminH, cheminB, cheminG, cheminD;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -41,19 +41,20 @@ public class Intersection {
         if(colonie == null) {
             return "?";
         }
-        else if(colonie.joueur.couleur == Color.BLUE) {
+        else if(colonie.joueur.couleur.equals(Color.BLUE)) {
+            System.out.println(colonie.joueur.couleur);
             return ANSI_BLUE + "●" + ANSI_RESET;
         }
-        else if(colonie.joueur.couleur == Color.RED) {
+        else if(colonie.joueur.couleur.equals(Color.RED)) {
             return ANSI_RED + "●" + ANSI_RESET;
         }
-        else if(colonie.joueur.couleur == Color.YELLOW) {
+        else if(colonie.joueur.couleur.equals(Color.YELLOW)) {
             return ANSI_YELLOW + "●" + ANSI_RESET;
         }
-        else if(colonie.joueur.couleur == Color.GREEN) {
+        else if(colonie.joueur.couleur.equals(Color.GREEN)) {
             return ANSI_GREEN + "●" + ANSI_RESET;
         }
-        return null; // code qui ne peut s'executer
+        return "ERREUR INTERSECTION"; // code qui ne peut s'executer
     }
 
 

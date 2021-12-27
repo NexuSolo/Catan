@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Chemin {
-    Intersection intersection1, intersection2;
-    Joueur route = null;
+    private final Intersection intersection1, intersection2;
+    private Joueur route = null;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -18,15 +18,15 @@ public class Chemin {
         if(intersection1.y < intersection2.y) {
             this.intersection1 = intersection1;
             this.intersection2 = intersection2;
-            this.intersection1.cheminB = this;
-            this.intersection2.cheminH = this;
+            this.intersection1.setCheminB(this);
+            this.intersection2.setCheminH(this);
 
         }
         else if(intersection1.y > intersection2.y) {
             this.intersection1 = intersection2;
             this.intersection2 = intersection1;
-            this.intersection1.cheminB = this;
-            this.intersection2.cheminH = this;
+            this.intersection1.setCheminB(this);;
+            this.intersection2.setCheminH(this);;
         }
         else {
             if(intersection1.x < intersection2.x) {
@@ -37,8 +37,8 @@ public class Chemin {
                 this.intersection1 = intersection2;
                 this.intersection2 = intersection1;
             }
-            this.intersection1.cheminD = this;
-            this.intersection2.cheminG = this;
+            this.intersection1.setCheminD(this);;
+            this.intersection2.setCheminG(this);;
         }
     }
 
@@ -48,38 +48,38 @@ public class Chemin {
     }
 
     public String toStringH() {
-        if(intersection1.cheminD.route == null) {
+        if(intersection1.getCheminD().route == null) {
             return "-------";
         }
-        else if(intersection1.cheminD.route.couleur == Color.BLUE) {
+        else if(intersection1.getCheminD().route.couleur.equals(Color.BLUE)) {
             return ANSI_BLUE + "-------" + ANSI_RESET;
         }
-        else if(intersection1.cheminD.route.couleur == Color.RED) {
+        else if(intersection1.getCheminD().route.couleur.equals(Color.RED)) {
             return ANSI_RED + "-------" + ANSI_RESET;
         }
-        else if(intersection1.cheminD.route.couleur == Color.GREEN) {
-            return ANSI_GREEN + "-------" + ANSI_RESET;
+        else if(intersection1.getCheminD().route.couleur.equals(Color.YELLOW)) {
+            return ANSI_YELLOW + "-------" + ANSI_RESET;
         }
-        else if(intersection1.cheminD.route.couleur == Color.GREEN) {
+        else if(intersection1.getCheminD().route.couleur.equals(Color.GREEN)) {
             return ANSI_GREEN + "-------" + ANSI_RESET;
         }
         return null;
     }
 
     public String toStringV() {
-        if(intersection1.cheminB.route == null) {
+        if(intersection1.getCheminB().route == null) {
             return "|";
         }
-        else if(intersection1.cheminB.route.couleur == Color.BLUE) {
+        else if(intersection1.getCheminB().route.couleur.equals(Color.BLUE)) {
             return ANSI_BLUE + "|" + ANSI_RESET;
         }
-        else if(intersection1.cheminB.route.couleur == Color.RED) {
+        else if(intersection1.getCheminB().route.couleur.equals(Color.RED)) {
             return ANSI_RED + "|" + ANSI_RESET;
         }
-        else if(intersection1.cheminB.route.couleur == Color.GREEN) {
-            return ANSI_GREEN + "|" + ANSI_RESET;
+        else if(intersection1.getCheminB().route.couleur.equals(Color.YELLOW)) {
+            return ANSI_YELLOW + "|" + ANSI_RESET;
         }
-        else if(intersection1.cheminB.route.couleur == Color.GREEN) {
+        else if(intersection1.getCheminB().route.couleur.equals(Color.GREEN)) {
             return ANSI_GREEN + "|" + ANSI_RESET;
         }
         return null;

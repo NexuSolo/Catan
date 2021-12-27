@@ -10,10 +10,10 @@ import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
 public class Jeu {
-    LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
-    Joueur chevalierLePlusPuissant = null;
-    Joueur RouteLaPlusLongue = null;
-    Plateau plateau;
+    private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
+    private Joueur chevalierLePlusPuissant = null;
+    private Joueur RouteLaPlusLongue = null;
+    private Plateau plateau;
 
     public Jeu() {
         String reponse; 
@@ -128,7 +128,6 @@ public class Jeu {
         while (true) {
             plateau = new Plateau(taille);
             plateau.affiche();
-
             System.out.println("\n" +"Voullez-vous jouer sur ce plateau ? [Oui][Non]");
             while (true) {
                 reponse = MotToMotMinuscule(scan());
@@ -166,7 +165,10 @@ public class Jeu {
     }
 
     public static void main(String[] args) {
-        new Jeu();
+        Jeu j = new Jeu();
+        j.joueurs.get(0).placerColonie(j.plateau, true, true);
+        j.joueurs.get(1).placerColonie(j.plateau, true, true);
+        j.plateau.affiche();
     }
     
 }
