@@ -94,10 +94,10 @@ public class Plateau {
         Intersection dHD = inter.get("" + (randomDesertX+1) + randomDesertY);
         Intersection dBG = inter.get("" + randomDesertX + (randomDesertY+1));
         Intersection dBD = inter.get("" + (randomDesertX+1) + (randomDesertY+1));
-        Chemin dH = dHG.cheminD;
-        Chemin dB = dBG.cheminD;
-        Chemin dG = dHG.cheminB;
-        Chemin dD = dHD.cheminB;
+        Chemin dH = dHG.getCheminD();
+        Chemin dB = dBG.getCheminD();
+        Chemin dG = dHG.getCheminB();
+        Chemin dD = dHD.getCheminB();
         voleur = new Case(0, randomDesertX ,randomDesertY, null, true, dH, dB, dG, dD, dHG, dHD, dBG, dBD);
         c[randomDesertY][randomDesertX] = voleur;
         for (int y = 1; y <= n; y++) {
@@ -128,31 +128,31 @@ public class Plateau {
         ressources.add(Ressource.ARGILE);
         ressources.add(Ressource.ROCHE);
         switch (n) {
-            case 4 : cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+            case 4 : cases[1][1].getH().ajoutPort(ressources, 0, this, "Haut"); 
                 break;
             case 5 :
                 for (int i = 0; i < 2; i++) {
                     ressources.add(null); 
                 }
-                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                cases[1][1].getH().ajoutPort(ressources, 0, this, "Haut"); 
                 break;
             case 6 :  
                 for (int i = 0; i < 3; i++) {
                     ressources.add(null); 
                 }
-                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                cases[1][1].getH().ajoutPort(ressources, 0, this, "Haut"); 
                 break;
             case 7 : 
                 for (int i = 0; i < 4; i++) {
                     ressources.add(null); 
                 }
-                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                cases[1][1].getH().ajoutPort(ressources, 0, this, "Haut"); 
                 break;
             case 8 :
                 for (int i = 0; i < 6; i++) {
                     ressources.add(null); 
                 }
-                cases[1][1].H.ajoutPort(ressources, 0, this, "Haut"); 
+                cases[1][1].getH().ajoutPort(ressources, 0, this, "Haut"); 
                 break;
             
 
@@ -218,17 +218,17 @@ public class Plateau {
     }
     private void volRessource(Joueur j) {
         Map<String,Joueur> cibles = new HashMap<String,Joueur>();
-        if (voleur.HG.getColonie() != null) {
-            cibles.put(voleur.HG.getColonie().getJoueur().getPseudo(),voleur.HG.getColonie().getJoueur());
+        if (voleur.getHG().getColonie() != null) {
+            cibles.put(voleur.getHG().getColonie().getJoueur().getPseudo(),voleur.getHG().getColonie().getJoueur());
         }
-        if (voleur.HD.getColonie() != null) {
-            cibles.put(voleur.HD.getColonie().getJoueur().getPseudo(),voleur.HD.getColonie().getJoueur());
+        if (voleur.getHD().getColonie() != null) {
+            cibles.put(voleur.getHD().getColonie().getJoueur().getPseudo(),voleur.getHD().getColonie().getJoueur());
         }
-        if (voleur.BG.getColonie() != null) {
-            cibles.put(voleur.BG.getColonie().getJoueur().getPseudo(),voleur.BG.getColonie().getJoueur());
+        if (voleur.getBG().getColonie() != null) {
+            cibles.put(voleur.getBG().getColonie().getJoueur().getPseudo(),voleur.getBG().getColonie().getJoueur());
         }
-        if (voleur.BD.getColonie() != null) {
-            cibles.put(voleur.BD.getColonie().getJoueur().getPseudo(),voleur.BD.getColonie().getJoueur());
+        if (voleur.getBD().getColonie() != null) {
+            cibles.put(voleur.getBD().getColonie().getJoueur().getPseudo(),voleur.getBD().getColonie().getJoueur());
         }
         if (!cibles.isEmpty()) {
             if (cibles.size() > 1) {

@@ -42,7 +42,6 @@ public class Intersection {
             return "?";
         }
         else if(colonie.joueur.couleur.equals(Color.BLUE)) {
-            System.out.println(colonie.joueur.couleur);
             return ANSI_BLUE + "●" + ANSI_RESET;
         }
         else if(colonie.joueur.couleur.equals(Color.RED)) {

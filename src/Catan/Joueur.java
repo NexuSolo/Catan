@@ -65,12 +65,22 @@ public abstract class Joueur {
         }
     }
 
+    public abstract boolean placerColonie(Plateau plateau,boolean premierTour, boolean gratuit);
+
     public LinkedList<Ressource> getRessources() {
         return ressources;
     }
     
     public String getPseudo() {
         return pseudo;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
     }
 
     @Override
