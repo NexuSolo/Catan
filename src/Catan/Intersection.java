@@ -35,9 +35,17 @@ public class Intersection {
     }
 
     public String toString() {
-        if (port != null) {
-            return "P";
-        }
+        /**
+         * Regarder la prochaine intersection,
+         *   --P--                         2 tirets P 2 tirets
+         *  /     \                 /  
+         * ?-------?-------?-------?
+         * 
+         * 
+         */
+        // if (port != null) {
+        //     return "P";
+        // }
         if(colonie == null) {
             return "?";
         }
