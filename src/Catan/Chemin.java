@@ -144,6 +144,10 @@ public class Chemin {
     public Joueur getRoute() {
         return route;
     }
+
+    public void setRoute(Joueur route) {
+        this.route = route;
+    }
     
     
 }

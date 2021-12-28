@@ -69,7 +69,9 @@ public abstract class Joueur {
         }
     }
 
-    public abstract boolean placerColonie(Plateau plateau,boolean premierTour, boolean gratuit);
+    public abstract boolean placerColonie(Plateau plateau,boolean premierTour);
+
+    public abstract boolean placerRoute(Plateau plateau, boolean gratuit, Intersection premierTour);
 
     public void afficheRessource() {
         for (Ressource r : ressources) {
