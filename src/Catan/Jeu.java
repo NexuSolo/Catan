@@ -15,6 +15,13 @@ public class Jeu {
     private Joueur RouteLaPlusLongue = null;
     private Plateau plateau;
 
+    public Jeu(boolean b) {
+        joueurs.add(new Humain("Nex", "bleu"));
+        joueurs.add(new Humain("Miz", "vert"));
+        joueurs.add(new Humain("Mizaxus", "jaune"));
+        plateau = new Plateau(5);
+    }
+
     public Jeu() {
         String reponse; 
         while (true) {
@@ -170,13 +177,6 @@ public class Jeu {
 
     public Plateau getPlateau() {
         return plateau;
-    }
-
-    public static void main(String[] args) {
-        Jeu j = new Jeu();
-        j.joueurs.get(0).placerColonie(j.plateau, true, true);
-        j.joueurs.get(1).placerColonie(j.plateau, true, true);
-        j.plateau.affiche();
     }
     
 }

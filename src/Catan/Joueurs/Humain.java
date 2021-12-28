@@ -14,7 +14,7 @@ public class Humain extends Joueur{
         super(pseudo, color);
     }
 
-    public boolean placerColonie(Plateau plateau, boolean premierTour, boolean gratuit) {
+    public boolean placerColonie(Plateau plateau, boolean premierTour) {
         if(nombreColonies >= 5) {
             System.out.println("Le nombre maximum de colonie est de 5.");
             return false;
@@ -28,8 +28,8 @@ public class Humain extends Joueur{
             }
             Intersection inter = coordonéesToIntersection(plateau, reponse);
             if(inter != null) {
-                if(ColonieEstPlaceable(inter, premierTour)) {
-                    if(!gratuit) {
+                if(colonieEstPlaceable(inter, premierTour)) {
+                    if(!premierTour) {
                         if(super.possede(Ressource.BOIS) && super.possede(Ressource.ARGILE) && super.possede(Ressource.BLE) && super.possede(Ressource.LAINE)) {
                             super.removeRessource(Ressource.BOIS, 1);
                             super.removeRessource(Ressource.ARGILE,1);
@@ -56,6 +56,8 @@ public class Humain extends Joueur{
                     }
                     inter.setColonie(new Colonie(this));
                     System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
+                    plateau.affiche();
+                    placerRoute(plateau, true, inter);
                     return true;
                 }
                 else {
@@ -67,6 +69,87 @@ public class Humain extends Joueur{
             }
             else {
                 System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+            }
+        }
+    }
+
+    public boolean placerRoute(Plateau plateau, boolean gratuit, Intersection premierTour) {
+        if(premierTour != null) {
+            System.out.print("Placer une route a coté de votre nouvelle colonie en x = " + premierTour.getX() + " y = " + premierTour.getY() + ". ");
+            if(premierTour.getCheminH() != null) {
+                System.out.print("[H] ");
+            }
+            if(premierTour.getCheminB() != null) {
+                System.out.print("[B] ");
+            }
+            if(premierTour.getCheminG() != null) {
+                System.out.print("[G] ");
+            }
+            if(premierTour.getCheminD() != null) {
+                System.out.print("[D]");
+            }
+            System.out.println();
+            while (true) {
+                String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+                if(premierTour.getCheminH() != null && reponse.equals("h")) {
+                    if(routeEstPlaceable(premierTour.getCheminH())) {
+                        premierTour.getCheminH().setRoute(this);
+                        return true;
+                    }
+                }
+                else if(premierTour.getCheminB() != null && reponse.equals("b")) {
+                    if(routeEstPlaceable(premierTour.getCheminB())) {
+                        premierTour.getCheminB().setRoute(this);
+                        return true;
+                    }
+                }
+                else if(premierTour.getCheminG() != null && reponse.equals("g")) {
+                    if(routeEstPlaceable(premierTour.getCheminG())) {
+                        premierTour.getCheminG().setRoute(this);
+                        return true;
+                    }
+                }
+                else if(premierTour.getCheminD() != null && reponse.equals("d")) {
+                    if(routeEstPlaceable(premierTour.getCheminD())) {
+                        premierTour.getCheminD().setRoute(this);
+                        return true;
+                    }
+                }
+            }
+        }
+        System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
+        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        while (true) {
+            String reponse = Jeu.scan();
+            if(Jeu.MotToMotMinuscule(reponse).equals("annuler")) {
+                return false;
+            }
+            Chemin chemin = coordonéesToChemin(plateau, reponse);
+            if(chemin != null) {
+                if(routeEstPlaceable(chemin)) {
+                    if(!gratuit) {
+                        if(super.possede(Ressource.BOIS) && super.possede(Ressource.ARGILE)) {
+                            super.removeRessource(Ressource.BOIS, 1);
+                            super.removeRessource(Ressource.ARGILE,1);
+                        }
+                        else {
+                            System.out.print("Vous n'avez pas les ressources nécessaire. Il vous manque");
+                            if(!super.possede(Ressource.BOIS)) {
+                                System.out.print(" [BOIS]");
+                            }
+                            if(!super.possede(Ressource.ARGILE)) {
+                                System.out.print(" [ARGILE]");
+                            }
+                            return false;
+                        }
+                    }
+                    chemin.setRoute(this);
+                    System.out.println("Vous avez placer une route en x = " + ", y = ");
+                    return true;
+                }
+            }
+            else {
+                System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
             }
         }
     }
@@ -97,18 +180,29 @@ public class Humain extends Joueur{
         return null;
     }
 
-    public Case coordonéesToCase(Plateau p,String s) {
-        if(s.length() == 3 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
+    public Chemin coordonéesToChemin(Plateau plateau, String s) {
+        if(s.length() == 4 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
             int x = Integer.valueOf(s.substring(0,1));
             int y = Integer.valueOf(s.substring(2,3));
-            if (x > 0 && x < p.getLength() && y > 0 && y < p.getLength() ) {
-                return p.getCase(x, y);
+            if(x >= 1 && x <= plateau.getLength() && y >= 1 && y <= plateau.getLength()) {
+                if(Character.toLowerCase(s.charAt(3)) == 'h') {
+                    return plateau.getCase(x, y).getH();
+                }
+                if(Character.toLowerCase(s.charAt(3)) == 'b') {
+                    return plateau.getCase(x, y).getB();
+                }
+                if(Character.toLowerCase(s.charAt(3)) == 'g') {
+                    return plateau.getCase(x, y).getG();
+                }
+                if(Character.toLowerCase(s.charAt(3)) == 'd') {
+                    return plateau.getCase(x, y).getD();
+                }
             }
         }
         return null;
     }
 
-    public boolean ColonieEstPlaceable(Intersection inter, boolean premierTour) {
+    public boolean colonieEstPlaceable(Intersection inter, boolean premierTour) {
         if(inter.getColonie() != null) {
            return false; 
         }
