@@ -1,5 +1,6 @@
 package Catan.Joueurs;
 
+import Catan.Case;
 import Catan.Colonie;
 import Catan.Intersection;
 import Catan.Jeu;
@@ -18,7 +19,7 @@ public class Humain extends Joueur{
             System.out.println("Le nombre maximum de colonie est de 5.");
             return false;
         }
-        System.out.println("Ou voullez-vous placer votre colonie ? Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+        System.out.println("Ou voulez-vous placer votre colonie ? Exemple : 1:1HG représente l'emplacement en haut à gauche de la case x = 1 y = 1");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while(true) {
             String reponse = Jeu.scan();
@@ -96,6 +97,17 @@ public class Humain extends Joueur{
         return null;
     }
 
+    public Case coordonéesToCase(Plateau p,String s) {
+        if(s.length() == 3 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
+            int x = Integer.valueOf(s.substring(0,1));
+            int y = Integer.valueOf(s.substring(2,3));
+            if (x > 0 && x < p.getLength() && y > 0 && y < p.getLength() ) {
+                return p.getCase(x, y);
+            }
+        }
+        return null;
+    }
+
     public boolean ColonieEstPlaceable(Intersection inter, boolean premierTour) {
         if(inter.getColonie() != null) {
            return false; 
@@ -138,6 +150,48 @@ public class Humain extends Joueur{
             }
         }
         return true;
+    }
+
+    public void defausseVoleur(){
+        if(this.ressources.size() > 7) {
+            int cartesADefausser = this.ressources.size()/2  ;
+            while( cartesADefausser > 0 ) {
+                System.out.println("Le voleur s'empare de vos cartes, veuillez choisir lesquels défausser");
+                System.out.println("Il vous reste "+cartesADefausser+" carte(s) à défausser");
+                System.out.print("Vous possédez ");
+                this.afficheRessource();
+                String scan = Jeu.scan();
+                Ressource defaussee = stringToRessource(scan);
+                System.out.println("Vous allez défausser " + defaussee);
+                while(defaussee == null || !this.possede(defaussee)) {
+                    if (defaussee == null) {
+                        System.out.println("Ressource invalide");
+                    } 
+                    else{
+                        System.out.println("Vous ne possédez pas cette ressource");
+                    }
+                    scan = Jeu.scan();
+                    defaussee = stringToRessource(scan);
+                }
+                this.removeRessource(defaussee);
+                cartesADefausser--;
+            }
+        }
+        
+    }
+
+    @Override
+    public void deplaceVoleur(Plateau p) {
+        System.out.println("Ou voulez-vous placer le voleur ? Exemple : 1:1 représente l'emplacement en haut à gauche de la case x = 1 y = 1 ");
+        String scan = Jeu.scan();
+        Case c = coordonéesToCase(p,scan);
+        while (c == null) {
+            System.out.println("Case invalide, veuillez réinsérer des coordonnées (Rappel \"2:3\" renvoie la case x = 2 et y = 3) ");
+            scan = Jeu.scan();
+            c = coordonéesToCase(p,scan);
+        }
+        p.setVoleur(c);
+        
     }
     
 }

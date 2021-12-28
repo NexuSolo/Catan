@@ -18,7 +18,7 @@ public class Jeu {
     public Jeu() {
         String reponse; 
         while (true) {
-            System.out.println("Voullez vous une interface graphique ? [Oui][Non]");
+            System.out.println("Voulez vous une interface graphique ? [Oui][Non]");
             reponse = MotToMotMinuscule(scan());
             if(reponse.equals("oui")) {
                 break;
@@ -28,7 +28,7 @@ public class Jeu {
             }
         }
         while (true) {
-            System.out.println("Combien voullez vous de joueur ? [3][4]");
+            System.out.println("Combien voulez vous de joueur ? [3][4]");
             reponse = MotToMotMinuscule(scan());
             if(reponse.equals("3")) {
                 break;
@@ -128,7 +128,7 @@ public class Jeu {
         while (true) {
             plateau = new Plateau(taille);
             plateau.affiche();
-            System.out.println("\n" +"Voullez-vous jouer sur ce plateau ? [Oui][Non]");
+            System.out.println("\n" +"Voulez-vous jouer sur ce plateau ? [Oui][Non]");
             while (true) {
                 reponse = MotToMotMinuscule(scan());
                 if(reponse.equals("oui")) {
