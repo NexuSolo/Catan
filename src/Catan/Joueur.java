@@ -8,8 +8,8 @@ public abstract class Joueur {
     public final Color couleur;
     public final String pseudo;
     protected LinkedList<Ressource> ressources = new LinkedList<Ressource>();
-    private LinkedList<Carte> cartes;
-    private int point;
+    private LinkedList<Carte> cartes = new LinkedList<Carte>();
+    protected int point;
     public int nombreColonies = 0;
     public int nombreVilles = 0;
     private LinkedList<Port> ports;
@@ -106,17 +106,50 @@ public abstract class Joueur {
         }
     }
 
-    public abstract boolean placerColonie(Plateau plateau,boolean premierTour, boolean gratuit);
+    public abstract boolean placerColonie(Plateau plateau,boolean premierTour);
+
+    public abstract boolean placerRoute(Plateau plateau, boolean gratuit, Intersection premierTour);
 
     public abstract void defausseVoleur();
 
     public abstract void deplaceVoleur(Plateau p);
 
-    public void afficheRessource() {
-        for (Ressource r : ressources) {
-            System.out.print(r + " ");
+    public abstract void tour(Jeu jeu);
+
+    public int calculPoint() {
+        int res = point;
+        for (Carte carte : cartes) {
+            //TODO
         }
-        System.out.println();
+        return res;
+    }
+
+    public void afficheRessource() {
+        int bois = 0;
+        int ble = 0;
+        int roche = 0;
+        int laine = 0;
+        int argile = 0;
+        for (Ressource r : ressources) {
+            switch(r.toString()) {
+                case "BOIS":
+                    bois++;
+                    break;
+                case "BLE":
+                    ble++;
+                    break;
+                case "ROCHE":
+                    roche++;
+                    break;
+                case "LAINE":
+                    laine++;
+                    break;
+                case "ARGILE":
+                    argile++;
+                    break;
+            }
+        }
+        System.out.println("Vous avez : " + bois + " bois " + argile + " argile " + laine + " laine " + ble + " blé " + roche + " roche ");
     }
 
     public LinkedList<Ressource> getRessources() {
@@ -146,6 +179,7 @@ public abstract class Joueur {
             Ressource volee = victime.getRessources().get(random);
             victime.removeRessource(volee);
             this.addRessource(volee);
+            System.out.println("Vous avez volé " + volee + "à " + victime);
         }
         else {
             System.out.println("Il n'y a rien à voler chez la victime ...");

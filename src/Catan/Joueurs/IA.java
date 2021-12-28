@@ -2,6 +2,7 @@ package Catan.Joueurs;
 
 import Catan.Colonie;
 import Catan.Intersection;
+import Catan.Jeu;
 import Catan.Joueur;
 import Catan.Plateau;
 
@@ -31,6 +32,12 @@ public class IA extends Joueur{
 
     @Override
     public void deplaceVoleur(Plateau p) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void tour(Jeu jeu) {
         // TODO Auto-generated method stub
         
     }

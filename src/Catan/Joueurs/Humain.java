@@ -1,12 +1,6 @@
 package Catan.Joueurs;
 
-import Catan.Case;
-import Catan.Colonie;
-import Catan.Intersection;
-import Catan.Jeu;
-import Catan.Joueur;
-import Catan.Plateau;
-import Catan.Ressource;
+import Catan.*;
 
 public class Humain extends Joueur{
 
@@ -20,10 +14,12 @@ public class Humain extends Joueur{
             return false;
         }
         System.out.println("Ou voulez-vous placer votre colonie ? Exemple : 1:1HG représente l'emplacement en haut à gauche de la case x = 1 y = 1");
-        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        if(!premierTour) {
+            System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        }
         while(true) {
             String reponse = Jeu.scan();
-            if(Jeu.MotToMotMinuscule(reponse).equals("annuler")) {
+            if(Jeu.MotToMotMinuscule(reponse).equals("annuler") && !premierTour) {
                 return false;
             }
             Intersection inter = coordonéesToIntersection(plateau, reponse);
@@ -57,7 +53,10 @@ public class Humain extends Joueur{
                     inter.setColonie(new Colonie(this));
                     System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
                     plateau.affiche();
-                    placerRoute(plateau, true, inter);
+                    if(premierTour) {
+                        placerRoute(plateau, true, inter);
+                    }
+                    point++;
                     return true;
                 }
                 else {
@@ -94,24 +93,28 @@ public class Humain extends Joueur{
                 if(premierTour.getCheminH() != null && reponse.equals("h")) {
                     if(routeEstPlaceable(premierTour.getCheminH())) {
                         premierTour.getCheminH().setRoute(this);
+                        plateau.affiche();
                         return true;
                     }
                 }
                 else if(premierTour.getCheminB() != null && reponse.equals("b")) {
                     if(routeEstPlaceable(premierTour.getCheminB())) {
                         premierTour.getCheminB().setRoute(this);
+                        plateau.affiche();
                         return true;
                     }
                 }
                 else if(premierTour.getCheminG() != null && reponse.equals("g")) {
                     if(routeEstPlaceable(premierTour.getCheminG())) {
                         premierTour.getCheminG().setRoute(this);
+                        plateau.affiche();
                         return true;
                     }
                 }
                 else if(premierTour.getCheminD() != null && reponse.equals("d")) {
                     if(routeEstPlaceable(premierTour.getCheminD())) {
                         premierTour.getCheminD().setRoute(this);
+                        plateau.affiche();
                         return true;
                     }
                 }
@@ -140,11 +143,13 @@ public class Humain extends Joueur{
                             if(!super.possede(Ressource.ARGILE)) {
                                 System.out.print(" [ARGILE]");
                             }
+                            System.out.println();
                             return false;
                         }
                     }
                     chemin.setRoute(this);
-                    System.out.println("Vous avez placer une route en x = " + ", y = ");
+                    plateau.affiche();
+                    System.out.println("Vous avez placer une route en x = " + ", y = "); //TODO
                     return true;
                 }
             }
@@ -202,6 +207,17 @@ public class Humain extends Joueur{
         return null;
     }
 
+    public Case coordonéesToCase(Plateau p,String s) {
+        if(s.length() == 3 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
+            int x = Integer.valueOf(s.substring(0,1));
+            int y = Integer.valueOf(s.substring(2,3));
+            if (x > 0 && x < p.getLength() && y > 0 && y < p.getLength() ) {
+                return p.getCase(x, y);
+            }
+        }
+        return null;
+    }
+
     public boolean colonieEstPlaceable(Intersection inter, boolean premierTour) {
         if(inter.getColonie() != null) {
            return false; 
@@ -227,32 +243,80 @@ public class Humain extends Joueur{
             }
         }
         if(!premierTour) {
-            if(inter.getCheminH().getRoute().equals(this)) {
-                return true;
+            if(inter.getCheminH() != null) {
+                if(inter.getCheminH().getRoute().equals(this)) {
+                    return true;
+                }
             }
-            else if(inter.getCheminB().getRoute().equals(this)) {
-                return true;
+            if(inter.getCheminB() != null) {
+                if(inter.getCheminB().getRoute().equals(this)) {
+                    return true;
+                }
             }
-            else if(inter.getCheminG().getRoute().equals(this)) {
-                return true;
+            if(inter.getCheminG() != null) {
+                if(inter.getCheminG().getRoute().equals(this)) {
+                    return true;
+                }
             }
-            else if(inter.getCheminD().getRoute().equals(this)) {
-                return true;
+            if(inter.getCheminD() != null) {
+                if(inter.getCheminD().getRoute().equals(this)) {
+                    return true;
+                }
             }
-            else {
-                return false;
-            }
+            return false;
         }
         return true;
     }
-
+    
+    public boolean routeEstPlaceable(Chemin chemin) {
+        if(chemin.getRoute() == null) {
+            if((chemin.getIntersection1().getColonie() != null && chemin.getIntersection1().getColonie().getJoueur().equals(this)) ||(chemin.getIntersection2().getColonie() != null && chemin.getIntersection2().getColonie().getJoueur().equals(this))) {
+                return true;
+            }
+            else {
+                if(chemin.getIntersection1().getCheminH() != null && chemin.getIntersection1().getCheminH().getRoute() != null && chemin.getIntersection1().getCheminH().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection1().getCheminB() != null && chemin.getIntersection1().getCheminB().getRoute() != null && chemin.getIntersection1().getCheminB().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection1().getCheminG() != null && chemin.getIntersection1().getCheminG().getRoute() != null && chemin.getIntersection1().getCheminG().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection1().getCheminD() != null && chemin.getIntersection1().getCheminD().getRoute() != null && chemin.getIntersection1().getCheminD().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminH() != null && chemin.getIntersection2().getCheminH().getRoute() != null && chemin.getIntersection2().getCheminH().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminB() != null && chemin.getIntersection2().getCheminB().getRoute() != null && chemin.getIntersection2().getCheminB().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminG() != null && chemin.getIntersection2().getCheminG().getRoute() != null && chemin.getIntersection2().getCheminG().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminD() != null && chemin.getIntersection2().getCheminD().getRoute() != null && chemin.getIntersection2().getCheminD().getRoute().equals(this)) {
+                    return true;
+                }
+                else {
+                    System.out.println("Vous devez avoir une colonie ou une route juxtaposé a votre route");
+                }
+            }
+        }
+        else {
+            System.out.println("Vous ne pouvez pas placer de route sur une route deja existante");
+        }
+        return false;
+    }
+    
     public void defausseVoleur(){
         if(this.ressources.size() > 7) {
             int cartesADefausser = this.ressources.size()/2  ;
-            while( cartesADefausser > 0 ) {
+            if(cartesADefausser > 0) {
                 System.out.println("Le voleur s'empare de vos cartes, veuillez choisir lesquels défausser");
+            }
+            while( cartesADefausser > 0 ) {
                 System.out.println("Il vous reste "+cartesADefausser+" carte(s) à défausser");
-                System.out.print("Vous possédez ");
                 this.afficheRessource();
                 String scan = Jeu.scan();
                 Ressource defaussee = stringToRessource(scan);
@@ -273,9 +337,10 @@ public class Humain extends Joueur{
         }
         
     }
-
+    
     @Override
     public void deplaceVoleur(Plateau p) {
+        p.affiche();
         System.out.println("Ou voulez-vous placer le voleur ? Exemple : 1:1 représente l'emplacement en haut à gauche de la case x = 1 y = 1 ");
         String scan = Jeu.scan();
         Case c = coordonéesToCase(p,scan);
@@ -288,4 +353,39 @@ public class Humain extends Joueur{
         
     }
     
+    @Override
+    public void tour(Jeu jeu) {
+        jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
+        while (true) {
+            afficheRessource();
+            System.out.println(this + " Quelle action voulez vous faire ? [Colonie] [Route] [Ville] [Développement] [Echange] [Fin]");
+            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            if(reponse.equals("fin")) {
+                break;
+            }
+            reponseToAction(jeu.getPlateau(), reponse);
+        }
+
+    }
+
+    private void reponseToAction(Plateau plateau, String reponse) {
+        switch (reponse) {
+            default:
+                System.out.println("Commande invalide");
+                break;
+            case "colonie":
+                placerColonie(plateau, false);
+                break;
+            case "route":
+                placerRoute(plateau, false, null);
+                break;
+            case "ville":
+                break;
+            case "développement":
+                break;
+            case "echange":
+                break;
+        }
+    }
+
 }

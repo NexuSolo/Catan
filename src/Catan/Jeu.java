@@ -14,12 +14,14 @@ public class Jeu {
     private Joueur chevalierLePlusPuissant = null;
     private Joueur RouteLaPlusLongue = null;
     private Plateau plateau;
+    private Joueur vainqueur = null;
 
     public Jeu(boolean b) {
         joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
         joueurs.add(new Humain("Mizaxus", "jaune"));
         plateau = new Plateau(5);
+        jouer();
     }
 
     public Jeu() {
@@ -149,8 +151,38 @@ public class Jeu {
                 break;
             }
         }
+        jouer();
     }
 
+    public void jouer() {
+        plateau.affiche();
+        for (int i = 0; i < joueurs.size(); i++) {
+            joueurs.get(i).placerColonie(plateau, true);
+        }
+        for (int i = joueurs.size() - 1; i >= 0; i--) {
+            joueurs.get(i).placerColonie(plateau, true);
+        }
+        while (!gagne()) {
+            for (Joueur joueur : joueurs) {
+                plateau.affiche();
+                joueur.tour(this);
+                if(gagne()) {
+                    break;
+                }
+            }
+        }
+        System.out.println(vainqueur.pseudo + "a gagné");
+    }
+
+    public boolean gagne() {
+        for (Joueur joueur : joueurs) {
+            if(joueur.calculPoint() == 10) {
+                vainqueur = joueur;
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static boolean estNombre(String s) {
         try {

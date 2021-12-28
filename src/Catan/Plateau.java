@@ -199,6 +199,7 @@ public class Plateau {
         int de1 = new Random().nextInt(6)+1;
         int de2 = new Random().nextInt(6)+1;
         int total = de1 + de2;
+        System.out.println("Le résultat des dés est " + total);
         String valeur = String.valueOf(total);
         if (total != 7) {
             LinkedList<Case> lol = valDe.get(valeur);
@@ -208,8 +209,8 @@ public class Plateau {
         }
         else {
             for (Joueur joueurs : listeJoueurs) {
-                 joueurs.defausseVoleur();
-             }
+                //joueurs.defausseVoleur();
+            }
             deplaceVoleur(J);
         }     
     }
@@ -219,6 +220,7 @@ public class Plateau {
         j.deplaceVoleur(this);
         volRessource(j);
     }
+
     public void volRessource(Joueur j) {
         LinkedList<Joueur> cibles = new LinkedList<>();
         if (voleur.getHG().getColonie() != null) {
@@ -266,7 +268,7 @@ public class Plateau {
             j.volRessource(victime);
         }
         else {
-            System.out.println("Vous n'avez personne à qui voler :(");
+            System.out.println("Vous n'avez personne à qui voler (┬┬﹏┬┬))");
         }
     }
     public void affiche() {

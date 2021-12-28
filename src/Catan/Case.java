@@ -27,43 +27,55 @@ public class Case {
 
 
     public void production() {
-        System.out.println("Case "+x+y+" production");
         if (!voleur) {
+            String s2 = "La case " + x + ":" + y + " produit ";
+            String s = "";
             if(HG.getColonie() != null) {
                 if (HG.getColonie() instanceof Ville) {
                     HG.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + HG.getColonie().getJoueur() + " ");
                 }
                 else {
                     HG.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + HG.getColonie().getJoueur() + " ");
                 }
             }
             if(HD.getColonie() != null) {
                 if (HD.getColonie() instanceof Ville) {
                     HD.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + HD.getColonie().getJoueur() + " ");
                 }
                 else {
                     HD.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + HD.getColonie().getJoueur() + " ");
                 }
             }
             if(BG.getColonie() != null) {
                 if (BG.getColonie() instanceof Ville) {
                     BG.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + BG.getColonie().getJoueur() + " ");
                 }
                 else {
                     BG.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + BG.getColonie().getJoueur() + " ");
                 }
             }
             if(BD.getColonie() != null) {
                 if (BD.getColonie() instanceof Ville) {
                     BD.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + BD.getColonie().getJoueur() + " ");
                 }
                 else {
                     BD.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + BD.getColonie().getJoueur() + " ");
                 }
+            }
+            if(!s.equals("")) {
+                System.out.println(s2 + s);
             }
         }
         else {
-            System.out.println("Le voleur s'est emparé des ressources !");
+            System.out.println("Le voleur s'est emparé des ressources sur la case " + x + ":" + y +" !");
         }
 
     }
