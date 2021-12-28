@@ -1,6 +1,6 @@
 package Catan.Joueurs;
 
-import Catan.Chemin;
+import Catan.Case;
 import Catan.Colonie;
 import Catan.Intersection;
 import Catan.Jeu;
@@ -19,7 +19,7 @@ public class Humain extends Joueur{
             System.out.println("Le nombre maximum de colonie est de 5.");
             return false;
         }
-        System.out.println("Ou voullez-vous placer votre colonie ? Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+        System.out.println("Ou voulez-vous placer votre colonie ? Exemple : 1:1HG représente l'emplacement en haut à gauche de la case x = 1 y = 1");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while(true) {
             String reponse = Jeu.scan();
@@ -246,45 +246,46 @@ public class Humain extends Joueur{
         return true;
     }
 
-    public boolean routeEstPlaceable(Chemin chemin) {
-        if(chemin.getRoute() == null) {
-            if((chemin.getIntersection1().getColonie() != null && chemin.getIntersection1().getColonie().getJoueur().equals(this)) ||(chemin.getIntersection2().getColonie() != null && chemin.getIntersection2().getColonie().getJoueur().equals(this))) {
-                return true;
-            }
-            else {
-                if(chemin.getIntersection1().getCheminH() != null && chemin.getIntersection1().getCheminH().getRoute() != null && chemin.getIntersection1().getCheminH().getRoute().equals(this)) {
-                    return true;
+    public void defausseVoleur(){
+        if(this.ressources.size() > 7) {
+            int cartesADefausser = this.ressources.size()/2  ;
+            while( cartesADefausser > 0 ) {
+                System.out.println("Le voleur s'empare de vos cartes, veuillez choisir lesquels défausser");
+                System.out.println("Il vous reste "+cartesADefausser+" carte(s) à défausser");
+                System.out.print("Vous possédez ");
+                this.afficheRessource();
+                String scan = Jeu.scan();
+                Ressource defaussee = stringToRessource(scan);
+                System.out.println("Vous allez défausser " + defaussee);
+                while(defaussee == null || !this.possede(defaussee)) {
+                    if (defaussee == null) {
+                        System.out.println("Ressource invalide");
+                    } 
+                    else{
+                        System.out.println("Vous ne possédez pas cette ressource");
+                    }
+                    scan = Jeu.scan();
+                    defaussee = stringToRessource(scan);
                 }
-                else if(chemin.getIntersection1().getCheminB() != null && chemin.getIntersection1().getCheminB().getRoute() != null && chemin.getIntersection1().getCheminB().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection1().getCheminG() != null && chemin.getIntersection1().getCheminG().getRoute() != null && chemin.getIntersection1().getCheminG().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection1().getCheminD() != null && chemin.getIntersection1().getCheminD().getRoute() != null && chemin.getIntersection1().getCheminD().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminH() != null && chemin.getIntersection2().getCheminH().getRoute() != null && chemin.getIntersection2().getCheminH().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminB() != null && chemin.getIntersection2().getCheminB().getRoute() != null && chemin.getIntersection2().getCheminB().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminG() != null && chemin.getIntersection2().getCheminG().getRoute() != null && chemin.getIntersection2().getCheminG().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminD() != null && chemin.getIntersection2().getCheminD().getRoute() != null && chemin.getIntersection2().getCheminD().getRoute().equals(this)) {
-                    return true;
-                }
-                else {
-                    System.out.println("Vous devez avoir une colonie ou une route juxtaposé a votre route");
-                }
+                this.removeRessource(defaussee);
+                cartesADefausser--;
             }
         }
-        else {
-            System.out.println("Vous ne pouvez pas placer de route sur une route deja existante");
+        
+    }
+
+    @Override
+    public void deplaceVoleur(Plateau p) {
+        System.out.println("Ou voulez-vous placer le voleur ? Exemple : 1:1 représente l'emplacement en haut à gauche de la case x = 1 y = 1 ");
+        String scan = Jeu.scan();
+        Case c = coordonéesToCase(p,scan);
+        while (c == null) {
+            System.out.println("Case invalide, veuillez réinsérer des coordonnées (Rappel \"2:3\" renvoie la case x = 2 et y = 3) ");
+            scan = Jeu.scan();
+            c = coordonéesToCase(p,scan);
         }
-        return false;
+        p.setVoleur(c);
+        
     }
     
 }

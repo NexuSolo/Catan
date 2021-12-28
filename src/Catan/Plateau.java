@@ -195,7 +195,7 @@ public class Plateau {
         valDe.put("12",douze);
     }
 
-    public void LancerDes(Joueur J) {
+    public void LancerDes(Joueur J,LinkedList<Joueur> listeJoueurs) {
         int de1 = new Random().nextInt(6)+1;
         int de2 = new Random().nextInt(6)+1;
         int total = de1 + de2;
@@ -207,39 +207,67 @@ public class Plateau {
             }
         }
         else {
+            for (Joueur joueurs : listeJoueurs) {
+                 joueurs.defausseVoleur();
+             }
             deplaceVoleur(J);
         }     
-       System.out.println(total);
     }
 
-    private void deplaceVoleur(Joueur j) {
+    public void deplaceVoleur(Joueur j) {
         System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur "+j.pseudo);
+        j.deplaceVoleur(this);
         volRessource(j);
     }
-    private void volRessource(Joueur j) {
-        Map<String,Joueur> cibles = new HashMap<String,Joueur>();
+    public void volRessource(Joueur j) {
+        LinkedList<Joueur> cibles = new LinkedList<>();
         if (voleur.getHG().getColonie() != null) {
-            cibles.put(voleur.getHG().getColonie().getJoueur().getPseudo(),voleur.getHG().getColonie().getJoueur());
+            cibles.add(voleur.getHG().getColonie().getJoueur());
         }
         if (voleur.getHD().getColonie() != null) {
-            cibles.put(voleur.getHD().getColonie().getJoueur().getPseudo(),voleur.getHD().getColonie().getJoueur());
-        }
-        if (voleur.getBG().getColonie() != null) {
-            cibles.put(voleur.getBG().getColonie().getJoueur().getPseudo(),voleur.getBG().getColonie().getJoueur());
-        }
-        if (voleur.getBD().getColonie() != null) {
-            cibles.put(voleur.getBD().getColonie().getJoueur().getPseudo(),voleur.getBD().getColonie().getJoueur());
-        }
-        if (!cibles.isEmpty()) {
-            if (cibles.size() > 1) {
-                System.out.print("Veuillez choisir un joueur à qui voler une ressource aléatoire : ");
-                for (String s : cibles.keySet()) {
-                        System.out.print(cibles.get(s) + " " );
-                }
+            if (!cibles.contains(voleur.getHD().getColonie().getJoueur())) {
+                cibles.add(voleur.getHD().getColonie().getJoueur());
             }
         }
+        if (voleur.getBG().getColonie() != null) {
+            if (!cibles.contains(voleur.getBG().getColonie().getJoueur())) {
+                cibles.add(voleur.getBG().getColonie().getJoueur());
+            }
+        }
+        if (voleur.getBD().getColonie() != null) {
+            if (!cibles.contains(voleur.getBD().getColonie().getJoueur())) {
+                cibles.add(voleur.getBD().getColonie().getJoueur());
+            }
+        }
+        if (cibles.contains(j)){
+            cibles.remove(j);
+        }
+        Joueur victime = null;
+        if (!cibles.isEmpty()) {
+            if (cibles.size() > 1) {
+                do{
+                    System.out.print("Veuillez choisir la couleur du joueur à qui vous voulez voler une ressource aléatoire : ");
+                    for (Joueur v : cibles) {
+                        System.out.print(v + " ");
+                    }
+                    System.out.println();
+                    String scan = Jeu.scan();
+                    for (Joueur v : cibles) {
+                        if (v.couleur.equals(Joueur.stringToColor(scan.toLowerCase()))) {
+                            victime = v;
+                        }
+                    }
 
-
+                } while(victime == null);
+            }
+            else {
+                victime = cibles.get(0);
+            }
+            j.volRessource(victime);
+        }
+        else {
+            System.out.println("Vous n'avez personne à qui voler :(");
+        }
     }
     public void affiche() {
         for (int y = 1; y < cases.length; y++) {
@@ -328,6 +356,12 @@ public class Plateau {
 
     public int getLength() {
         return cases.length;
+    }
+
+    public void setVoleur(Case c) {
+        voleur.setVoleur(false);
+        c.setVoleur(true);
+        this.voleur = c;
     }
     
 }
