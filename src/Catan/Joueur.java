@@ -12,7 +12,7 @@ public abstract class Joueur {
     protected int point;
     public int nombreColonies = 0;
     public int nombreVilles = 0;
-    private LinkedList<Port> ports;
+    protected LinkedList<Port> ports = new LinkedList<Port>();
 
     public Joueur(String pseudo, String couleur) {
         this.pseudo = pseudo;

@@ -32,5 +32,9 @@ public class Port {
         }
         return "P";
     }
+
+    public Ressource getRessource() {
+        return ressource;
+    }
     
 }

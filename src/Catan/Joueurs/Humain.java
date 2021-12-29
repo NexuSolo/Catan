@@ -52,6 +52,26 @@ public class Humain extends Joueur{
                     }
                     inter.setColonie(new Colonie(this));
                     System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
+                    if(inter.port != null) {
+                        if(inter.port.getRessource() == null) {
+                            ports.add(inter.port);
+                        }
+                        else if(inter.port.getRessource().equals(Ressource.BOIS)) {
+                            ports.add(inter.port);
+                        }
+                        else if(inter.port.getRessource().equals(Ressource.ARGILE)) {
+                            ports.add(inter.port);
+                        }
+                        else if(inter.port.getRessource().equals(Ressource.BLE)) {
+                            ports.add(inter.port);
+                        }
+                        else if(inter.port.getRessource().equals(Ressource.LAINE)) {
+                            ports.add(inter.port);
+                        }
+                        else if(inter.port.getRessource().equals(Ressource.ROCHE)) {
+                            ports.add(inter.port);
+                        }
+                    }
                     plateau.affiche();
                     if(premierTour) {
                         placerRoute(plateau, true, inter);
