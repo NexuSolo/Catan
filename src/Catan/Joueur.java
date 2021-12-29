@@ -4,14 +4,18 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.Random;
 
+import Catan.Cartes.PointDeVictoire;
+
 public abstract class Joueur {
     public final Color couleur;
     public final String pseudo;
     protected LinkedList<Ressource> ressources = new LinkedList<Ressource>();
     private LinkedList<Carte> cartes = new LinkedList<Carte>();
+    protected boolean cartesUtilisables = true;
     protected int point;
     public int nombreColonies = 0;
     public int nombreVilles = 0;
+    private int nombreChevalier = 0;
     private LinkedList<Port> ports;
 
     public Joueur(String pseudo, String couleur) {
@@ -106,6 +110,13 @@ public abstract class Joueur {
         }
     }
 
+    public void addCarte(Carte e){
+        cartes.add(e);
+    }
+    public void removeCarte(Carte e){
+        cartes.remove(e);
+    }
+
     public abstract boolean placerColonie(Plateau plateau,boolean premierTour);
 
     public abstract boolean placerRoute(Plateau plateau, boolean gratuit, Intersection premierTour);
@@ -119,7 +130,9 @@ public abstract class Joueur {
     public int calculPoint() {
         int res = point;
         for (Carte carte : cartes) {
-            //TODO
+            if (carte instanceof PointDeVictoire){
+                res++;
+            }
         }
         return res;
     }
@@ -185,4 +198,106 @@ public abstract class Joueur {
             System.out.println("Il n'y a rien à voler chez la victime ...");
         }
     }
+
+    public void addChevalier(Jeu jeu) {
+        nombreChevalier++;
+        if (nombreChevalier > 2 ) {
+            jeu.setChevalierLePlusPuissant(this);
+        }
+    }
+
+    public int getNombreChevalier() {
+        return this.nombreChevalier;
+    }
+
+    public void achatDeveloppement(Plateau plateau) {
+        if(possede(Ressource.ROCHE) && possede(Ressource.BLE) && possede(Ressource.LAINE)) {
+            removeRessource(Ressource.ROCHE);
+            removeRessource(Ressource.BLE);
+            removeRessource(Ressource.LAINE);
+            int random = new Random().nextInt(plateau.getCartes().size());
+            Carte achetee = plateau.getCartes().get(random);
+            addCarte(achetee);
+            plateau.getCartes().remove(random);
+            System.out.println("Vous avez obtenu une carte "+achetee);
+            //plateau.afficheCartes();
+        }
+        else {
+            System.out.print("Vous n'avez pas les ressources nécessaire. Il vous manque");
+            if(!possede(Ressource.LAINE)) {
+                System.out.print(" [LAINE]");
+            }
+            if(!possede(Ressource.BLE)) {
+                System.out.print(" [BLE]");
+            }
+            if(!possede(Ressource.ROCHE)) {
+                System.out.print(" [ROCHE]");
+            }
+            System.out.println();
+        }
+    }
+
+    public void afficheCartes() {
+        int chevalier = 0;
+        int monopole = 0;
+        int ConstructionRoute = 0;
+        int Invention = 0;
+        int PointDeVictoire = 0;
+        for (Carte c : cartes) {
+            switch(c.toString().toLowerCase()) {
+                case "carte chevalier":
+                    chevalier++;
+                    break;
+                case "carte monopole":
+                    monopole++;
+                    break;
+                case "carte constructionroute":
+                    ConstructionRoute++;
+                    break;
+                case "carte invention":
+                    Invention++;
+                    break;
+                case "carte point de victoire":
+                    PointDeVictoire++;
+                    break;
+            }
+        }
+        System.out.println("Vous avez : " + PointDeVictoire + " carte(s) PointDeVictoire, " + chevalier + " carte(s) Chevalier, " +  + Invention + " carte(s) Invention, " + monopole + " carte(s) Monopole, " + ConstructionRoute + " ConstructionRoute ");
+    }
+
+    public boolean possede(Carte c){
+        String s = "";
+        for(Carte carte : cartes ) {
+            if (c instanceof Carte) {
+                if(s.equals("") && !carte.utilisable) {
+                    s+= "Vous possedez la carte mais elle n'est pas encore utilisable, veuillez attendre le prochain tour";
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+        if (!s.equals("") ) {
+            System.out.println(s);
+        }
+        else {
+            System.out.println("Vous ne possédez pas cette carte");
+        }
+        return false;
+    }
+
+    public void cartesInutilisables() {
+        for(Carte c : cartes) {
+            c.setUtilisable(false);
+        }
+        cartesUtilisables = false;
+    }
+
+    public void cartesUtilisables() {
+        for(Carte c : cartes) {
+            c.setUtilisable(true);
+        }
+        cartesUtilisables = true;
+    }
+
 }

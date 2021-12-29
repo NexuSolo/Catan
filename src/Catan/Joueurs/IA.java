@@ -38,7 +38,7 @@ public class IA extends Joueur{
 
     @Override
     public void tour(Jeu jeu) {
-        // TODO Auto-generated method stub
+        cartesUtilisables();
         
     }
     

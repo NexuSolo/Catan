@@ -1,6 +1,7 @@
 package Catan.Joueurs;
 
 import Catan.*;
+import Catan.Cartes.*;
 
 public class Humain extends Joueur{
 
@@ -121,10 +122,12 @@ public class Humain extends Joueur{
             }
         }
         System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
-        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        if (!gratuit) {
+            System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        }
         while (true) {
             String reponse = Jeu.scan();
-            if(Jeu.MotToMotMinuscule(reponse).equals("annuler")) {
+            if(Jeu.MotToMotMinuscule(reponse).equals("annuler") && !gratuit) {
                 return false;
             }
             Chemin chemin = coordonéesToChemin(plateau, reponse);
@@ -355,6 +358,7 @@ public class Humain extends Joueur{
     
     @Override
     public void tour(Jeu jeu) {
+        cartesUtilisables();
         jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
         while (true) {
             afficheRessource();
@@ -363,29 +367,75 @@ public class Humain extends Joueur{
             if(reponse.equals("fin")) {
                 break;
             }
-            reponseToAction(jeu.getPlateau(), reponse);
+            reponseToAction(jeu, reponse);
         }
 
     }
 
-    private void reponseToAction(Plateau plateau, String reponse) {
+    private void reponseToAction(Jeu jeu, String reponse) {
         switch (reponse) {
             default:
                 System.out.println("Commande invalide");
                 break;
             case "colonie":
-                placerColonie(plateau, false);
+                placerColonie(jeu.getPlateau(), false);
                 break;
             case "route":
-                placerRoute(plateau, false, null);
+                placerRoute(jeu.getPlateau(), false, null);
                 break;
             case "ville":
                 break;
-            case "développement":
+            case "d":
+                achatDeveloppement(jeu.getPlateau());
+                afficheCartes();
+                if(cartesUtilisables){
+                    utiliserCarte(jeu);
+                }
                 break;
             case "echange":
                 break;
         }
     }
+
+    public void utiliserCarte(Jeu jeu){
+        Carte utilisee = null;
+        while(utilisee == null ) {
+            System.out.println("Quelle carte voulez vous utiliser ? Ou écrivez \"Annuler\" pour revenir en arrière.");
+            String reponse = Jeu.scan();
+            if (reponse.toLowerCase().equals("annuler")){
+                return;
+            }
+            utilisee = stringToCarte(reponse);
+            if (utilisee == null) {
+                System.out.println("Carte Inexistante");
+            } 
+            else if(!possede(utilisee) ) {
+                utilisee = null;
+            }
+        }
+        if (utilisee.utiliser(this, jeu)) {
+            removeCarte(utilisee);
+            cartesInutilisables();
+        }
+    }
+
+
+    public Carte stringToCarte(String reponse) {
+        switch(reponse.toLowerCase()) {
+            default : return null;
+            case "chevalier" : return new Chevalier();
+            case "pointdevictoire" : return new PointDeVictoire();
+            case "point de victoire" : return new PointDeVictoire();
+            case "monopole" : return new Monopole();
+            case "invention" : return new Invention();
+            case "construction route" : return new ConstructionRoute();
+            case "constructionroute" : return new ConstructionRoute();
+        }
+    }
+
+  
+
+
+
 
 }
