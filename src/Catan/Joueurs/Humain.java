@@ -179,6 +179,44 @@ public class Humain extends Joueur{
         }
     }
 
+    public boolean placerVille(Plateau plateau) {
+        System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
+        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        while(true) {
+            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            if(reponse.equals("annuler")) {
+                return false;
+            }
+            Intersection inter = coordonéesToIntersection(plateau, reponse);
+            if(inter != null) {
+                if(inter.getColonie() != null) {
+                    if(inter.getColonie().getJoueur().equals(this)) {
+                        if(!(inter.getColonie() instanceof Ville)) {
+                            //removeRessource(Ressource.ROCHE, 3);
+                            //removeRessource(Ressource.BLE, 2);
+                            inter.setColonie(new Ville(this));
+                            System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                            point++;
+                            return true;
+                        }
+                        else {
+                            System.out.println("Vous avez deja une ville a cet emplacement");
+                        }
+                    }
+                    else {
+                        System.out.println("Vous ne possedez pas cette colonie");
+                    }
+                }
+                else {
+                    System.out.println("Vous ne possedez pas de colonie a cet endroit");
+                }
+            }
+            else {
+                System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+            }
+        }
+    }
+
     public Intersection coordonéesToIntersection(Plateau plateau, String s) {
         if(s.length() == 5 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
             int x = Integer.valueOf(s.substring(0,1));
@@ -400,6 +438,7 @@ public class Humain extends Joueur{
                 placerRoute(plateau, false, null);
                 break;
             case "ville":
+                placerVille(plateau);
                 break;
             case "développement":
                 break;
