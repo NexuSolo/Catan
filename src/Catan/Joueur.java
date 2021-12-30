@@ -52,6 +52,9 @@ public abstract class Joueur {
     }
 
     public boolean possede(Ressource ressource,int nombre){
+        if(nombre < 1) {
+            return true;
+        }
         for(Ressource r : ressources){
             if (r == ressource){
                 nombre--;
