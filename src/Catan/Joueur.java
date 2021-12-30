@@ -52,6 +52,9 @@ public abstract class Joueur {
     }
 
     public boolean possede(Ressource ressource,int nombre){
+        if(nombre < 1) {
+            return true;
+        }
         for(Ressource r : ressources){
             if (r == ressource){
                 nombre--;
@@ -115,6 +118,8 @@ public abstract class Joueur {
     public abstract void deplaceVoleur(Plateau p);
 
     public abstract void tour(Jeu jeu);
+
+    public abstract boolean echange(Jeu jeu);
 
     public int calculPoint() {
         int res = point;
