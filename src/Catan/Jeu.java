@@ -11,7 +11,7 @@ import Catan.Joueurs.IA;
 
 public class Jeu {
     private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
-    private Joueur chevalierLePlusPuissant = null;
+    private Joueur ArmeeLaPlusPuissante = null;
     private Joueur routeLaPlusLongue = null;
     private Plateau plateau;
     private Joueur vainqueur = null;
@@ -201,7 +201,7 @@ public class Jeu {
 
     public boolean gagne() {
         for (Joueur joueur : joueurs) {
-            if(joueur.calculPoint(joueur == chevalierLePlusPuissant,joueur == routeLaPlusLongue) >= 10) {
+            if(joueur.calculPoint(joueur == ArmeeLaPlusPuissante,joueur == routeLaPlusLongue) >= 10) {
                 vainqueur = joueur;
                 return true;
             }
@@ -236,9 +236,9 @@ public class Jeu {
         return plateau;
     }
 
-    public void setChevalierLePlusPuissant(Joueur j) {
-        if (chevalierLePlusPuissant == null || j.getNombreChevalier() > chevalierLePlusPuissant.getNombreChevalier() ){
-           chevalierLePlusPuissant = j;
+    public void setArmeeLaPlusPuissante(Joueur j) {
+        if (ArmeeLaPlusPuissante == null || j.getNombreChevalier() > ArmeeLaPlusPuissante.getNombreChevalier() ){
+           ArmeeLaPlusPuissante = j;
         } 
     }
 

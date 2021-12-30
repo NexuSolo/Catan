@@ -127,8 +127,15 @@ public abstract class Joueur {
 
     public abstract void tour(Jeu jeu);
 
-    public int calculPoint() {
+    public int calculPoint(boolean ArmeeLaPlusPuissante,boolean RouteLaPlusLongue) {
         int res = point;
+        if (ArmeeLaPlusPuissante) {
+            res += 2;
+        }
+        if (RouteLaPlusLongue) {
+            res += 2;
+        }
+
         for (Carte carte : cartes) {
             if (carte instanceof PointDeVictoire){
                 res++;
@@ -202,7 +209,7 @@ public abstract class Joueur {
     public void addChevalier(Jeu jeu) {
         nombreChevalier++;
         if (nombreChevalier > 2 ) {
-            jeu.setChevalierLePlusPuissant(this);
+            jeu.setArmeeLaPlusPuissante(this);
         }
     }
 
