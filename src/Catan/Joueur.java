@@ -116,6 +116,8 @@ public abstract class Joueur {
 
     public abstract void tour(Jeu jeu);
 
+    public abstract boolean echange(Jeu jeu);
+
     public int calculPoint() {
         int res = point;
         for (Carte carte : cartes) {

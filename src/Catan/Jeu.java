@@ -194,6 +194,30 @@ public class Jeu {
         return true;
     }
 
+    public static boolean estChiffre(char c) {
+        try {
+            Integer.valueOf(c);
+            return true;
+        }
+        catch(Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean estSigne(char c) {
+        if(c == '-' || c == '+') {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean estRessource(String s) {
+        if(s.equals("bois") || s.equals("argile") || s.equals("laine") || s.equals("ble") || s.equals("roche")) {
+            return true;
+        }
+        return false;
+    }
+
     public static String scan() {
         Scanner sc = new Scanner(System.in);
         return sc.next();

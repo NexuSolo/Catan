@@ -421,28 +421,183 @@ public class Humain extends Joueur{
             if(reponse.equals("fin")) {
                 break;
             }
-            reponseToAction(jeu.getPlateau(), reponse);
+            reponseToAction(jeu, reponse);
         }
-
     }
 
-    private void reponseToAction(Plateau plateau, String reponse) {
+    public boolean echange(Jeu jeu) {
+        System.out.println("Voullez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
+        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        while (true) {
+            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            if(reponse.equals("annuler")) {
+                return false;
+            }
+            else if(reponse.equals("banque")) {
+                echangeBanque(jeu);
+                return true;
+            }
+            else if(reponse.equals("joueur")) {
+                echange(jeu);
+                return true;
+            }
+            else {
+                System.out.println("Action invalide");
+            }
+        }
+    }
+
+    public void echangeBanque(Jeu jeu) {
+        boolean generale = false;
+        boolean bois = false;
+        boolean argile = false;
+        boolean laine = false;
+        boolean ble = false;
+        boolean roche = false;
+        if(ports.size() == 0) {
+            System.out.println("Vous ne possedez pas de port, vous devez echanger 4 ressources du même type pour en obtenir une nouvelle.");
+        }
+        else {
+            for (Port port : ports) {
+                if(port.getRessource() == null) {
+                    generale = true;
+                    System.out.println("Vous possedez un port générale, vous devez echanger 3 ressources du même type pour en obtenir une nouvelle.");
+                }
+                else {
+                    if(port.getRessource().equals(Ressource.BOIS)) {
+                        bois = true;
+                        System.out.println("Vous possedez un port de bois, vous pouvez echanger 2 bois pour obtenir une nouvelle ressource");
+                    }
+                    else if(port.getRessource().equals(Ressource.ARGILE)) {
+                        argile = true;
+                        System.out.println("Vous possedez un port d'argile, vous pouvez echanger 2 d'argiles pour obtenir une nouvelle ressource");
+                    }
+                    else if(port.getRessource().equals(Ressource.LAINE)){
+                        laine = true;
+                        System.out.println("Vous possedez un port de laine, vous pouvez echanger 2 laines pour obtenir une nouvelle ressource");
+                    }
+                    else if(port.getRessource().equals(Ressource.BLE)){
+                        ble = true;
+                        System.out.println("Vous possedez un port de blé, vous pouvez echanger 2 blés pour obtenir une nouvelle ressource");
+                    }
+                    else if(port.getRessource().equals(Ressource.ROCHE)){
+                        roche = true;
+                        System.out.println("Vous possedez un port de roche, vous pouvez echanger 2 roches pour obtenir une nouvelle ressource");
+                    }
+                }
+            }
+        }
+        int boisnbr = 0;
+        int argilenbr = 0;
+        int lainenbr = 0;
+        int blenbr = 0;
+        int rochenbr = 0;
+        System.out.println("Choisissez les ressources a echanger. Exemple -1Bois ou +1Roche");
+        System.out.println("Ou effectuer l'échange en écrivant \"Echange\"");
+        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        int[] tab;
+        while(true){
+            System.out.println("Vous avez actuellement un echange de " + boisnbr + " bois, " + argilenbr + " argile, " + lainenbr + " laine, " + blenbr + " blé, " + rochenbr + " roche.");
+            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            if(reponse.equals("annuler")) {
+                return;
+            }
+            if(reponse.equals("echange")) {
+                break;
+            }
+            tab = ligneEchange(reponse);
+            if(tab != null) {
+                boisnbr += tab[0];
+                argilenbr += tab[1];
+                lainenbr += tab[2];
+                blenbr += tab[3];
+                rochenbr += tab[4];
+            }
+        }
+    }
+
+    public int[] ligneEchange(String reponse) {
+        int[] res = new int[5];
+        Ressource ressource = null;
+        int val = 0;
+        System.out.println("3" + reponse.substring(0, 3));
+        System.out.println("2" + reponse.substring(0, 2));
+        if(reponse.length() >= 5) {
+            if(Jeu.estNombre(reponse.substring(0, 3))) {
+                if(Jeu.estRessource(reponse.substring(3))) {
+                    ressource = stringToRessource(reponse.substring(3));
+                    val = Integer.valueOf(reponse.substring(0, 3));
+                }
+                else {
+                    System.out.println("Format invalide. Veuillez indiquer l'échange de chaque ressource 1 a la fois. Exemple -4Bois puis +1Ble");
+                    return null;
+                }
+            }
+            else if(Jeu.estNombre(reponse.substring(0, 3))) {
+                if(Jeu.estRessource(reponse.substring(2))) {
+                    ressource = stringToRessource(reponse.substring(2));
+                    val = Integer.valueOf(reponse.substring(0, 2));
+                }
+                else {
+                    System.out.println("Format invalide. Veuillez indiquer l'échange de chaque ressource 1 a la fois. Exemple -4Bois puis +1Ble");
+                    return null;
+                }
+            }
+            else {
+                System.out.println("Format invalide. Veuillez indiquer l'échange de chaque ressource 1 a la fois. Exemple -4Bois puis +1Ble");
+                return null;
+            }
+        }
+        else {
+            System.out.println("Format invalide. Veuillez indiquer l'échange de chaque ressource 1 a la fois. Exemple -4Bois puis +1Ble");
+            return null;
+        }
+        if(val < 0) {
+            if(!possede(ressource,val)) {
+                System.out.println("Vous ne possedez pas assez de ressources");
+                return null;
+            }
+        }
+        if(ressource.equals(Ressource.BOIS)) {
+            res[0] = val;
+        }
+        if(ressource.equals(Ressource.ARGILE)) {
+            res[1] = val;
+        }
+        if(ressource.equals(Ressource.LAINE)) {
+            res[2] = val;
+        }
+        if(ressource.equals(Ressource.BLE)) {
+            res[3] = val;
+        }
+        else {
+            res[4] = val;
+        }
+        return res;
+    }
+
+    public void echangeJouer(Jeu jeu) {
+        //TODO
+    }
+
+    private void reponseToAction(Jeu jeu, String reponse) {
         switch (reponse) {
             default:
                 System.out.println("Commande invalide");
                 break;
             case "colonie":
-                placerColonie(plateau, false);
+                placerColonie(jeu.getPlateau(), false);
                 break;
             case "route":
-                placerRoute(plateau, false, null);
+                placerRoute(jeu.getPlateau(), false, null);
                 break;
             case "ville":
-                placerVille(plateau);
+                placerVille(jeu.getPlateau());
                 break;
             case "développement":
                 break;
             case "echange":
+                echange(jeu);
                 break;
         }
     }
