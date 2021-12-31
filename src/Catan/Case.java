@@ -1,13 +1,13 @@
 package Catan;
 
 public class Case {
-    int numero;
-    int x;
-    int y;
-    Ressource ressource;
-    boolean voleur;
-    Chemin H, B, G, D;
-    Intersection HG, HD, BG, BD;
+    public final int numero;
+    public final int x;
+    public final int y;
+    public final Ressource ressource;
+    private boolean voleur;
+    private Chemin H, B, G, D;
+    private Intersection HG, HD, BG, BD;
 
     public Case(int numero, int x, int y, Ressource ressource, boolean voleur, Chemin H, Chemin B, Chemin G, Chemin D, Intersection HG, Intersection HD, Intersection BG, Intersection BD) {
         this.numero = numero;
@@ -25,6 +25,60 @@ public class Case {
         this.BD = BD;
     }
 
+
+    public void production() {
+        if (!voleur) {
+            String s2 = "La case " + x + ":" + y + " produit ";
+            String s = "";
+            if(HG.getColonie() != null) {
+                if (HG.getColonie() instanceof Ville) {
+                    HG.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + HG.getColonie().getJoueur() + " ");
+                }
+                else {
+                    HG.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + HG.getColonie().getJoueur() + " ");
+                }
+            }
+            if(HD.getColonie() != null) {
+                if (HD.getColonie() instanceof Ville) {
+                    HD.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + HD.getColonie().getJoueur() + " ");
+                }
+                else {
+                    HD.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + HD.getColonie().getJoueur() + " ");
+                }
+            }
+            if(BG.getColonie() != null) {
+                if (BG.getColonie() instanceof Ville) {
+                    BG.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + BG.getColonie().getJoueur() + " ");
+                }
+                else {
+                    BG.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + BG.getColonie().getJoueur() + " ");
+                }
+            }
+            if(BD.getColonie() != null) {
+                if (BD.getColonie() instanceof Ville) {
+                    BD.getColonie().getJoueur().addRessource(this.ressource,2);
+                    s+= ("2 " + ressource + " pour le joueur " + BD.getColonie().getJoueur() + " ");
+                }
+                else {
+                    BD.getColonie().getJoueur().addRessource(this.ressource,1);
+                    s+= ("1 " + ressource + " pour le joueur " + BD.getColonie().getJoueur() + " ");
+                }
+            }
+            if(!s.equals("")) {
+                System.out.println(s2 + s);
+            }
+        }
+        else {
+            System.out.println("Le voleur s'est emparé des ressources sur la case " + x + ":" + y +" !");
+        }
+
+    }
     // ●-------●-------●-------●-------●-------●-------●
     // |   2   |   3   |   4   |  15   |   6   |   7   |
     // | ROCHE |  BLÉ  | BOIS  |ARGILE | LAINE |DESERT |
@@ -148,6 +202,62 @@ public class Case {
                 System.out.print("   ●   ");
                 break;
         }
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public Ressource getRessource() {
+        return ressource;
+    }
+
+    public boolean getVoleur() {
+        return this.voleur;
+    }
+
+    public Chemin getH() {
+        return H;
+    }
+
+    public Chemin getB() {
+        return B;
+    }
+
+    public Chemin getG() {
+        return G;
+    }
+
+    public Chemin getD() {
+        return D;
+    }
+
+    public Intersection getHG() {
+        return HG;
+    }
+    
+    public Intersection getHD() {
+        return HD;
+    }
+
+    public Intersection getBG() {
+        return BG;
+    }
+    
+    public Intersection getBD() {
+        return BD;
+    }
+
+    public void setVoleur(boolean voleur) {
+        this.voleur = voleur;
     }
 
 }

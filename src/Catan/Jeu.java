@@ -10,15 +10,24 @@ import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
 public class Jeu {
-    LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
-    Joueur chevalierLePlusPuissant = null;
-    Joueur RouteLaPlusLongue = null;
-    Plateau plateau;
+    private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
+    private Joueur chevalierLePlusPuissant = null;
+    private Joueur RouteLaPlusLongue = null;
+    private Plateau plateau;
+    private Joueur vainqueur = null;
+
+    public Jeu(boolean b) {
+        joueurs.add(new Humain("Nex", "bleu"));
+        joueurs.add(new Humain("Miz", "vert"));
+        joueurs.add(new Humain("Mizaxus", "jaune"));
+        plateau = new Plateau(5);
+        jouer();
+    }
 
     public Jeu() {
         String reponse; 
         while (true) {
-            System.out.println("Voullez vous une interface graphique ? [Oui][Non]");
+            System.out.println("Voulez vous une interface graphique ? [Oui][Non]");
             reponse = MotToMotMinuscule(scan());
             if(reponse.equals("oui")) {
                 break;
@@ -28,7 +37,7 @@ public class Jeu {
             }
         }
         while (true) {
-            System.out.println("Combien voullez vous de joueur ? [3][4]");
+            System.out.println("Combien voulez vous de joueur ? [3][4]");
             reponse = MotToMotMinuscule(scan());
             if(reponse.equals("3")) {
                 break;
@@ -128,8 +137,7 @@ public class Jeu {
         while (true) {
             plateau = new Plateau(taille);
             plateau.affiche();
-
-            System.out.println("\n" +"Voullez-vous jouer sur ce plateau ? [Oui][Non]");
+            System.out.println("\n" +"Voulez-vous jouer sur ce plateau ? [Oui][Non]");
             while (true) {
                 reponse = MotToMotMinuscule(scan());
                 if(reponse.equals("oui")) {
@@ -143,8 +151,38 @@ public class Jeu {
                 break;
             }
         }
+        jouer();
     }
 
+    public void jouer() {
+        plateau.affiche();
+        for (int i = 0; i < joueurs.size(); i++) {
+            joueurs.get(i).placerColonie(plateau, true);
+        }
+        for (int i = joueurs.size() - 1; i >= 0; i--) {
+            joueurs.get(i).placerColonie(plateau, true);
+        }
+        while (!gagne()) {
+            for (Joueur joueur : joueurs) {
+                plateau.affiche();
+                joueur.tour(this);
+                if(gagne()) {
+                    break;
+                }
+            }
+        }
+        System.out.println(vainqueur.pseudo + "a gagné");
+    }
+
+    public boolean gagne() {
+        for (Joueur joueur : joueurs) {
+            if(joueur.calculPoint() == 10) {
+                vainqueur = joueur;
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static boolean estNombre(String s) {
         try {
@@ -156,6 +194,30 @@ public class Jeu {
         return true;
     }
 
+    public static boolean estChiffre(char c) {
+        try {
+            Integer.valueOf(c);
+            return true;
+        }
+        catch(Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean estSigne(char c) {
+        if(c == '-' || c == '+') {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean estRessource(String s) {
+        if(s.equals("bois") || s.equals("argile") || s.equals("laine") || s.equals("ble") || s.equals("roche")) {
+            return true;
+        }
+        return false;
+    }
+
     public static String scan() {
         Scanner sc = new Scanner(System.in);
         return sc.next();
@@ -165,8 +227,12 @@ public class Jeu {
         return s.toLowerCase();
     }
 
-    public static void main(String[] args) {
-        new Jeu();
+    public LinkedList<Joueur> getJoueurs() {
+        return joueurs;
+    }
+
+    public Plateau getPlateau() {
+        return plateau;
     }
     
 }
