@@ -1,5 +1,7 @@
 package Catan.Joueurs;
 
+import java.util.LinkedList;
+
 import Catan.*;
 
 public class Humain extends Joueur{
@@ -26,31 +28,14 @@ public class Humain extends Joueur{
             if(inter != null) {
                 if(colonieEstPlaceable(inter, premierTour)) {
                     if(!premierTour) {
-                        if(super.possede(Ressource.BOIS) && super.possede(Ressource.ARGILE) && super.possede(Ressource.BLE) && super.possede(Ressource.LAINE)) {
-                            super.removeRessource(Ressource.BOIS, 1);
-                            super.removeRessource(Ressource.ARGILE,1);
-                            super.removeRessource(Ressource.BLE,1);
-                            super.removeRessource(Ressource.LAINE,1);
-                        }
-                        else {
-                            System.out.print("Vous n'avez pas les ressources nécessaire. Il vous manque");
-                            if(!super.possede(Ressource.BOIS)) {
-                                System.out.print(" [BOIS]");
-                            }
-                            if(!super.possede(Ressource.ARGILE)) {
-                                System.out.print(" [ARGILE]");
-                            }
-                            if(!super.possede(Ressource.BLE)) {
-                                System.out.print(" [BLE]");
-                            }
-                            if(!super.possede(Ressource.LAINE)) {
-                                System.out.print(" [LAINE]");
-                            }
-                            System.out.println();
-                            return false;
-                        }
+                        super.removeRessource(Ressource.BOIS, 1);
+                        super.removeRessource(Ressource.ARGILE,1);
+                        super.removeRessource(Ressource.BLE,1);
+                        super.removeRessource(Ressource.LAINE,1);
                     }
                     inter.setColonie(new Colonie(this));
+                    nombreColonies++;
+                    point++;
                     System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
                     if(inter.port != null) {
                         if(inter.port.getRessource() == null) {
@@ -76,7 +61,6 @@ public class Humain extends Joueur{
                     if(premierTour) {
                         placerRoute(plateau, true, inter);
                     }
-                    point++;
                     return true;
                 }
                 else {
@@ -151,21 +135,8 @@ public class Humain extends Joueur{
             if(chemin != null) {
                 if(routeEstPlaceable(chemin)) {
                     if(!gratuit) {
-                        if(super.possede(Ressource.BOIS) && super.possede(Ressource.ARGILE)) {
-                            super.removeRessource(Ressource.BOIS, 1);
-                            super.removeRessource(Ressource.ARGILE,1);
-                        }
-                        else {
-                            System.out.print("Vous n'avez pas les ressources nécessaire. Il vous manque");
-                            if(!super.possede(Ressource.BOIS)) {
-                                System.out.print(" [BOIS]");
-                            }
-                            if(!super.possede(Ressource.ARGILE)) {
-                                System.out.print(" [ARGILE]");
-                            }
-                            System.out.println();
-                            return false;
-                        }
+                        super.removeRessource(Ressource.BOIS, 1);
+                        super.removeRessource(Ressource.ARGILE,1);
                     }
                     chemin.setRoute(this);
                     plateau.affiche();
@@ -180,6 +151,10 @@ public class Humain extends Joueur{
     }
 
     public boolean placerVille(Plateau plateau) {
+        if(nombreVilles >= 4) {
+            System.out.println("Le nombre maximum de ville est de 4.");
+            return false;
+        }
         System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while(true) {
@@ -192,10 +167,12 @@ public class Humain extends Joueur{
                 if(inter.getColonie() != null) {
                     if(inter.getColonie().getJoueur().equals(this)) {
                         if(!(inter.getColonie() instanceof Ville)) {
-                            //removeRessource(Ressource.ROCHE, 3);
-                            //removeRessource(Ressource.BLE, 2);
+                            removeRessource(Ressource.ROCHE, 3);
+                            removeRessource(Ressource.BLE, 2);
                             inter.setColonie(new Ville(this));
                             System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                            nombreVilles++;
+                            nombreColonies--;
                             point++;
                             return true;
                         }
@@ -416,7 +393,20 @@ public class Humain extends Joueur{
         jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
         while (true) {
             afficheRessource();
-            System.out.println(this + " Quelle action voulez vous faire ? [Colonie] [Route] [Ville] [Développement] [Echange] [Fin]");
+            System.out.print(this + ", quelle action voulez vous faire ?");
+            if(possedeRessourcesRoute().size() == 0) {
+                System.out.print(" [Route]");
+            }
+            if(possedeRessourcesColonie().size() == 0) {
+                System.out.print(" [Colonie]");
+            }
+            if(possedeRessourcesVille().size() == 0){
+                System.out.print(" [Ville]");
+            }
+            if(possedeRessourcesDeveloppement().size() == 0) {
+                System.out.print(" [Développement]");
+            }
+            System.out.println(" [Echange] [Fin]");
             String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
             if(reponse.equals("fin")) {
                 break;
@@ -912,20 +902,62 @@ public class Humain extends Joueur{
     }
 
     private void reponseToAction(Jeu jeu, String reponse) {
+        LinkedList<Ressource> l;
         switch (reponse) {
             default:
                 System.out.println("Commande invalide");
                 break;
             case "colonie":
-                placerColonie(jeu.getPlateau(), false);
+                l = possedeRessourcesColonie();
+                if(l.size() == 0) {
+                    placerColonie(jeu.getPlateau(), false);
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
             case "route":
-                placerRoute(jeu.getPlateau(), false, null);
+                l = possedeRessourcesRoute();
+                if(l.size() == 0) {
+                    placerRoute(jeu.getPlateau(), false, null);
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
             case "ville":
-                placerVille(jeu.getPlateau());
+                l = possedeRessourcesVille();
+                if(l.size() == 0) {
+                    placerVille(jeu.getPlateau());
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
-            case "développement":
+            case "developpement":
+                l = possedeRessourcesDeveloppement();
+                if(l.size() == 0) {
+                    //TODO fonction qui appele piocher carte
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
             case "echange":
                 echange(jeu);
