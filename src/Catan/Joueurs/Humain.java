@@ -58,7 +58,7 @@ public class Humain extends Joueur{
                             ports.add(inter.port);
                         }
                     }
-                    plateau.affiche();
+                    jeu.getPlateau().affiche();
                     if(premierTour) {
                         placerRoute(jeu, true, inter);
                     }
@@ -924,7 +924,7 @@ public class Humain extends Joueur{
             case "colonie":
                 l = possedeRessourcesColonie();
                 if(l.size() == 0) {
-                    placerColonie(jeu.getPlateau(), false);
+                    placerColonie(jeu, false);
                 }
                 else {
                     System.out.print("Il vous manque ");
@@ -937,7 +937,7 @@ public class Humain extends Joueur{
             case "route":
                 l = possedeRessourcesRoute();
                 if(l.size() == 0) {
-                    placerRoute(jeu.getPlateau(), false, null);
+                    placerRoute(jeu, false, null);
                 }
                 else {
                     System.out.print("Il vous manque ");
@@ -961,18 +961,31 @@ public class Humain extends Joueur{
                 }
                 break;
             case "developpement":
-                l = possedeRessourcesDeveloppement();
-                if(l.size() == 0) {
-                    //TODO fonction qui appele piocher carte
+            String rep = "";
+            while (true) {
+                System.out.println("Souhaitez vous [acheter] ou [utiliser] une carte ?");
+                rep = Jeu.scan();
+                if (rep.equals("annuler")) {
+                    return;
+                }
+                else if(rep.equals("acheter")) {
+                    achatDeveloppement(jeu.getPlateau());
+                    afficheCartes();
+                    return;
+                }
+                else if (rep.equals("utiliser")) {
+                    if(cartesUtilisables){
+                        utiliserCarte(jeu);
+                    } 
+                    else {
+                        System.out.println("Vous ne pouvez pas utiliser de carte ce tour ci.");
+                    }
+                    return;
                 }
                 else {
-                    System.out.print("Il vous manque ");
-                    for (Ressource ressource : l) {
-                        System.out.print("[" + ressource + "] ");
-                    }
-                    System.out.println();
+                    System.out.println("Commande incorrecte");       
                 }
-                break;
+            }
             case "echange":
                 echange(jeu);
                 break;

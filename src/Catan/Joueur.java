@@ -18,7 +18,7 @@ public abstract class Joueur {
     public int nombreColonies = 0;
     public int nombreVilles = 0;
     private int nombreChevalier = 0;
-    private LinkedList<Port> ports;
+    protected LinkedList<Port> ports = new LinkedList<Port>();
 
     public Joueur(String pseudo, String couleur) {
         this.pseudo = pseudo;
@@ -196,7 +196,7 @@ public abstract class Joueur {
 
     public abstract boolean echange(Jeu jeu);
 
-    public int calculPoint() {
+    public int calculPoint(boolean ArmeeLaPlusPuissante,boolean RouteLaPlusLongue) {
         int res = point;
         if (ArmeeLaPlusPuissante) {
             res += 2;
