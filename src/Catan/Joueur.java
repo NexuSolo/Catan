@@ -9,7 +9,7 @@ public abstract class Joueur {
     public final String pseudo;
     protected LinkedList<Ressource> ressources = new LinkedList<Ressource>();
     private LinkedList<Carte> cartes = new LinkedList<Carte>();
-    protected int point;
+    protected int point = 0;
     public int nombreColonies = 0;
     public int nombreVilles = 0;
     protected LinkedList<Port> ports = new LinkedList<Port>();
@@ -222,6 +222,10 @@ public abstract class Joueur {
     public LinkedList<Ressource> getRessources() {
         return ressources;
     }
+
+    public LinkedList<Carte> getCartes() {
+        return cartes;
+    }
     
     public String getPseudo() {
         return pseudo;
@@ -229,10 +233,6 @@ public abstract class Joueur {
 
     public int getPoint() {
         return point;
-    }
-
-    public void setPoint(int point) {
-        this.point = point;
     }
 
     @Override
