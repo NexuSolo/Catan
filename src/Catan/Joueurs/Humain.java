@@ -568,7 +568,7 @@ public class Humain extends Joueur{
                     System.out.println("Vous avez gagné " + ressources[4] + " roche");
                 }
                 else {
-                    if(ressources[3] != 0) {
+                    if(ressources[4] != 0) {
                         removeRessource(Ressource.ROCHE, Math.abs(ressources[4]));
                         System.out.println("Vous avez échangé " + Math.abs(ressources[4]) + " roche");
                     }
