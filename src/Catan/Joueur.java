@@ -58,6 +58,9 @@ public abstract class Joueur {
     }
 
     public boolean possede(Ressource ressource,int nombre){
+        if(nombre < 1) {
+            return true;
+        }
         for(Ressource r : ressources){
             if (r == ressource){
                 nombre--;
@@ -71,6 +74,68 @@ public abstract class Joueur {
 
     public boolean possede(Ressource ressource){
         return possede(ressource, 1);
+    }
+
+    public LinkedList<Ressource> possedeRessourcesRoute() {
+        LinkedList<Ressource> res = new LinkedList<Ressource>();
+        if(!possede(Ressource.BOIS)) {
+            res.add(Ressource.BOIS);
+        }
+        if(!possede(Ressource.ARGILE)) {
+            res.add(Ressource.ARGILE);
+        }
+        return res;
+    }
+
+    public LinkedList<Ressource> possedeRessourcesColonie() {
+        LinkedList<Ressource> res = new LinkedList<Ressource>();
+        if(!possede(Ressource.BOIS)) {
+            res.add(Ressource.BOIS);
+        }
+        if(!possede(Ressource.ARGILE)) {
+            res.add(Ressource.ARGILE);
+        }
+        if(!possede(Ressource.LAINE)) {
+            res.add(Ressource.LAINE);
+        }
+        if(!possede(Ressource.BLE)) {
+            res.add(Ressource.BLE);
+        }
+        return res;
+    }
+
+    public LinkedList<Ressource> possedeRessourcesVille() {
+        LinkedList<Ressource> res = new LinkedList<Ressource>();
+        if(!possede(Ressource.BLE,2)) {
+            res.add(Ressource.BLE);
+            if(!possede(Ressource.BLE)) {
+                res.add(Ressource.BLE);
+            }
+        }
+        if(!possede(Ressource.ROCHE,3)) {
+            res.add(Ressource.ROCHE);
+            if(!possede(Ressource.ROCHE,2)) {
+                res.add(Ressource.ROCHE);
+                if(!possede(Ressource.ROCHE)) {
+                    res.add(Ressource.ROCHE);
+                }
+            }
+        }
+        return res;
+    }
+
+    public LinkedList<Ressource> possedeRessourcesDeveloppement() {
+        LinkedList<Ressource> res = new LinkedList<Ressource>();
+        if(!possede(Ressource.LAINE)) {
+            res.add(Ressource.LAINE);
+        }
+        if(!possede(Ressource.BLE)) {
+            res.add(Ressource.BLE);
+        }
+        if(!possede(Ressource.ROCHE)) {
+            res.add(Ressource.ROCHE);
+        }
+        return res;
     }
 
     public void addRessource(Ressource ressource,int nombre) {
@@ -129,7 +194,9 @@ public abstract class Joueur {
 
     public abstract void tour(Jeu jeu);
 
-    public int calculPoint(boolean ArmeeLaPlusPuissante,boolean RouteLaPlusLongue) {
+    public abstract boolean echange(Jeu jeu);
+
+    public int calculPoint() {
         int res = point;
         if (ArmeeLaPlusPuissante) {
             res += 2;

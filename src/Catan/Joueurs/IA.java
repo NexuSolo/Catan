@@ -41,5 +41,11 @@ public class IA extends Joueur{
         cartesUtilisables();
         
     }
+
+    @Override
+    public boolean echange(Jeu jeu) {
+        // TODO Auto-generated method stub
+        return false;
+    }
     
 }

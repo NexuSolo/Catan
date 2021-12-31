@@ -15,6 +15,11 @@ public class Intersection {
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_YELLOW = "\u001B[33m";
 
+    public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+    public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+    
     public Intersection(int x, int y) {
         this.x = x;
         this.y = y;
@@ -93,16 +98,36 @@ public class Intersection {
             return "?";
         }
         else if(colonie.joueur.couleur.equals(Color.BLUE)) {
-            return ANSI_BLUE + "●" + ANSI_RESET;
+            if(colonie instanceof Ville) {
+                return ANSI_BLUE_BACKGROUND + "●" + ANSI_RESET;
+            }
+            else {
+                return ANSI_BLUE + "●" + ANSI_RESET;
+            }
         }
         else if(colonie.joueur.couleur.equals(Color.RED)) {
-            return ANSI_RED + "●" + ANSI_RESET;
+            if(colonie instanceof Ville) {
+                return ANSI_RED_BACKGROUND + "●" + ANSI_RESET;
+            }
+            else {
+                return ANSI_RED + "●" + ANSI_RESET;
+            }
         }
         else if(colonie.joueur.couleur.equals(Color.YELLOW)) {
-            return ANSI_YELLOW + "●" + ANSI_RESET;
+            if(colonie instanceof Ville) {
+                return ANSI_YELLOW_BACKGROUND + "●" + ANSI_RESET;
+            }
+            else {
+                return ANSI_YELLOW + "●" + ANSI_RESET;
+            }
         }
         else if(colonie.joueur.couleur.equals(Color.GREEN)) {
-            return ANSI_GREEN + "●" + ANSI_RESET;
+            if(colonie instanceof Ville) {
+                return ANSI_GREEN_BACKGROUND + "●" + ANSI_RESET;
+            }
+            else {
+                return ANSI_GREEN + "●" + ANSI_RESET;
+            }
         }
         return "ERREUR INTERSECTION"; // code qui ne peut s'executer
     }

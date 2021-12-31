@@ -9,6 +9,6 @@ import java.awt.Color;
 public class Test {
 
     public static void main(String[] args) {
-    Jeu j = new Jeu(1);
+        Jeu j = new Jeu(true);
     }
 }
