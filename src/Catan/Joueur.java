@@ -13,6 +13,8 @@ public abstract class Joueur {
     private LinkedList<Carte> cartes = new LinkedList<Carte>();
     protected boolean cartesUtilisables = true;
     protected int point;
+    protected LinkedList<Chemin>routes = new LinkedList<>();
+    private  int tailleRoute = 0;
     public int nombreColonies = 0;
     public int nombreVilles = 0;
     private int nombreChevalier = 0;
@@ -117,9 +119,9 @@ public abstract class Joueur {
         cartes.remove(e);
     }
 
-    public abstract boolean placerColonie(Plateau plateau,boolean premierTour);
+    public abstract boolean placerColonie(Jeu jeu,boolean premierTour);
 
-    public abstract boolean placerRoute(Plateau plateau, boolean gratuit, Intersection premierTour);
+    public abstract boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour);
 
     public abstract void defausseVoleur();
 
@@ -307,4 +309,37 @@ public abstract class Joueur {
         cartesUtilisables = true;
     }
 
+    public void addRoute(Chemin c){
+        routes.add(c);
+    }
+
+    public void setTailleRoute(Jeu jeu){
+        //TODO : Appel dès que route placée
+        LinkedList<Integer> tailleRoute = new LinkedList<Integer>();
+        LinkedList<Chemin> cheminParcourus = new LinkedList<>();
+        LinkedList<Intersection> parc = new LinkedList<>();
+        for(Chemin c : routes) {
+            cheminParcourus.clear();
+            parc.clear();
+            tailleRoute.add(c.tailleRouteMax(this, cheminParcourus,parc));
+        }
+        if (tailleRoute.size() == 0) {
+            this.tailleRoute = 0;
+        }
+        int max = 0;
+        for (Integer i : tailleRoute) {
+            if (i > max) {
+                max = i;
+            }
+        }
+        this.tailleRoute = max;
+        if (this.tailleRoute > 4) {
+            jeu.setRouteLaPlusLongue(this);
+        }
+        
+    }
+
+    public int getTailleRoute() {
+        return tailleRoute;
+    }
 }

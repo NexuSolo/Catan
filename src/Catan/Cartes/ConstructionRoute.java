@@ -8,8 +8,8 @@ public class ConstructionRoute extends Carte{
 
     @Override
     public boolean utiliser(Joueur j,Jeu jeu) {
-        j.placerRoute(jeu.getPlateau(),true,null);
-        j.placerRoute(jeu.getPlateau(),true,null);
+        j.placerRoute(jeu,true,null);
+        j.placerRoute(jeu,true,null);
         return true;
     }
     
