@@ -13,13 +13,13 @@ public class IA extends Joueur{
     }
 
     @Override
-    public boolean placerColonie(Plateau plateau, boolean premierTour) {
+    public boolean placerColonie(Jeu jeu, boolean premierTour) {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean placerRoute(Plateau plateau, boolean gratuit, Intersection premierTour) {
+    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour) {
         // TODO Auto-generated method stub
         return false;
     }

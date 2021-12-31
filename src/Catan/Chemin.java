@@ -133,6 +133,21 @@ public class Chemin {
 
     }
 
+    public int tailleRouteMax(Joueur j,LinkedList<Chemin> cheminParcourus,LinkedList<Intersection> parc){
+        if (cheminParcourus.contains(this)) {
+            return 0;
+        } 
+        else {
+                cheminParcourus.add(this);
+                if (route == j) {
+                    return Math.max(intersection1.tailleRouteMax(j, cheminParcourus,parc),intersection2.tailleRouteMax(j, cheminParcourus,parc))+1;
+                }
+                else {
+                    return 0;
+                }
+            }
+    }
+
     public Intersection getIntersection1() {
         return intersection1;
     }

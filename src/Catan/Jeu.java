@@ -31,6 +31,8 @@ public class Jeu {
             joueurs.get(0).addRessource(Ressource.LAINE, 20);
             joueurs.get(0).addRessource(Ressource.ROCHE, 20);
             joueurs.get(0).addRessource(Ressource.BLE, 20);
+            joueurs.get(0).addRessource(Ressource.BOIS, 20);
+            joueurs.get(0).addRessource(Ressource.ARGILE, 20);
             plateau = new Plateau(5);
             jouer();
             break;
@@ -42,6 +44,10 @@ public class Jeu {
             joueurs.get(1).addRessource(Ressource.LAINE, 20);
             joueurs.get(1).addRessource(Ressource.ROCHE, 20);
             joueurs.get(1).addRessource(Ressource.BLE, 20);
+            joueurs.get(1).addRessource(Ressource.BOIS, 20);
+            joueurs.get(1).addRessource(Ressource.ARGILE, 20);
+ joueurs.get(0).addRessource(Ressource.BOIS, 20);
+            joueurs.get(0).addRessource(Ressource.ARGILE, 20);
 
             plateau = new Plateau(5);
             jouer();
@@ -182,10 +188,10 @@ public class Jeu {
     public void jouer() {
         plateau.affiche();
         for (int i = 0; i < joueurs.size(); i++) {
-            joueurs.get(i).placerColonie(plateau, true);
+            joueurs.get(i).placerColonie(this, true);
         }
         for (int i = joueurs.size() - 1; i >= 0; i--) {
-            joueurs.get(i).placerColonie(plateau, true);
+            joueurs.get(i).placerColonie(this, true);
         }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
@@ -238,8 +244,16 @@ public class Jeu {
 
     public void setArmeeLaPlusPuissante(Joueur j) {
         if (ArmeeLaPlusPuissante == null || j.getNombreChevalier() > ArmeeLaPlusPuissante.getNombreChevalier() ){
+            System.out.println(j + " = Nvx NBC");
            ArmeeLaPlusPuissante = j;
         } 
+    }
+
+    public void setRouteLaPlusLongue(Joueur j) {
+        if(routeLaPlusLongue == null || j.getTailleRoute() > routeLaPlusLongue.getTailleRoute() ){
+            System.out.println(j + " = Nvx RPL");
+            routeLaPlusLongue = j;
+        }
     }
 
    
