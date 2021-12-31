@@ -6,11 +6,27 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import Catan.Cartes.*;
+
 
 public class Plateau {
     Case[][] cases;
     Map<String,LinkedList<Case>> valDe = new HashMap<String,LinkedList<Case>>();
     Case voleur;
+    private LinkedList<Carte> cartes = new LinkedList<Carte>();{
+        for (int i = 0; i < 14; i++) {
+            cartes.add(new Chevalier());
+        }
+        for (int i = 0; i < 5; i++) {
+            cartes.add(new PointDeVictoire());
+        }
+        for (int i = 0; i < 2; i++) {
+            cartes.add(new Monopole());
+            cartes.add(new ConstructionRoute());
+            cartes.add(new Invention());
+        }        
+    }
+
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -219,7 +235,7 @@ public class Plateau {
     }
 
     public void deplaceVoleur(Joueur j) {
-        System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur "+j.pseudo);
+        System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur "+j);
         j.deplaceVoleur(this);
         volRessource(j);
     }
@@ -375,6 +391,15 @@ public class Plateau {
         voleur.setVoleur(false);
         c.setVoleur(true);
         this.voleur = c;
+    }
+
+    public LinkedList<Carte> getCartes() {
+        return cartes;
+    }
+    public void afficheCartes(){
+        for(Carte c : cartes) {
+            System.out.println(c);
+        }
     }
     
 }

@@ -3,6 +3,7 @@ package Catan.Joueurs;
 import java.util.LinkedList;
 
 import Catan.*;
+import Catan.Cartes.*;
 
 public class Humain extends Joueur{
 
@@ -10,7 +11,7 @@ public class Humain extends Joueur{
         super(pseudo, color);
     }
 
-    public boolean placerColonie(Plateau plateau, boolean premierTour) {
+    public boolean placerColonie(Jeu jeu, boolean premierTour) {
         if(nombreColonies >= 5) {
             System.out.println("Le nombre maximum de colonie est de 5.");
             return false;
@@ -24,7 +25,7 @@ public class Humain extends Joueur{
             if(Jeu.MotToMotMinuscule(reponse).equals("annuler") && !premierTour) {
                 return false;
             }
-            Intersection inter = coordonéesToIntersection(plateau, reponse);
+            Intersection inter = coordonéesToIntersection(jeu.getPlateau(), reponse);
             if(inter != null) {
                 if(colonieEstPlaceable(inter, premierTour)) {
                     if(!premierTour) {
@@ -59,7 +60,7 @@ public class Humain extends Joueur{
                     }
                     plateau.affiche();
                     if(premierTour) {
-                        placerRoute(plateau, true, inter);
+                        placerRoute(jeu, true, inter);
                     }
                     return true;
                 }
@@ -76,7 +77,7 @@ public class Humain extends Joueur{
         }
     }
 
-    public boolean placerRoute(Plateau plateau, boolean gratuit, Intersection premierTour) {
+    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour) {
         if(premierTour != null) {
             System.out.print("Placer une route a coté de votre nouvelle colonie en x = " + premierTour.getX() + " y = " + premierTour.getY() + ". ");
             if(premierTour.getCheminH() != null) {
@@ -97,41 +98,51 @@ public class Humain extends Joueur{
                 if(premierTour.getCheminH() != null && reponse.equals("h")) {
                     if(routeEstPlaceable(premierTour.getCheminH())) {
                         premierTour.getCheminH().setRoute(this);
-                        plateau.affiche();
+                        addRoute(premierTour.getCheminH());
+                        setTailleRoute(jeu);
+                        jeu.getPlateau().affiche();
                         return true;
                     }
                 }
                 else if(premierTour.getCheminB() != null && reponse.equals("b")) {
                     if(routeEstPlaceable(premierTour.getCheminB())) {
                         premierTour.getCheminB().setRoute(this);
-                        plateau.affiche();
+                        addRoute(premierTour.getCheminB());
+                        setTailleRoute(jeu);
+                        jeu.getPlateau().affiche();
                         return true;
                     }
                 }
                 else if(premierTour.getCheminG() != null && reponse.equals("g")) {
                     if(routeEstPlaceable(premierTour.getCheminG())) {
                         premierTour.getCheminG().setRoute(this);
-                        plateau.affiche();
+                        addRoute(premierTour.getCheminG());
+                        setTailleRoute(jeu);
+                        jeu.getPlateau().affiche();
                         return true;
                     }
                 }
                 else if(premierTour.getCheminD() != null && reponse.equals("d")) {
                     if(routeEstPlaceable(premierTour.getCheminD())) {
                         premierTour.getCheminD().setRoute(this);
-                        plateau.affiche();
+                        addRoute(premierTour.getCheminD());
+                        setTailleRoute(jeu);
+                        jeu.getPlateau().affiche();
                         return true;
                     }
                 }
             }
         }
         System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
-        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        if (!gratuit) {
+            System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+        }
         while (true) {
             String reponse = Jeu.scan();
-            if(Jeu.MotToMotMinuscule(reponse).equals("annuler")) {
+            if(Jeu.MotToMotMinuscule(reponse).equals("annuler") && !gratuit) {
                 return false;
             }
-            Chemin chemin = coordonéesToChemin(plateau, reponse);
+            Chemin chemin = coordonéesToChemin(jeu.getPlateau(), reponse);
             if(chemin != null) {
                 if(routeEstPlaceable(chemin)) {
                     if(!gratuit) {
@@ -139,7 +150,9 @@ public class Humain extends Joueur{
                         super.removeRessource(Ressource.ARGILE,1);
                     }
                     chemin.setRoute(this);
-                    plateau.affiche();
+                    addRoute(chemin);
+                    setTailleRoute(jeu);
+                    jeu.getPlateau().affiche();
                     System.out.println("Vous avez placer une route en x = " + ", y = "); //TODO
                     return true;
                 }
@@ -390,6 +403,7 @@ public class Humain extends Joueur{
     
     @Override
     public void tour(Jeu jeu) {
+        cartesUtilisables();
         jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
         while (true) {
             afficheRessource();
@@ -964,5 +978,47 @@ public class Humain extends Joueur{
                 break;
         }
     }
+
+    public void utiliserCarte(Jeu jeu){
+        Carte utilisee = null;
+        while(utilisee == null ) {
+            System.out.println("Quelle carte voulez vous utiliser ? Ou écrivez \"Annuler\" pour revenir en arrière.");
+            afficheCartes();
+            String reponse = Jeu.scan();
+            if (reponse.toLowerCase().equals("annuler")){
+                return;
+            }
+            utilisee = stringToCarte(reponse);
+            if (utilisee == null) {
+                System.out.println("Carte Inexistante");
+            } 
+            else if(!possede(utilisee) ) {
+                utilisee = null;
+            }
+        }
+        if (utilisee.utiliser(this, jeu)) {
+            removeCarte(utilisee);
+            cartesInutilisables();
+        }
+    }
+
+
+    public Carte stringToCarte(String reponse) {
+        switch(reponse.toLowerCase()) {
+            default : return null;
+            case "chevalier" : return new Chevalier();
+            case "pointdevictoire" : return new PointDeVictoire();
+            case "point de victoire" : return new PointDeVictoire();
+            case "monopole" : return new Monopole();
+            case "invention" : return new Invention();
+            case "construction route" : return new ConstructionRoute();
+            case "constructionroute" : return new ConstructionRoute();
+        }
+    }
+
+  
+
+
+
 
 }

@@ -11,11 +11,11 @@ import Catan.Joueurs.IA;
 
 public class Jeu {
     private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
-    private Joueur chevalierLePlusPuissant = null;
-    private Joueur RouteLaPlusLongue = null;
+    private Joueur ArmeeLaPlusPuissante = null;
+    private Joueur routeLaPlusLongue = null;
     private Plateau plateau;
     private Joueur vainqueur = null;
-
+ 
     public Jeu(boolean b) {
         joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
@@ -23,6 +23,37 @@ public class Jeu {
         plateau = new Plateau(5);
         jouer();
     }
+
+    public Jeu(int i) {
+        switch (i) {
+            default : break;
+            case 1 : joueurs.add(new Humain("Iruma","bleu"));
+            joueurs.get(0).addRessource(Ressource.LAINE, 20);
+            joueurs.get(0).addRessource(Ressource.ROCHE, 20);
+            joueurs.get(0).addRessource(Ressource.BLE, 20);
+            joueurs.get(0).addRessource(Ressource.BOIS, 20);
+            joueurs.get(0).addRessource(Ressource.ARGILE, 20);
+            plateau = new Plateau(5);
+            jouer();
+            break;
+            case 2 : joueurs.add(new Humain("Iruma","bleu"));
+            joueurs.add(new Humain("Ameri","rouge"));
+            joueurs.get(0).addRessource(Ressource.LAINE, 20);
+            joueurs.get(0).addRessource(Ressource.ROCHE, 20);
+            joueurs.get(0).addRessource(Ressource.BLE, 20);
+            joueurs.get(1).addRessource(Ressource.LAINE, 20);
+            joueurs.get(1).addRessource(Ressource.ROCHE, 20);
+            joueurs.get(1).addRessource(Ressource.BLE, 20);
+            joueurs.get(1).addRessource(Ressource.BOIS, 20);
+            joueurs.get(1).addRessource(Ressource.ARGILE, 20);
+ joueurs.get(0).addRessource(Ressource.BOIS, 20);
+            joueurs.get(0).addRessource(Ressource.ARGILE, 20);
+
+            plateau = new Plateau(5);
+            jouer();
+            break;
+        }
+    } 
 
     public Jeu() {
         String reponse; 
@@ -157,10 +188,10 @@ public class Jeu {
     public void jouer() {
         plateau.affiche();
         for (int i = 0; i < joueurs.size(); i++) {
-            joueurs.get(i).placerColonie(plateau, true);
+            joueurs.get(i).placerColonie(this, true);
         }
         for (int i = joueurs.size() - 1; i >= 0; i--) {
-            joueurs.get(i).placerColonie(plateau, true);
+            joueurs.get(i).placerColonie(this, true);
         }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
@@ -176,7 +207,7 @@ public class Jeu {
 
     public boolean gagne() {
         for (Joueur joueur : joueurs) {
-            if(joueur.calculPoint() == 10) {
+            if(joueur.calculPoint(joueur == ArmeeLaPlusPuissante,joueur == routeLaPlusLongue) >= 10) {
                 vainqueur = joueur;
                 return true;
             }
@@ -234,5 +265,21 @@ public class Jeu {
     public Plateau getPlateau() {
         return plateau;
     }
+
+    public void setArmeeLaPlusPuissante(Joueur j) {
+        if (ArmeeLaPlusPuissante == null || j.getNombreChevalier() > ArmeeLaPlusPuissante.getNombreChevalier() ){
+            System.out.println(j + " = Nvx NBC");
+           ArmeeLaPlusPuissante = j;
+        } 
+    }
+
+    public void setRouteLaPlusLongue(Joueur j) {
+        if(routeLaPlusLongue == null || j.getTailleRoute() > routeLaPlusLongue.getTailleRoute() ){
+            System.out.println(j + " = Nvx RPL");
+            routeLaPlusLongue = j;
+        }
+    }
+
+   
     
 }

@@ -1,6 +1,7 @@
 package Catan;
 
 import java.awt.Color;
+import java.util.LinkedList;
 
 public class Intersection {
     public final int x, y;
@@ -24,6 +25,48 @@ public class Intersection {
         this.y = y;
     }
 
+    public int tailleRouteMax(Joueur j,LinkedList<Chemin> cheminParcourus,LinkedList<Intersection> parc) {
+        int[] valeurs ={0,0,0,0};
+        if (parc.contains(this)){
+            return 0;
+        }
+        else {
+            parc.add(this);
+        }
+        if (colonie == null || colonie.joueur == j) {
+            if (cheminH != null && !cheminParcourus.contains(cheminH)) {
+                valeurs[0] = cheminH.tailleRouteMax(j, cheminParcourus, parc);
+            }
+            if (cheminG != null && !cheminParcourus.contains(cheminG)) {
+                valeurs[1] = cheminG.tailleRouteMax(j, cheminParcourus, parc);
+            }
+            if (cheminB != null && !cheminParcourus.contains(cheminB)) {
+                valeurs[2] = cheminB.tailleRouteMax(j, cheminParcourus, parc);
+            }
+            if (cheminD != null && !cheminParcourus.contains(cheminD)) {
+                valeurs[3] = cheminD.tailleRouteMax(j, cheminParcourus, parc);
+            }
+            int max = 0;
+            int max2 = 0;
+            for (int i = 0; i < valeurs.length; i++) {
+                if (valeurs[i] > max) {
+                    int tmp = max;
+                    max = valeurs[i];
+                    max2 = tmp;
+                } 
+                else if (valeurs[i] > max2) {
+                    max2 = valeurs[i];
+                }
+            }
+            return max;  
+        } 
+        else {
+            return 0;
+        }
+    
+
+    }
+
     public void afficheChemin() {
         if(this.cheminH != null) {
             System.out.println("h");
@@ -43,10 +86,10 @@ public class Intersection {
         /**
          * Regarder la prochaine intersection,
          *   --P--                         2 tirets P 2 tirets
-         *  /     \                 /  
+         *  /     \                 /
          * ?-------?-------?-------?
-         * 
-         * 
+         *
+         *
          */
         // if (port != null) {
         //     return "P";
