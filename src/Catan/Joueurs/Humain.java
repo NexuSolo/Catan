@@ -1,5 +1,7 @@
 package Catan.Joueurs;
 
+import java.util.LinkedList;
+
 import Catan.*;
 
 public class Humain extends Joueur{
@@ -416,7 +418,20 @@ public class Humain extends Joueur{
         jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
         while (true) {
             afficheRessource();
-            System.out.println(this + " Quelle action voulez vous faire ? [Colonie] [Route] [Ville] [Développement] [Echange] [Fin]");
+            System.out.print(this + ", quelle action voulez vous faire ?");
+            if(possedeRessourcesRoute().size() == 0) {
+                System.out.print(" [Route]");
+            }
+            if(possedeRessourcesColonie().size() == 0) {
+                System.out.print(" [Colonie]");
+            }
+            if(possedeRessourcesVille().size() == 0){
+                System.out.print(" [Ville]");
+            }
+            if(possedeRessourcesDeveloppement().size() == 0) {
+                System.out.print(" [Développement]");
+            }
+            System.out.println(" [Echange] [Fin]");
             String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
             if(reponse.equals("fin")) {
                 break;
@@ -912,20 +927,62 @@ public class Humain extends Joueur{
     }
 
     private void reponseToAction(Jeu jeu, String reponse) {
+        LinkedList<Ressource> l;
         switch (reponse) {
             default:
                 System.out.println("Commande invalide");
                 break;
             case "colonie":
-                placerColonie(jeu.getPlateau(), false);
+                l = possedeRessourcesColonie();
+                if(l.size() == 0) {
+                    placerColonie(jeu.getPlateau(), false);
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
             case "route":
-                placerRoute(jeu.getPlateau(), false, null);
+                l = possedeRessourcesRoute();
+                if(l.size() == 0) {
+                    placerRoute(jeu.getPlateau(), false, null);
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
             case "ville":
-                placerVille(jeu.getPlateau());
+                l = possedeRessourcesVille();
+                if(l.size() == 0) {
+                    placerVille(jeu.getPlateau());
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
-            case "développement":
+            case "developpement":
+                l = possedeRessourcesDeveloppement();
+                if(l.size() == 0) {
+                    //TODO fonction qui appele piocher carte
+                }
+                else {
+                    System.out.print("Il vous manque ");
+                    for (Ressource ressource : l) {
+                        System.out.print("[" + ressource + "] ");
+                    }
+                    System.out.println();
+                }
                 break;
             case "echange":
                 echange(jeu);
