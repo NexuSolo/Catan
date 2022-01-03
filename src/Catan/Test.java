@@ -5,10 +5,11 @@ import java.util.Random;
 import Catan.Joueurs.Humain;
 
 import java.awt.Color;
+import javax.swing.*;
 
 public class Test {
 
     public static void main(String[] args) {
-        Jeu j = new Jeu(true);
+        new Vue();
     }
 }
