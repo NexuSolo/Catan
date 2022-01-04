@@ -155,28 +155,24 @@ public class Vue extends JFrame {
                         if(x == 0) {
                             if(plateau.getCase(1, y).getHG().getPort() != null && plateau.getCase(1, y).getBG().getPort() != null) {
                                 pan.setImage(portG);
-                                System.out.println("Port 1 " + x + " " + y + "");
 
                             }
                         }
                         else if(y == 0) {
                             if(plateau.getCase(x, 1).getHG().getPort() != null && plateau.getCase(x, 1).getHD().getPort() != null) {
                                 pan.setImage(portH);
-                                System.out.println("Port 2 " + x + " " + y + "");
                                 
                             }
                         }
                         else if(y == plateau.getLength()) {
                             if(plateau.getCase(x, y - 1).getBD().getPort() != null && plateau.getCase(x, y - 1).getBG().getPort() != null) {
                                 pan.setImage(portB);
-                                System.out.println("Port 3 " + x + " " + y + "");
 
                             }
                         }
                         else if(x == plateau.getLength()) {
                             if(plateau.getCase(x - 1, y).getHD().getPort() != null && plateau.getCase(x - 1, y).getBD().getPort() != null) {
                                 pan.setImage(portD);
-                                System.out.println("Port 4 " + x + " " + y + "");
 
                             }
                         }
@@ -230,7 +226,6 @@ public class Vue extends JFrame {
                     }
                     BorderLayout bl = new BorderLayout();
                     int tailleCroixX=90;
-                    System.out.println(jeu.getPlateau().getLength());
                     switch(jeu.getPlateau().getLength() -1) {
                         case 4 : tailleCroixX = 90;break;
                         case 5 : tailleCroixX = 66;break;
@@ -238,7 +233,6 @@ public class Vue extends JFrame {
                         case 7 : tailleCroixX = 49;break;
                         case 8 : tailleCroixX = 46;break;
                     }   
-                    System.out.println(tailleCroixX);
                     //90 66 55 49 46 
                     pan.setLayout(bl);
 
@@ -322,22 +316,109 @@ public class Vue extends JFrame {
         return null;
     }
 
-    public class IntersectionImage extends JPanel{
+    public class IntersectionImage extends JPanel implements MouseInputListener{
         Intersection intersection;
         
         public IntersectionImage(Intersection intersection){
             this.intersection = intersection;
             setBackground(intersection.intersectionToColor());
+            addMouseListener(this);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("x"+intersection.getX()+" y"+intersection.getY());
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
         }
 
     }
 
-    public class CheminImage extends JPanel{
+    public class CheminImage extends JPanel implements MouseInputListener{
         Chemin chemin;
         
         public CheminImage(Chemin chemin){
             this.chemin = chemin;
             setBackground(chemin.cheminToColor());
+            addMouseListener(this);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
         }
 
     }
