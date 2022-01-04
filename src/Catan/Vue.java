@@ -14,6 +14,12 @@ import java.io.IOException;
 import java.nio.Buffer;
 
 public class Vue extends JFrame {
+    JPanel plateau;
+    JPanel action;
+    JPanel stats;
+    JPanel ressource;
+    JPanel information;
+    JPanel model = new JPanel();
     Jeu jeu;
 
     public static BufferedImage bois40;
@@ -50,16 +56,43 @@ public class Vue extends JFrame {
         portB = ImageIO.read(new File("src/Catan/Images/PortB.png"));
         portG = ImageIO.read(new File("src/Catan/Images/PortG.png"));
         portD = ImageIO.read(new File("src/Catan/Images/PortD.png"));
+
         this.jeu = jeu;
-        this.setVisible(true);
-        setSize(1000,1000);
-        setResizable(false);
-        //setLayout(new GridLayout(4,4));
-        setLocationRelativeTo(this.getParent());
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.add(plateauToPanel(jeu.getPlateau()));
+        setSize(1600,939);
+        setResizable(false);
+        setVisible(true);
+        model.setLayout(null);
+        setLocationRelativeTo(this.getParent());
+
+        stats = new JPanel();
+        stats.setBackground(Color.BLACK);
+        stats.setBounds(0, 0, 1600, 200);
+
+        plateau = plateauToPanel(jeu.getPlateau());
+        plateau.setBounds(500, 200, 700, 700);
+
+        information = new JPanel();
+        information.setBackground(Color.RED);
+        information.setBounds(1200,202,400,696);
+
+        action = new JPanel();
+        action.setBackground(Color.GREEN);
+        action.setBounds(0,202,500,600);
+
+        ressource = new JPanel();
+        ressource.setBackground(Color.BLUE);
+        ressource.setBounds(0,802,500,96);
+
+        model.add(information);
+        model.add(stats);
+        model.add(plateau);
+        model.add(action);
+        model.add(ressource);
+
         jeu.getPlateau().affiche();
-        repaint();
+        add(model);
         revalidate();
     }
 
