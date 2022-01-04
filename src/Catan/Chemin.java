@@ -148,6 +148,13 @@ public class Chemin {
             }
     }
 
+    public Color cheminToColor(){
+        if(route == null) {
+            return new Color(255, 89, 0);
+        }
+        return route.couleur;
+    }
+
     public Intersection getIntersection1() {
         return intersection1;
     }
