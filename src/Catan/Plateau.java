@@ -401,20 +401,30 @@ public class Plateau {
             System.out.println(c);
         }
     }
-    // public Intersection getIntersection(int x,int y) {
-    //     if( x <= 0 || x > cases.length || y <= 0 || y > cases.length) {
-    //         System.out.println("Erreur coordonnées de l'intersection");
-    //         return null;
-    //     }
-    //     if ( x == cases.length ) {
-    //         if ( y < cases.length) {
-    //             return getCase(x-1,y).getHD();
-    //         }
-    //         else {
-
-    //         }
-    //     }
-    // }
+    public Intersection getIntersection(int x,int y) {
+        if( x <= 0 || x > cases.length || y <= 0 || y > cases.length) {
+            System.out.println("Erreur coordonnées de l'intersection");
+            return null;
+        }
+        if ( x == cases.length ) {
+            if ( y < cases.length) {
+                return getCase(x-1,y).getHD();
+            }
+            else {
+                return getCase(x-1,y-1).getBD();
+            }
+        }
+        if ( y == cases.length) {
+            if ( x < cases.length) {
+                return getCase(x,y-1).getBG();
+            }
+            else {
+                return getCase(x-1,y-1).getBD();
+            }
+        }
+        return getCase(x,y).getHG();
+    }
+    
     
     
 }

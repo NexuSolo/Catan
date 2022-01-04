@@ -20,7 +20,7 @@ public class Jeu {
         joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
         joueurs.add(new Humain("Mizaxus", "jaune"));
-        plateau = new Plateau(4);
+        plateau = new Plateau(8);
         //jouer();
     }
 
@@ -33,7 +33,7 @@ public class Jeu {
             joueurs.get(0).addRessource(Ressource.BLE, 20);
             joueurs.get(0).addRessource(Ressource.BOIS, 20);
             joueurs.get(0).addRessource(Ressource.ARGILE, 20);
-            plateau = new Plateau(5);
+            plateau = new Plateau(8);
             jouer();
             break;
             case 2 : joueurs.add(new Humain("Iruma","bleu"));

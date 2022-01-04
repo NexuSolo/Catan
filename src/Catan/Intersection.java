@@ -82,6 +82,13 @@ public class Intersection {
         }
     }
 
+    public Color intersectionToColor(){
+        if (colonie == null) {
+            return Color.BLACK;
+        }
+        return colonie.getJoueur().couleur;
+    }
+
     public String toString() {
         /**
          * Regarder la prochaine intersection,

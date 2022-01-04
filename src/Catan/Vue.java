@@ -229,21 +229,27 @@ public class Vue extends JFrame {
                         contenu.add(new JLabel(new ImageIcon(voleur)));
                     }
                     BorderLayout bl = new BorderLayout();
-                    int tailleCroixX = 108;
-                    int tailleCroixY = 110;
-                    // Valeur pour le 4,6,7,8 à faire
-                    // bl.setVgap(-10);
-                    // bl.setHgap(-10);
+                    int tailleCroixX=90;
+                    System.out.println(jeu.getPlateau().getLength());
+                    switch(jeu.getPlateau().getLength() -1) {
+                        case 4 : tailleCroixX = 90;break;
+                        case 5 : tailleCroixX = 66;break;
+                        case 6 : tailleCroixX = 55;break;
+                        case 7 : tailleCroixX = 49;break;
+                        case 8 : tailleCroixX = 46;break;
+                    }   
+                    System.out.println(tailleCroixX);
+                    //90 66 55 49 46 
                     pan.setLayout(bl);
 
                     // ORDRE : H B G D
                     JPanel h = new JPanel();
-                    h.setBackground(new Color(255, 89, 0));
+                    h.setBackground(jeu.getPlateau().getCase(x, y).getH().cheminToColor());
                     JPanel hgh = new JPanel();
                     JPanel hdh = new JPanel();
                     h.setLayout(new GridLayout(1,0,tailleCroixX,0));
-                    hdh.setBackground(Color.BLACK);
-                    hgh.setBackground(Color.BLACK);
+                    hgh.setBackground(jeu.getPlateau().getIntersection(x, y).intersectionToColor());
+                    hdh.setBackground(jeu.getPlateau().getIntersection(x+1, y).intersectionToColor());
                     h.add(hgh);
                     h.add(hdh);
 
@@ -255,30 +261,30 @@ public class Vue extends JFrame {
                         h.setPreferredSize(new Dimension(8,8));
                     }
                     JPanel b = new JPanel();
-                    b.setBackground(new Color(255, 89, 0));
-                    JPanel bgh = new JPanel();
-                    JPanel bdh = new JPanel();
+                    b.setBackground(jeu.getPlateau().getCase(x, y).getB().cheminToColor());
+                    JPanel bgh = new JPanel(); 
+                    JPanel bdh = new JPanel(); 
                     b.setLayout(new GridLayout(1,0,tailleCroixX,0));
-                    bdh.setBackground(Color.BLACK);
-                    bgh.setBackground(Color.BLACK);
+                    bgh.setBackground(jeu.getPlateau().getIntersection(x, y+1).intersectionToColor());
+                    bdh.setBackground(jeu.getPlateau().getIntersection(x+1, y+1).intersectionToColor());
                     b.add(bgh);
                     b.add(bdh);
                     pan.add(b, BorderLayout.SOUTH);
                     if (y < plateau.getLength() -1 ){
-                        b.setPreferredSize(new Dimension(4,4));
+                        b.setPreferredSize(new Dimension(10,4));
                     }
                     else {
                         b.setPreferredSize(new Dimension(8,8));
                     }
                     JPanel g = new JPanel();
                     JPanel hgv = new JPanel();
-                    JPanel bgv = new JPanel();
-                    g.setLayout(new GridLayout(0,1,0,tailleCroixY));
-                    hgv.setBackground(Color.BLACK);
-                    bgv.setBackground(Color.BLACK);
+                    JPanel bgv = new JPanel(); 
+                    g.setLayout(new GridLayout(0,1,0,tailleCroixX));
+                    hgv.setBackground(jeu.getPlateau().getIntersection(x, y).intersectionToColor());
+                    bgv.setBackground(jeu.getPlateau().getIntersection(x, y+1).intersectionToColor());
                     g.add(hgv);
                     g.add(bgv);
-                    g.setBackground(new Color(255, 89, 0));
+                    g.setBackground(jeu.getPlateau().getCase(x, y).getG().cheminToColor());
                     pan.add(g, BorderLayout.WEST);
                     if (x == 1) {
                         g.setPreferredSize(new Dimension(8,8));
@@ -287,12 +293,12 @@ public class Vue extends JFrame {
                         g.setPreferredSize(new Dimension(4,4));
                     }
                     JPanel d = new JPanel();
-                    d.setBackground(new Color(255, 89, 0));
-                    JPanel hdv = new JPanel();
+                    d.setBackground(jeu.getPlateau().getCase(x, y).getD().cheminToColor());
+                    JPanel hdv = new JPanel(); 
                     JPanel bdv = new JPanel();
-                    d.setLayout(new GridLayout(0,1,0,tailleCroixY));
-                    hdv.setBackground(Color.BLACK);
-                    bdv.setBackground(Color.BLACK);
+                    d.setLayout(new GridLayout(0,1,0,tailleCroixX));
+                    hdv.setBackground(jeu.getPlateau().getIntersection(x+1, y).intersectionToColor());
+                    bdv.setBackground(jeu.getPlateau().getIntersection(x+1, y+1).intersectionToColor());
                     d.add(hdv);
                     d.add(bdv);
                     pan.add(d, BorderLayout.EAST);
