@@ -15,7 +15,20 @@ import java.io.IOException;
 public class Vue extends JFrame {
     Jeu jeu;
 
+    public static BufferedImage bois40;
+    public static BufferedImage argile40;
+    public static BufferedImage laine40;
+    public static BufferedImage ble40;
+    public static BufferedImage roche40;
+    public static BufferedImage voleur;
+
     Vue(Jeu jeu) throws IOException {
+        bois40 = ImageIO.read(new File("src/Catan/Images/bois40-40.png"));
+        argile40 = ImageIO.read(new File("src/Catan/Images/argile40-40.png"));
+        laine40 = ImageIO.read(new File("src/Catan/Images/laine40-40.png"));
+        ble40 = ImageIO.read(new File("src/Catan/Images/ble40-40.png"));
+        roche40 = ImageIO.read(new File("src/Catan/Images/roche40-40.png"));
+        voleur = ImageIO.read(new File("src/Catan/Images/Voleur.png"));
         System.out.println("yo");
         this.jeu = jeu;
         this.setVisible(true);
@@ -25,6 +38,7 @@ public class Vue extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(plateauToPanel(jeu.getPlateau()));
         jeu.getPlateau().affiche();
+        revalidate();
     }
 
     public class RouteGraphique extends JPanel implements MouseInputListener {
@@ -75,11 +89,12 @@ public class Vue extends JFrame {
 
     public JPanel plateauToPanel(Plateau plateau) throws IOException {
         JPanel panel = new JPanel();
+        JPanel contenu = new JPanel();
         panel.setLayout(new GridLayout(plateau.getLength() + 1, plateau.getLength() + 1));
         for (int y = 0; y <= plateau.getLength(); y++) {
             for (int x = 0; x <= plateau.getLength(); x++) {
                 JPanel pan = new JPanel();
-                if(x == 0 || y == 0 || x == plateau.getLength() || y == plateau.getLength()) {
+                if(x == 0 || y == 0 || x == plateau.getLength() || y == plateau.getLength()) { // PORT + MER
                     if((x == 0 && y == 0) || (x == plateau.getLength() && y == plateau.getLength()) || (x == 0 && y == plateau.getLength()) || (x == plateau.getLength() && y == 0)) {
                         pan.setBackground(new Color(85,206,234));
                     }
@@ -118,32 +133,47 @@ public class Vue extends JFrame {
                 }
                 else {
                     Case c = plateau.getCase(x, y);
+                    contenu = new JPanel();
+                    contenu.setBackground(new Color(0, 0, 0, 0));
+                    contenu.setLayout(new GridLayout(5, 1, -15, -15));
                     if(c.ressource == null) {
                         pan.setBackground(new Color(254,231,122));
+                        contenu.add(new JLabel("Desert", SwingConstants.CENTER));
                     }
                     else {
                         switch (c.ressource) {
-                            default:
-                                pan.setBackground(new Color(254,231,122));
-                                break; //254 231 122
                             case BOIS: //123 56 42
                                 pan.setBackground(new Color(123,56,42));
+                                contenu.add(new JLabel(new ImageIcon(bois40)));
+                                contenu.add(new JLabel("Forêt", SwingConstants.CENTER));
                                 break;
                             case ARGILE: // 226 38 41
                                 pan.setBackground(new Color(226,38,41));
+                                contenu.add(new JLabel(new ImageIcon(argile40)));
+                                contenu.add(new JLabel("Carrière", SwingConstants.CENTER));
                                 break;
                             case BLE: // 234 204 54
                                 pan.setBackground(new Color(234,204,54));
-                                break;
-                            case ROCHE: // 143 141 127
-                                pan.setBackground(new Color(143,141,127));
+                                contenu.add(new JLabel(new ImageIcon(ble40)));
+                                contenu.add(new JLabel("Champ", SwingConstants.CENTER));
                                 break;
                             case LAINE: // 236 234 226
                                 pan.setBackground(new Color(236,234,226));
+                                contenu.add(new JLabel(new ImageIcon(laine40)));
+                                contenu.add(new JLabel("Enclos", SwingConstants.CENTER));
+                                break;
+                            case ROCHE: // 143 141 127
+                                pan.setBackground(new Color(143,141,127));
+                                contenu.add(new JLabel(new ImageIcon(roche40)));
+                                contenu.add(new JLabel("Mont", SwingConstants.CENTER));
                                 break;
                         }
+                        contenu.add(new JLabel(intToPoint(c.getNumero()), SwingConstants.CENTER));
+                        contenu.add(new JLabel(String.valueOf(c.getNumero()), SwingConstants.CENTER));
                     }
-                
+                    if(c.getVoleur()) {
+                        contenu.add(new JLabel(new ImageIcon(voleur)));
+                    }
                     pan.setLayout(new BorderLayout());
                     // ORDRE : H B G D
                     JPanel h = new JPanel();
@@ -184,14 +214,32 @@ public class Vue extends JFrame {
                     if (x < plateau.getLength() - 1){
                         d.setPreferredSize(new Dimension(4,4));
                     }
+                    pan.add(contenu);
                 }
-                BufferedImage image = ImageIO.read(new File("src/Catan/Images/ble.png"));
-                JLabel picLabel = new JLabel(new ImageIcon(image));
-                pan.add(picLabel);
+                // azer.add(new JLabel("●●●●●", SwingConstants.CENTER));
+                // azer.add(new JLabel("10", SwingConstants.CENTER));
+                // picLabel = new JLabel(new ImageIcon(image));
+                // azer.add(picLabel);
                 panel.add(pan);
             }
         }
         return panel;
+    }
+
+    public static String intToPoint(int i) {
+        switch (Math.abs(7 - i)) {
+            case 1:
+                return "●●●●●";
+            case 2: 
+                return "●●●●";
+            case 3:
+                return "●●●";
+            case 4:
+                return "●●";
+            case 5:
+                return "●";
+        }
+        return null;
     }
 
     public static void main(String[] args) throws IOException {
