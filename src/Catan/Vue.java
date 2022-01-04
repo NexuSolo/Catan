@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 
 public class Vue extends JFrame {
     Jeu jeu;
@@ -27,7 +28,10 @@ public class Vue extends JFrame {
     public static BufferedImage enclos;
     public static BufferedImage mont;
     public static BufferedImage desert;
-    public static BufferedImage eau;
+    public static BufferedImage portH;
+    public static BufferedImage portB;
+    public static BufferedImage portG;
+    public static BufferedImage portD;
 
     Vue(Jeu jeu) throws IOException {
         bois40 = ImageIO.read(new File("src/Catan/Images/bois40-40.png"));
@@ -42,7 +46,10 @@ public class Vue extends JFrame {
         enclos = ImageIO.read(new File("src/Catan/Images/Enclos.png"));
         mont = ImageIO.read(new File("src/Catan/Images/Mont.png"));
         desert = ImageIO.read(new File("src/Catan/Images/Desert.png"));
-        eau = ImageIO.read(new File("src/Catan/Images/Eau.png"));
+        portH = ImageIO.read(new File("src/Catan/Images/PortH.png"));
+        portB = ImageIO.read(new File("src/Catan/Images/PortB.png"));
+        portG = ImageIO.read(new File("src/Catan/Images/PortG.png"));
+        portD = ImageIO.read(new File("src/Catan/Images/PortD.png"));
         this.jeu = jeu;
         this.setVisible(true);
         setSize(1000,1000);
@@ -109,44 +116,27 @@ public class Vue extends JFrame {
             for (int x = 0; x <= plateau.getLength(); x++) {
                 ImagePane pan = new ImagePane();
                 if(x == 0 || y == 0 || x == plateau.getLength() || y == plateau.getLength()) { // PORT + MER
-                    if((x == 0 && y == 0) || (x == plateau.getLength() && y == plateau.getLength()) || (x == 0 && y == plateau.getLength()) || (x == plateau.getLength() && y == 0)) {
-                        pan.setBackground(new Color(85,206,234));
-                        pan.setImage(eau);
-                    }
-                    else if(x == 0) {
-                        if(plateau.getCase(1, y).getHG().getPort() != null && plateau.getCase(1, y).getBG().getPort() != null) {
-                            pan.setBackground(new Color(0,0,0));
+                    pan.setBackground(new Color(85,206,234));
+                    if(!((x == 0 && y == 0) || (x == plateau.getLength() && y == plateau.getLength()) || (x == 0 && y == plateau.getLength()) || (x == plateau.getLength() && y == 0))) {
+                        if(x == 0) {
+                            if(plateau.getCase(1, y).getHG().getPort() != null && plateau.getCase(1, y).getBG().getPort() != null) {
+                                pan.setImage(portG);
+                            }
                         }
-                        else {
-                            pan.setBackground(new Color(85,206,234));
-                            pan.setImage(eau);
+                        else if(y == 0) {
+                            if(plateau.getCase(x, 1).getHG().getPort() != null && plateau.getCase(x, 1).getHD().getPort() != null) {
+                                pan.setImage(portH);
+                            }
                         }
-                    }
-                    else if(y == 0) {
-                        if(plateau.getCase(x, 1).getHG().getPort() != null && plateau.getCase(x, 1).getHD().getPort() != null) {
-                            pan.setBackground(new Color(0,0,0));
+                        else if(y == plateau.getLength()) {
+                            if(plateau.getCase(x, y - 1).getBD().getPort() != null && plateau.getCase(x, y - 1).getBG().getPort() != null) {
+                                pan.setImage(portB);
+                            }
                         }
-                        else {
-                            pan.setBackground(new Color(85,206,234));
-                            pan.setImage(eau);
-                        }
-                    }
-                    else if(y == plateau.getLength()) {
-                        if(plateau.getCase(x, y - 1).getBD().getPort() != null && plateau.getCase(x, y - 1).getBG().getPort() != null) {
-                            pan.setBackground(new Color(0,0,0));
-                        }
-                        else {
-                            pan.setBackground(new Color(85,206,234));
-                            pan.setImage(eau);
-                        }
-                    }
-                    else if(x == plateau.getLength()) {
-                        if(plateau.getCase(x - 1, y).getHD().getPort() != null && plateau.getCase(x - 1, y).getBD().getPort() != null) {
-                            pan.setBackground(new Color(0,0,0));
-                        }
-                        else {
-                            pan.setBackground(new Color(85,206,234));
-                            pan.setImage(eau);
+                        else if(x == plateau.getLength()) {
+                            if(plateau.getCase(x - 1, y).getHD().getPort() != null && plateau.getCase(x - 1, y).getBD().getPort() != null) {
+                                pan.setImage(portD);
+                            }
                         }
                     }
                 }
