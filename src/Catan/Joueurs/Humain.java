@@ -36,7 +36,6 @@ public class Humain extends Joueur{
                     }
                     inter.setColonie(new Colonie(this));
                     nombreColonies++;
-                    point++;
                     System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
                     if(inter.port != null) {
                         if(inter.port.getRessource() == null) {
