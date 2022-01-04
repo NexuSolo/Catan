@@ -20,6 +20,7 @@ public class Jeu {
         joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
         joueurs.add(new Humain("Mizaxus", "jaune"));
+        joueurs.add(new Humain("maz", "rouge"));
         plateau = new Plateau(4);
         //jouer();
     }

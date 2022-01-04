@@ -409,4 +409,8 @@ public abstract class Joueur {
     public int getTailleRoute() {
         return tailleRoute;
     }
+
+    public LinkedList<Carte> getCartes() {
+        return cartes;
+    }
 }

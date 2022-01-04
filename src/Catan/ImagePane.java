@@ -18,6 +18,12 @@ public class ImagePane extends JPanel {
         this.image = image;
     }
 
+    public ImagePane(Image image, int taille) {
+        super();
+        this.image = image;
+        this.taille = taille;
+    }
+
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         int i = 4 - taille;
@@ -35,6 +41,12 @@ public class ImagePane extends JPanel {
         }
         else if(taille == 8) {
             g.drawImage(image, 0, 0 , 66, 66, this);
+        }
+        else if(taille == 10) {
+            g.drawImage(image, 0, 0 , 25, 25, this);
+        }
+        else if(taille == 11) {
+            g.drawImage(image, -3, -5 , 30, 30, this);
         }
     }
 
