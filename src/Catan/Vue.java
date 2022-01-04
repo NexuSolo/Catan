@@ -243,13 +243,12 @@ public class Vue extends JFrame {
                     pan.setLayout(bl);
 
                     // ORDRE : H B G D
-                    JPanel h = new JPanel();
-                    h.setBackground(jeu.getPlateau().getCase(x, y).getH().cheminToColor());
-                    JPanel hgh = new JPanel();
-                    JPanel hdh = new JPanel();
+                    CheminImage h = new CheminImage(jeu.getPlateau().getCase(x, y).getH());
+                    IntersectionImage hgh = new IntersectionImage(jeu.getPlateau().getIntersection(x, y));
+                    IntersectionImage hdh = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y));
                     h.setLayout(new GridLayout(1,0,tailleCroixX,0));
-                    hgh.setBackground(jeu.getPlateau().getIntersection(x, y).intersectionToColor());
-                    hdh.setBackground(jeu.getPlateau().getIntersection(x+1, y).intersectionToColor());
+                    // hgh.setBackground(jeu.getPlateau().getIntersection(x, y).intersectionToColor());
+                    // hdh.setBackground(jeu.getPlateau().getIntersection(x+1, y).intersectionToColor());
                     h.add(hgh);
                     h.add(hdh);
 
@@ -260,13 +259,10 @@ public class Vue extends JFrame {
                     else {
                         h.setPreferredSize(new Dimension(8,8));
                     }
-                    JPanel b = new JPanel();
-                    b.setBackground(jeu.getPlateau().getCase(x, y).getB().cheminToColor());
-                    JPanel bgh = new JPanel(); 
-                    JPanel bdh = new JPanel(); 
+                    CheminImage b = new CheminImage(jeu.getPlateau().getCase(x, y).getB());
+                    IntersectionImage bgh = new IntersectionImage(jeu.getPlateau().getIntersection(x, y+1));
+                    IntersectionImage bdh = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y+1));
                     b.setLayout(new GridLayout(1,0,tailleCroixX,0));
-                    bgh.setBackground(jeu.getPlateau().getIntersection(x, y+1).intersectionToColor());
-                    bdh.setBackground(jeu.getPlateau().getIntersection(x+1, y+1).intersectionToColor());
                     b.add(bgh);
                     b.add(bdh);
                     pan.add(b, BorderLayout.SOUTH);
@@ -276,15 +272,12 @@ public class Vue extends JFrame {
                     else {
                         b.setPreferredSize(new Dimension(8,8));
                     }
-                    JPanel g = new JPanel();
-                    JPanel hgv = new JPanel();
-                    JPanel bgv = new JPanel(); 
+                    CheminImage g = new CheminImage(jeu.getPlateau().getCase(x, y).getG());
+                    IntersectionImage hgv = new IntersectionImage(jeu.getPlateau().getIntersection(x, y));
+                    IntersectionImage bgv = new IntersectionImage(jeu.getPlateau().getIntersection(x, y+1)); 
                     g.setLayout(new GridLayout(0,1,0,tailleCroixX));
-                    hgv.setBackground(jeu.getPlateau().getIntersection(x, y).intersectionToColor());
-                    bgv.setBackground(jeu.getPlateau().getIntersection(x, y+1).intersectionToColor());
                     g.add(hgv);
                     g.add(bgv);
-                    g.setBackground(jeu.getPlateau().getCase(x, y).getG().cheminToColor());
                     pan.add(g, BorderLayout.WEST);
                     if (x == 1) {
                         g.setPreferredSize(new Dimension(8,8));
@@ -292,13 +285,10 @@ public class Vue extends JFrame {
                     else {
                         g.setPreferredSize(new Dimension(4,4));
                     }
-                    JPanel d = new JPanel();
-                    d.setBackground(jeu.getPlateau().getCase(x, y).getD().cheminToColor());
-                    JPanel hdv = new JPanel(); 
-                    JPanel bdv = new JPanel();
+                    CheminImage d = new CheminImage(jeu.getPlateau().getCase(x, y).getD());
+                    IntersectionImage hdv = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y)); 
+                    IntersectionImage bdv = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y+1));
                     d.setLayout(new GridLayout(0,1,0,tailleCroixX));
-                    hdv.setBackground(jeu.getPlateau().getIntersection(x+1, y).intersectionToColor());
-                    bdv.setBackground(jeu.getPlateau().getIntersection(x+1, y+1).intersectionToColor());
                     d.add(hdv);
                     d.add(bdv);
                     pan.add(d, BorderLayout.EAST);
@@ -330,6 +320,26 @@ public class Vue extends JFrame {
                 return "●";
         }
         return null;
+    }
+
+    public class IntersectionImage extends JPanel{
+        Intersection intersection;
+        
+        public IntersectionImage(Intersection intersection){
+            this.intersection = intersection;
+            setBackground(intersection.intersectionToColor());
+        }
+
+    }
+
+    public class CheminImage extends JPanel{
+        Chemin chemin;
+        
+        public CheminImage(Chemin chemin){
+            this.chemin = chemin;
+            setBackground(chemin.cheminToColor());
+        }
+
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

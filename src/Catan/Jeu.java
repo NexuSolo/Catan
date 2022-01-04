@@ -20,7 +20,16 @@ public class Jeu {
         joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
         joueurs.add(new Humain("Mizaxus", "jaune"));
-        plateau = new Plateau(8);
+        plateau = new Plateau(4);
+        plateau.getCase(1,1).getH().setRoute(joueurs.get(0));
+        plateau.getCase(2,1).getB().setRoute(joueurs.get(1));
+        plateau.getCase(3,1).getG().setRoute(joueurs.get(0));
+        plateau.getCase(4,1).getD().setRoute(joueurs.get(2));
+
+
+        plateau.getCase(1,1).getHG().setColonie(new Colonie(joueurs.get(0)));
+        plateau.getCase(4,4).getHD().setColonie(new Colonie(joueurs.get(2)));
+        plateau.getCase(2,2).getBG().setColonie(new Colonie(joueurs.get(1)));;
         //jouer();
     }
 
