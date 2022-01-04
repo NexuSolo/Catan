@@ -21,6 +21,13 @@ public class Vue extends JFrame {
     public static BufferedImage ble40;
     public static BufferedImage roche40;
     public static BufferedImage voleur;
+    public static BufferedImage foret;
+    public static BufferedImage champ;
+    public static BufferedImage carriere;
+    public static BufferedImage enclos;
+    public static BufferedImage mont;
+    public static BufferedImage desert;
+    public static BufferedImage eau;
 
     Vue(Jeu jeu) throws IOException {
         bois40 = ImageIO.read(new File("src/Catan/Images/bois40-40.png"));
@@ -29,10 +36,17 @@ public class Vue extends JFrame {
         ble40 = ImageIO.read(new File("src/Catan/Images/ble40-40.png"));
         roche40 = ImageIO.read(new File("src/Catan/Images/roche40-40.png"));
         voleur = ImageIO.read(new File("src/Catan/Images/Voleur.png"));
-        System.out.println("yo");
+        foret = ImageIO.read(new File("src/Catan/Images/Foret.png"));
+        champ = ImageIO.read(new File("src/Catan/Images/Champ.png"));
+        carriere = ImageIO.read(new File("src/Catan/Images/Carriere.png"));
+        enclos = ImageIO.read(new File("src/Catan/Images/Enclos.png"));
+        mont = ImageIO.read(new File("src/Catan/Images/Mont.png"));
+        desert = ImageIO.read(new File("src/Catan/Images/Desert.png"));
+        eau = ImageIO.read(new File("src/Catan/Images/Eau.png"));
         this.jeu = jeu;
         this.setVisible(true);
         setSize(1000,1000);
+        setResizable(false);
         //setLayout(new GridLayout(4,4));
         setLocationRelativeTo(this.getParent());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -93,10 +107,11 @@ public class Vue extends JFrame {
         panel.setLayout(new GridLayout(plateau.getLength() + 1, plateau.getLength() + 1));
         for (int y = 0; y <= plateau.getLength(); y++) {
             for (int x = 0; x <= plateau.getLength(); x++) {
-                JPanel pan = new JPanel();
+                ImagePane pan = new ImagePane();
                 if(x == 0 || y == 0 || x == plateau.getLength() || y == plateau.getLength()) { // PORT + MER
                     if((x == 0 && y == 0) || (x == plateau.getLength() && y == plateau.getLength()) || (x == 0 && y == plateau.getLength()) || (x == plateau.getLength() && y == 0)) {
                         pan.setBackground(new Color(85,206,234));
+                        pan.setImage(eau);
                     }
                     else if(x == 0) {
                         if(plateau.getCase(1, y).getHG().getPort() != null && plateau.getCase(1, y).getBG().getPort() != null) {
@@ -104,6 +119,7 @@ public class Vue extends JFrame {
                         }
                         else {
                             pan.setBackground(new Color(85,206,234));
+                            pan.setImage(eau);
                         }
                     }
                     else if(y == 0) {
@@ -112,6 +128,7 @@ public class Vue extends JFrame {
                         }
                         else {
                             pan.setBackground(new Color(85,206,234));
+                            pan.setImage(eau);
                         }
                     }
                     else if(y == plateau.getLength()) {
@@ -120,6 +137,7 @@ public class Vue extends JFrame {
                         }
                         else {
                             pan.setBackground(new Color(85,206,234));
+                            pan.setImage(eau);
                         }
                     }
                     else if(x == plateau.getLength()) {
@@ -128,6 +146,7 @@ public class Vue extends JFrame {
                         }
                         else {
                             pan.setBackground(new Color(85,206,234));
+                            pan.setImage(eau);
                         }
                     }
                 }
@@ -135,36 +154,38 @@ public class Vue extends JFrame {
                     Case c = plateau.getCase(x, y);
                     contenu = new JPanel();
                     contenu.setBackground(new Color(0, 0, 0, 0));
-                    contenu.setLayout(new GridLayout(5, 1, -15, -15));
+                    contenu.setLayout(new GridLayout(4, 1, -15, -15));
                     if(c.ressource == null) {
                         pan.setBackground(new Color(254,231,122));
+                        pan.setImage(desert);
+                        contenu.setLayout(new GridLayout(2, 1));
                         contenu.add(new JLabel("Desert", SwingConstants.CENTER));
                     }
                     else {
                         switch (c.ressource) {
                             case BOIS: //123 56 42
-                                pan.setBackground(new Color(123,56,42));
-                                contenu.add(new JLabel(new ImageIcon(bois40)));
+                                pan.setBackground(new Color(88,41,0));
+                                pan.setImage(foret);
                                 contenu.add(new JLabel("Forêt", SwingConstants.CENTER));
                                 break;
                             case ARGILE: // 226 38 41
                                 pan.setBackground(new Color(226,38,41));
-                                contenu.add(new JLabel(new ImageIcon(argile40)));
+                                pan.setImage(carriere);
                                 contenu.add(new JLabel("Carrière", SwingConstants.CENTER));
                                 break;
                             case BLE: // 234 204 54
                                 pan.setBackground(new Color(234,204,54));
-                                contenu.add(new JLabel(new ImageIcon(ble40)));
+                                pan.setImage(champ);
                                 contenu.add(new JLabel("Champ", SwingConstants.CENTER));
                                 break;
                             case LAINE: // 236 234 226
                                 pan.setBackground(new Color(236,234,226));
-                                contenu.add(new JLabel(new ImageIcon(laine40)));
+                                pan.setImage(enclos);
                                 contenu.add(new JLabel("Enclos", SwingConstants.CENTER));
                                 break;
                             case ROCHE: // 143 141 127
                                 pan.setBackground(new Color(143,141,127));
-                                contenu.add(new JLabel(new ImageIcon(roche40)));
+                                pan.setImage(mont);
                                 contenu.add(new JLabel("Mont", SwingConstants.CENTER));
                                 break;
                         }
