@@ -6,9 +6,11 @@ import java.awt.*;
 public class ImagePane extends JPanel {
     private static final long serialVersionUID = 1L;
     private Image image;
+    private int taille;
 
-    public ImagePane() {
+    public ImagePane(int taille) {
         super();
+        this.taille = taille;
     }
 
     public ImagePane(Image image) {
@@ -18,7 +20,22 @@ public class ImagePane extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(image, getHeight() - 170, getWidth() - 170, 180, 180, this);
+        int i = 4 - taille;
+        if(taille == 4) {
+            g.drawImage(image, 0, 0 , 112, 112, this);
+        }
+        else if(taille == 5) {
+            g.drawImage(image, 0, 0 , 96, 96, this);
+        }
+        else if(taille == 6) {
+            g.drawImage(image, 0, 0 , 83, 83, this);
+        }
+        else if(taille == 7) {
+            g.drawImage(image, 0, 0 , 73, 73, this);
+        }
+        else if(taille == 8) {
+            g.drawImage(image, 0, 0 , 66, 66, this);
+        }
     }
 
     public void setImage(Image image) {

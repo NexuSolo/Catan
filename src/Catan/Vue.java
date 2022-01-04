@@ -148,36 +148,28 @@ public class Vue extends JFrame {
         panel.setLayout(new GridLayout(plateau.getLength() + 1, plateau.getLength() + 1));
         for (int y = 0; y <= plateau.getLength(); y++) {
             for (int x = 0; x <= plateau.getLength(); x++) {
-                ImagePane pan = new ImagePane();
+                ImagePane pan = new ImagePane(plateau.getLength() - 1);
                 if(x == 0 || y == 0 || x == plateau.getLength() || y == plateau.getLength()) { // PORT + MER
                     pan.setBackground(new Color(85,206,234));
                     if(!((x == 0 && y == 0) || (x == plateau.getLength() && y == plateau.getLength()) || (x == 0 && y == plateau.getLength()) || (x == plateau.getLength() && y == 0))) {
                         if(x == 0) {
                             if(plateau.getCase(1, y).getHG().getPort() != null && plateau.getCase(1, y).getBG().getPort() != null) {
                                 pan.setImage(portG);
-                                System.out.println("Port 1 " + x + " " + y + "");
-
                             }
                         }
                         else if(y == 0) {
                             if(plateau.getCase(x, 1).getHG().getPort() != null && plateau.getCase(x, 1).getHD().getPort() != null) {
-                                pan.setImage(portH);
-                                System.out.println("Port 2 " + x + " " + y + "");
-                                
+                                pan.setImage(portH);  
                             }
                         }
                         else if(y == plateau.getLength()) {
                             if(plateau.getCase(x, y - 1).getBD().getPort() != null && plateau.getCase(x, y - 1).getBG().getPort() != null) {
                                 pan.setImage(portB);
-                                System.out.println("Port 3 " + x + " " + y + "");
-
                             }
                         }
                         else if(x == plateau.getLength()) {
                             if(plateau.getCase(x - 1, y).getHD().getPort() != null && plateau.getCase(x - 1, y).getBD().getPort() != null) {
                                 pan.setImage(portD);
-                                System.out.println("Port 4 " + x + " " + y + "");
-
                             }
                         }
                     }
