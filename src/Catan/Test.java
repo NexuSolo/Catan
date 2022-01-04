@@ -8,8 +8,5 @@ import java.awt.Color;
 import javax.swing.*;
 
 public class Test {
-
-    public static void main(String[] args) {
-        new Vue();
-    }
+    
 }

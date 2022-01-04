@@ -21,7 +21,7 @@ public class Jeu {
         joueurs.add(new Humain("Miz", "vert"));
         joueurs.add(new Humain("Mizaxus", "jaune"));
         plateau = new Plateau(5);
-        jouer();
+        //jouer();
     }
 
     public Jeu(int i) {
