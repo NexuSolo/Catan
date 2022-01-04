@@ -216,7 +216,7 @@ public class Jeu {
 
     public boolean gagne() {
         for (Joueur joueur : joueurs) {
-            if(joueur.calculPoint(joueur == ArmeeLaPlusPuissante,joueur == routeLaPlusLongue) >= 10) {
+            if(joueur.calculPoint(joueur == ArmeeLaPlusPuissante,joueur == routeLaPlusLongue,true) >= 10) {
                 vainqueur = joueur;
                 return true;
             }

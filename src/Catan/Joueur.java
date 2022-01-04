@@ -196,7 +196,7 @@ public abstract class Joueur {
 
     public abstract boolean echange(Jeu jeu);
 
-    public int calculPoint(boolean ArmeeLaPlusPuissante,boolean RouteLaPlusLongue) {
+    public int calculPoint(boolean ArmeeLaPlusPuissante,boolean RouteLaPlusLongue,boolean PdV) {
         int res = point;
         if (ArmeeLaPlusPuissante) {
             res += 2;
@@ -204,10 +204,11 @@ public abstract class Joueur {
         if (RouteLaPlusLongue) {
             res += 2;
         }
-
-        for (Carte carte : cartes) {
-            if (carte instanceof PointDeVictoire){
-                res++;
+        if (PdV) {
+            for (Carte carte : cartes) {
+                if (carte instanceof PointDeVictoire){
+                    res++;
+                }
             }
         }
         return res;
