@@ -33,7 +33,7 @@ public class Vue extends JFrame {
     public static BufferedImage portG;
     public static BufferedImage portD;
 
-    Vue(Jeu jeu) throws IOException {
+    Vue(Jeu jeu) throws IOException, InterruptedException {
         bois40 = ImageIO.read(new File("src/Catan/Images/bois40-40.png"));
         argile40 = ImageIO.read(new File("src/Catan/Images/argile40-40.png"));
         laine40 = ImageIO.read(new File("src/Catan/Images/laine40-40.png"));
@@ -59,6 +59,7 @@ public class Vue extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(plateauToPanel(jeu.getPlateau()));
         jeu.getPlateau().affiche();
+        repaint();
         revalidate();
     }
 
@@ -121,21 +122,29 @@ public class Vue extends JFrame {
                         if(x == 0) {
                             if(plateau.getCase(1, y).getHG().getPort() != null && plateau.getCase(1, y).getBG().getPort() != null) {
                                 pan.setImage(portG);
+                                System.out.println("Port 1 " + x + " " + y + "");
+
                             }
                         }
                         else if(y == 0) {
                             if(plateau.getCase(x, 1).getHG().getPort() != null && plateau.getCase(x, 1).getHD().getPort() != null) {
                                 pan.setImage(portH);
+                                System.out.println("Port 2 " + x + " " + y + "");
+                                
                             }
                         }
                         else if(y == plateau.getLength()) {
                             if(plateau.getCase(x, y - 1).getBD().getPort() != null && plateau.getCase(x, y - 1).getBG().getPort() != null) {
                                 pan.setImage(portB);
+                                System.out.println("Port 3 " + x + " " + y + "");
+
                             }
                         }
                         else if(x == plateau.getLength()) {
                             if(plateau.getCase(x - 1, y).getHD().getPort() != null && plateau.getCase(x - 1, y).getBD().getPort() != null) {
                                 pan.setImage(portD);
+                                System.out.println("Port 4 " + x + " " + y + "");
+
                             }
                         }
                     }
@@ -182,55 +191,86 @@ public class Vue extends JFrame {
                         contenu.add(new JLabel(intToPoint(c.getNumero()), SwingConstants.CENTER));
                         contenu.add(new JLabel(String.valueOf(c.getNumero()), SwingConstants.CENTER));
                     }
+
                     if(c.getVoleur()) {
                         contenu.add(new JLabel(new ImageIcon(voleur)));
                     }
-                    pan.setLayout(new BorderLayout());
+                    BorderLayout bl = new BorderLayout();
+                    int tailleCroixX = 108;
+                    int tailleCroixY = 110;
+                    // Valeur pour le 4,6,7,8 à faire
+                    // bl.setVgap(-10);
+                    // bl.setHgap(-10);
+                    pan.setLayout(bl);
+
                     // ORDRE : H B G D
                     JPanel h = new JPanel();
                     h.setBackground(new Color(255, 89, 0));
-                    JPanel hgv = new JPanel();
-                    JPanel hdv = new JPanel();
-                    h.setLayout(new GridLayout(1,0,130,130));
-                    hdv.setBackground(Color.BLACK);
-                    hgv.setBackground(Color.BLACK);
-                    h.add(hdv);
-                    h.add(hgv);
+                    JPanel hgh = new JPanel();
+                    JPanel hdh = new JPanel();
+                    h.setLayout(new GridLayout(1,0,tailleCroixX,0));
+                    hdh.setBackground(Color.BLACK);
+                    hgh.setBackground(Color.BLACK);
+                    h.add(hgh);
+                    h.add(hdh);
+
                     pan.add(h, BorderLayout.NORTH);
                     if (y != 1) {
                         h.setPreferredSize(new Dimension(4,4));
+                    }   
+                    else {
+                        h.setPreferredSize(new Dimension(8,8));
                     }
                     JPanel b = new JPanel();
                     b.setBackground(new Color(255, 89, 0));
-                    JPanel bgv = new JPanel();
-                    JPanel bdv = new JPanel();
-                    h.setLayout(new GridLayout(1,0,130,130));
-                    bdv.setBackground(Color.BLACK);
-                    bgv.setBackground(Color.BLACK);
-                    h.add(bdv);
-                    h.add(bgv);
+                    JPanel bgh = new JPanel();
+                    JPanel bdh = new JPanel();
+                    b.setLayout(new GridLayout(1,0,tailleCroixX,0));
+                    bdh.setBackground(Color.BLACK);
+                    bgh.setBackground(Color.BLACK);
+                    b.add(bgh);
+                    b.add(bdh);
                     pan.add(b, BorderLayout.SOUTH);
                     if (y < plateau.getLength() -1 ){
                         b.setPreferredSize(new Dimension(4,4));
                     }
+                    else {
+                        b.setPreferredSize(new Dimension(8,8));
+                    }
                     JPanel g = new JPanel();
+                    JPanel hgv = new JPanel();
+                    JPanel bgv = new JPanel();
+                    g.setLayout(new GridLayout(0,1,0,tailleCroixY));
+                    hgv.setBackground(Color.BLACK);
+                    bgv.setBackground(Color.BLACK);
+                    g.add(hgv);
+                    g.add(bgv);
                     g.setBackground(new Color(255, 89, 0));
                     pan.add(g, BorderLayout.WEST);
-                    if (x == 0) {
+                    if (x == 1) {
+                        g.setPreferredSize(new Dimension(8,8));
+                    }
+                    else {
                         g.setPreferredSize(new Dimension(4,4));
                     }
                     JPanel d = new JPanel();
                     d.setBackground(new Color(255, 89, 0));
+                    JPanel hdv = new JPanel();
+                    JPanel bdv = new JPanel();
+                    d.setLayout(new GridLayout(0,1,0,tailleCroixY));
+                    hdv.setBackground(Color.BLACK);
+                    bdv.setBackground(Color.BLACK);
+                    d.add(hdv);
+                    d.add(bdv);
                     pan.add(d, BorderLayout.EAST);
-                    if (x < plateau.getLength() - 1){
+                    if (x == plateau.getLength() - 1){
+                        d.setPreferredSize(new Dimension(8,8));
+                    }
+                    else {
                         d.setPreferredSize(new Dimension(4,4));
                     }
                     pan.add(contenu);
                 }
-                // azer.add(new JLabel("●●●●●", SwingConstants.CENTER));
-                // azer.add(new JLabel("10", SwingConstants.CENTER));
-                // picLabel = new JLabel(new ImageIcon(image));
-                // azer.add(picLabel);
                 panel.add(pan);
             }
         }
@@ -253,7 +293,7 @@ public class Vue extends JFrame {
         return null;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         new Vue(new Jeu(true));
     }
 
