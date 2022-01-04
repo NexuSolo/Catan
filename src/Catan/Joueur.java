@@ -403,7 +403,10 @@ public abstract class Joueur {
         if (this.tailleRoute > 4) {
             jeu.setRouteLaPlusLongue(this);
         }
-        
+    }
+
+    public LinkedList<Carte> getCartes() {
+        return cartes;
     }
 
     public int getTailleRoute() {
