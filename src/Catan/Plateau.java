@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.TreeMap;
+
 import Catan.Cartes.*;
 
 
@@ -13,6 +15,12 @@ public class Plateau {
     Case[][] cases;
     Map<String,LinkedList<Case>> valDe = new HashMap<String,LinkedList<Case>>();
     Case voleur;
+    Map <Intersection,Integer> valeurIntersection;
+    Intersection[] intersectionTri;
+    int[] valeurInter;
+    
+    
+
     private LinkedList<Carte> cartes = new LinkedList<Carte>();{
         for (int i = 0; i < 14; i++) {
             cartes.add(new Chevalier());
@@ -106,6 +114,7 @@ public class Plateau {
             numerosReste.remove(random);
         }
         creationValDe();
+        valeurIntersection = new HashMap<Intersection,Integer>();
         Case[][] c = new Case[n+1][n+1];
         int randomDesertX = new Random().nextInt(n) + 1;
         int randomDesertY = new Random().nextInt(n) + 1;
@@ -113,6 +122,10 @@ public class Plateau {
         Intersection dHD = inter.get("" + (randomDesertX+1) + randomDesertY);
         Intersection dBG = inter.get("" + randomDesertX + (randomDesertY+1));
         Intersection dBD = inter.get("" + (randomDesertX+1) + (randomDesertY+1));
+        valeurIntersection.put(dHG,0);
+        valeurIntersection.put(dHD,0);
+        valeurIntersection.put(dBG,0);
+        valeurIntersection.put(dBD,0);
         Chemin dH = dHG.getCheminD();
         Chemin dB = dBG.getCheminD();
         Chemin dG = dHG.getCheminB();
@@ -136,6 +149,30 @@ public class Plateau {
                     numeros.remove(randomNumero);
                     ressources.remove(randomRessource);
                     ajouteValDe(c[y][x]);
+                    if(valeurIntersection.containsKey(HG)){
+                        valeurIntersection.replace(HG,valeurIntersection.get(HG) +(7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
+                    else {
+                        valeurIntersection.put(HG,(7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
+                    if(valeurIntersection.containsKey(HD)){
+                        valeurIntersection.replace(HD,valeurIntersection.get(HD) + (7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
+                    else {
+                        valeurIntersection.put(HD,(7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
+                    if(valeurIntersection.containsKey(BG)){
+                        valeurIntersection.replace(BG,valeurIntersection.get(BG) + (7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
+                    else {
+                        valeurIntersection.put(BG,(7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
+                    if(valeurIntersection.containsKey(BD)){
+                        valeurIntersection.replace(BD,valeurIntersection.get(BD) + (7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
+                    else {
+                        valeurIntersection.put(BD,(7 - Math.abs(c[y][x].numero-7) - 1 ));
+                    }
                 }
             }
         }
@@ -176,8 +213,43 @@ public class Plateau {
             
 
         }
-
+            setTableauxIntersection(valeurIntersection);
     }
+
+    public void setTableauxIntersection(Map<Intersection,Integer> valeurIntersection){
+        Intersection [] triInter = new Intersection[valeurIntersection.size()];
+        int [] triInterInt = new int[valeurIntersection.size()];
+        int acc = 0;
+        for (Intersection inter : valeurIntersection.keySet()){
+            triInter[acc] = inter;
+            triInterInt[acc] = valeurIntersection.get(inter);
+            acc++;
+        }
+        for (int i = 0; i < triInterInt.length - 1; i++) {
+            if (triInterInt[i] > triInterInt[i+1]) {
+                int j = i;
+                int tmp = triInterInt[i];
+                Intersection tmpI = triInter[i];
+
+                triInterInt[i] = triInterInt[i+1];
+                triInter[i] = triInter[i+1];
+                triInterInt[i+1] = tmp;
+                triInter[i+1] = tmpI;
+                while (j > 0 && triInterInt[j] < triInterInt[j-1]) {
+                    tmp = triInterInt[j];
+                    tmpI = triInter[j];
+
+                    triInterInt[j] = triInterInt[j-1];
+                    triInter[j] = triInter[j-1];
+                    triInterInt[j-1] = tmp;
+                    triInter[j-1] = tmpI;
+                    j--;
+                }
+            }
+            intersectionTri = triInter;
+            valeurInter = triInterInt;
+        }
+    } 
     public void az(){
         for(String s : valDe.keySet()) {
             System.out.println("VALEUR "+s);
@@ -425,6 +497,17 @@ public class Plateau {
         return getCase(x,y).getHG();
     }
     
-    
+    public Intersection[] getIntersectionTri() {
+        return intersectionTri;
+    }
+
+    public int[] getValeurInter() {
+        return valeurInter;
+    }
+
+    public Map<Intersection, Integer> getValeurIntersection() {
+        return valeurIntersection;
+    }
+
     
 }

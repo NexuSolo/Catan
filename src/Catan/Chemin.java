@@ -133,6 +133,21 @@ public class Chemin {
 
     }
 
+    public Chemin routeIA(Joueur j,Intersection cible,Intersection derniere) {
+        if (route == null) {
+            return this;
+        }
+        if (route != j) {
+            System.out.println("what");
+        }
+        if(intersection1 != derniere) {
+            return intersection1.routeIA(j,cible,derniere);
+        }
+        else {
+            return intersection2.routeIA(j,cible,derniere);
+        }
+    }
+
     public int tailleRouteMax(Joueur j,LinkedList<Chemin> cheminParcourus,LinkedList<Intersection> parc){
         if (cheminParcourus.contains(this)) {
             return 0;

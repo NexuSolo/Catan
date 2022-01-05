@@ -35,7 +35,7 @@ public class Humain extends Joueur{
                         super.removeRessource(Ressource.LAINE,1);
                     }
                     inter.setColonie(new Colonie(this));
-                    nombreColonies++;
+                    colonies.add(inter);
                     System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
                     if(inter.port != null) {
                         if(inter.port.getRessource() == null) {
@@ -265,96 +265,8 @@ public class Humain extends Joueur{
         return null;
     }
 
-    public boolean colonieEstPlaceable(Intersection inter, boolean premierTour) {
-        if(inter.getColonie() != null) {
-           return false; 
-        }
-        if(inter.getCheminH() != null) {
-            if(inter.getCheminH().getIntersection1().getColonie() != null) {
-                return false;
-            }
-        }
-        if(inter.getCheminB() != null) {
-            if(inter.getCheminB().getIntersection2().getColonie() != null) {
-                return false;
-            }
-        }
-        if(inter.getCheminG() != null) {
-            if(inter.getCheminG().getIntersection1().getColonie() != null) {
-                return false;
-            }
-        }
-        if(inter.getCheminD() != null) {
-            if(inter.getCheminD().getIntersection2().getColonie() != null) {
-                return false;
-            }
-        }
-        if(!premierTour) {
-            if(inter.getCheminH() != null) {
-                if(inter.getCheminH().getRoute().equals(this)) {
-                    return true;
-                }
-            }
-            if(inter.getCheminB() != null) {
-                if(inter.getCheminB().getRoute().equals(this)) {
-                    return true;
-                }
-            }
-            if(inter.getCheminG() != null) {
-                if(inter.getCheminG().getRoute().equals(this)) {
-                    return true;
-                }
-            }
-            if(inter.getCheminD() != null) {
-                if(inter.getCheminD().getRoute().equals(this)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return true;
-    }
     
-    public boolean routeEstPlaceable(Chemin chemin) {
-        if(chemin.getRoute() == null) {
-            if((chemin.getIntersection1().getColonie() != null && chemin.getIntersection1().getColonie().getJoueur().equals(this)) ||(chemin.getIntersection2().getColonie() != null && chemin.getIntersection2().getColonie().getJoueur().equals(this))) {
-                return true;
-            }
-            else {
-                if(chemin.getIntersection1().getCheminH() != null && chemin.getIntersection1().getCheminH().getRoute() != null && chemin.getIntersection1().getCheminH().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection1().getCheminB() != null && chemin.getIntersection1().getCheminB().getRoute() != null && chemin.getIntersection1().getCheminB().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection1().getCheminG() != null && chemin.getIntersection1().getCheminG().getRoute() != null && chemin.getIntersection1().getCheminG().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection1().getCheminD() != null && chemin.getIntersection1().getCheminD().getRoute() != null && chemin.getIntersection1().getCheminD().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminH() != null && chemin.getIntersection2().getCheminH().getRoute() != null && chemin.getIntersection2().getCheminH().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminB() != null && chemin.getIntersection2().getCheminB().getRoute() != null && chemin.getIntersection2().getCheminB().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminG() != null && chemin.getIntersection2().getCheminG().getRoute() != null && chemin.getIntersection2().getCheminG().getRoute().equals(this)) {
-                    return true;
-                }
-                else if(chemin.getIntersection2().getCheminD() != null && chemin.getIntersection2().getCheminD().getRoute() != null && chemin.getIntersection2().getCheminD().getRoute().equals(this)) {
-                    return true;
-                }
-                else {
-                    System.out.println("Vous devez avoir une colonie ou une route juxtaposé a votre route");
-                }
-            }
-        }
-        else {
-            System.out.println("Vous ne pouvez pas placer de route sur une route deja existante");
-        }
-        return false;
-    }
+ 
     
     public void defausseVoleur(){
         if(this.ressources.size() > 7) {
@@ -424,7 +336,7 @@ public class Humain extends Joueur{
             if(reponse.equals("fin")) {
                 break;
             }
-            reponseToAction(jeu, reponse);
+            reponseToAction(jeu, reponse,jeu.getControl());
         }
     }
 
@@ -914,7 +826,8 @@ public class Humain extends Joueur{
         //TODO
     }
 
-    private void reponseToAction(Jeu jeu, String reponse) {
+    public void reponseToAction(Jeu jeu, String reponse,Controleur control) {
+        //TODO Implémenter ça version graphique
         LinkedList<Ressource> l;
         switch (reponse) {
             default:

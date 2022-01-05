@@ -15,6 +15,7 @@ import java.nio.Buffer;
 import java.util.LinkedList;
 
 public class Vue extends JFrame {
+    Controleur control;
     JPanel plateau;
     JPanel action;
     JPanel stats;
@@ -45,7 +46,8 @@ public class Vue extends JFrame {
     public static BufferedImage rlpl;
     public static BufferedImage dvpt;
 
-    Vue(Jeu jeu) throws IOException, InterruptedException {
+    Vue(Jeu jeu,Controleur control) throws IOException, InterruptedException {
+        this.control = control;
         bois40 = ImageIO.read(new File("src/Catan/Images/bois40-40.png"));
         argile40 = ImageIO.read(new File("src/Catan/Images/argile40-40.png"));
         laine40 = ImageIO.read(new File("src/Catan/Images/laine40-40.png"));
@@ -103,6 +105,7 @@ public class Vue extends JFrame {
 
         jeu.getPlateau().affiche();
         add(model);
+        repaint();
         revalidate();
     }
 
@@ -543,7 +546,8 @@ public class Vue extends JFrame {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        new Vue(new Jeu(true));
+        Jeu j = new Jeu(true);
+        // new Vue(j,j.getControl());
     }
 
 }

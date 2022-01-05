@@ -1,5 +1,6 @@
 package Catan;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -10,27 +11,29 @@ import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
 public class Jeu {
+    private Controleur  control;
     private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
     private Joueur ArmeeLaPlusPuissante = null;
     private Joueur routeLaPlusLongue = null;
     private Plateau plateau;
     private Joueur vainqueur = null;
  
-    public Jeu(boolean b) {
-        joueurs.add(new Humain("Nex", "bleu"));
-        joueurs.add(new Humain("Miz", "vert"));
-        joueurs.add(new Humain("Mizaxus", "jaune"));
-        plateau = new Plateau(4);
-        plateau.getCase(1,1).getH().setRoute(joueurs.get(0));
-        plateau.getCase(2,1).getB().setRoute(joueurs.get(1));
-        plateau.getCase(3,1).getG().setRoute(joueurs.get(0));
-        plateau.getCase(4,1).getD().setRoute(joueurs.get(2));
+    public Jeu(boolean b) throws IOException, InterruptedException {
+        joueurs.add(new IA("Miz", "vert"));
+        joueurs.add(new IA("Nex", "bleu"));
+        // joueurs.add(new Humain("Mizaxus", "jaune"));
+        plateau = new Plateau(5);
+       // control = new Controleur(this);
+    // plateau.getCase(1,1).getH().setRoute(joueurs.get(0));
+        // plateau.getCase(2,1).getB().setRoute(joueurs.get(1));
+        // plateau.getCase(3,1).getG().setRoute(joueurs.get(0));
+        // plateau.getCase(4,1).getD().setRoute(joueurs.get(2));
 
 
-        plateau.getCase(1,1).getHG().setColonie(new Colonie(joueurs.get(0)));
-        plateau.getCase(4,4).getHD().setColonie(new Colonie(joueurs.get(2)));
-        plateau.getCase(2,2).getBG().setColonie(new Colonie(joueurs.get(1)));;
-        //jouer();
+        // plateau.getCase(1,1).getHG().setColonie(new Colonie(joueurs.get(0)));
+        // plateau.getCase(4,4).getHD().setColonie(new Colonie(joueurs.get(2)));
+        // plateau.getCase(2,2).getBG().setColonie(new Colonie(joueurs.get(1)));;
+        jouer();
     }
 
     public Jeu(int i) {
@@ -64,7 +67,7 @@ public class Jeu {
         }
     } 
 
-    public Jeu() {
+    public Jeu() {//TODO add le controleur aux Jeu;
         String reponse; 
         while (true) {
             System.out.println("Voulez vous une interface graphique ? [Oui][Non]");
@@ -202,16 +205,16 @@ public class Jeu {
         for (int i = joueurs.size() - 1; i >= 0; i--) {
             joueurs.get(i).placerColonie(this, true);
         }
-        while (!gagne()) {
-            for (Joueur joueur : joueurs) {
-                plateau.affiche();
-                joueur.tour(this);
-                if(gagne()) {
-                    break;
-                }
-            }
-        }
-        System.out.println(vainqueur.pseudo + "a gagné");
+        // while (!gagne()) {
+        //     for (Joueur joueur : joueurs) {
+        //         plateau.affiche();
+        //         joueur.tour(this);
+        //         if(gagne()) {
+        //             break;
+        //         }
+        //     }
+        // }
+        //System.out.println(vainqueur.pseudo + "a gagné");
     }
 
     public boolean gagne() {
@@ -289,6 +292,8 @@ public class Jeu {
         }
     }
 
-   
+   public Controleur getControl() {
+       return control;
+   }
     
 }

@@ -139,6 +139,75 @@ public class Intersection {
         return "ERREUR INTERSECTION"; // code qui ne peut s'executer
     }
 
+    public int distance(Intersection intersection){
+        return Math.abs(x-intersection.x) + Math.abs(y-intersection.y);
+    }
+
+    public Chemin routeIA(Joueur j,Intersection cible,Intersection derniere) {
+        if (cible.y < y &&  cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
+            return cheminH.routeIA(j,cible,this);
+        }
+        if (cible.x < x && cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
+            return cheminG.routeIA(j,cible,this);
+        }
+        if (cible.y >= y && cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
+            return cheminB.routeIA(j,cible,this);
+        }
+        if (cible.x >= x && cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
+            return cheminD.routeIA(j,cible,this);
+        }
+        
+        if (cible.y < y) {
+            if (cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
+                return cheminG.routeIA(j,cible,this);
+            }
+            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
+                return cheminD.routeIA(j,cible,this);
+            }
+            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
+                return cheminB.routeIA(j,cible,this);
+            }
+
+        }
+
+        if (cible.x < x) {
+            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
+                return cheminH.routeIA(j,cible,this);
+            }
+            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
+                return cheminB.routeIA(j,cible,this);
+            }
+            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
+                return cheminD.routeIA(j,cible,this);
+            } 
+        }
+        if (cible.y > y) {
+            if (cible.x < x && cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
+                return cheminG.routeIA(j,cible,this);
+            }
+            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
+                return cheminD.routeIA(j,cible,this);
+            }
+            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
+                return cheminH.routeIA(j,cible,this);
+            }
+        }
+
+        if (cible.x > x) {
+            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
+                return cheminH.routeIA(j,cible,this);
+            }
+            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
+                return cheminB.routeIA(j,cible,this);
+            }
+            if (cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
+                return cheminG.routeIA(j,cible,this);
+            }
+        }
+        System.out.println("pls que  ça n'arrive jamais");
+        return null;
+    }
+
 
     public int getX() {
         return x;
