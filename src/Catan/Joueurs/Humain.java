@@ -60,7 +60,7 @@ public class Humain extends Joueur{
                     }
                     jeu.getPlateau().affiche();
                     if(jeu.graphique) {
-                        jeu.vue.refresh(this);
+                        jeu.vue.refresh(this,true);
                     }
                     if(premierTour) {
                         placerRoute(jeu, true, inter);
@@ -415,7 +415,7 @@ public class Humain extends Joueur{
         while (true) {
             afficheRessource();
             if(jeu.graphique) {
-                jeu.vue.refresh(jeu.actuel);
+                jeu.vue.refresh(jeu.actuel,false);
             }
             System.out.print(this + ", quelle action voulez vous faire ?");
             if(possedeRessourcesRoute().size() == 0) {
