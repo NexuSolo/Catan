@@ -1,11 +1,9 @@
 package Catan;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
 import Catan.Cartes.*;
 
 
@@ -228,7 +226,7 @@ public class Plateau {
         }
         else {
             for (Joueur joueurs : listeJoueurs) {
-                //joueurs.defausseVoleur();
+                joueurs.defausseVoleur();
             }
             deplaceVoleur(J);
         }     
@@ -380,6 +378,9 @@ public class Plateau {
     }
 
     public Case getCase(int x, int y) {
+        if(x >= cases.length || y >= cases.length) {
+            return null;
+        }
         return cases[y][x];
     }
 

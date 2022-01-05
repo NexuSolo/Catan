@@ -1,5 +1,6 @@
 package Catan.Joueurs;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 import Catan.*;
@@ -11,7 +12,7 @@ public class Humain extends Joueur{
         super(pseudo, color);
     }
 
-    public boolean placerColonie(Jeu jeu, boolean premierTour) {
+    public boolean placerColonie(Jeu jeu, boolean premierTour) throws IOException, InterruptedException {
         if(nombreColonies >= 5) {
             System.out.println("Le nombre maximum de colonie est de 5.");
             return false;
@@ -22,7 +23,7 @@ public class Humain extends Joueur{
         }
         while(true) {
             String reponse = Jeu.scan();
-            if(Jeu.MotToMotMinuscule(reponse).equals("annuler") && !premierTour) {
+            if(reponse.equals("annuler") && !premierTour) {
                 return false;
             }
             Intersection inter = coordonéesToIntersection(jeu.getPlateau(), reponse);
@@ -58,6 +59,9 @@ public class Humain extends Joueur{
                         }
                     }
                     jeu.getPlateau().affiche();
+                    if(jeu.graphique) {
+                        jeu.vue.refresh(this);
+                    }
                     if(premierTour) {
                         placerRoute(jeu, true, inter);
                     }
@@ -93,7 +97,7 @@ public class Humain extends Joueur{
             }
             System.out.println();
             while (true) {
-                String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+                String reponse = Jeu.scan();
                 if(premierTour.getCheminH() != null && reponse.equals("h")) {
                     if(routeEstPlaceable(premierTour.getCheminH())) {
                         premierTour.getCheminH().setRoute(this);
@@ -138,7 +142,7 @@ public class Humain extends Joueur{
         }
         while (true) {
             String reponse = Jeu.scan();
-            if(Jeu.MotToMotMinuscule(reponse).equals("annuler") && !gratuit) {
+            if(reponse.equals("annuler") && !gratuit) {
                 return false;
             }
             Chemin chemin = coordonéesToChemin(jeu.getPlateau(), reponse);
@@ -152,7 +156,7 @@ public class Humain extends Joueur{
                     addRoute(chemin);
                     setTailleRoute(jeu);
                     jeu.getPlateau().affiche();
-                    System.out.println("Vous avez placer une route en x = " + ", y = "); //TODO
+                    System.out.println("Vous avez placé une route");
                     return true;
                 }
             }
@@ -170,7 +174,7 @@ public class Humain extends Joueur{
         System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while(true) {
-            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            String reponse = Jeu.scan();
             if(reponse.equals("annuler")) {
                 return false;
             }
@@ -207,29 +211,33 @@ public class Humain extends Joueur{
     }
 
     public Intersection coordonéesToIntersection(Plateau plateau, String s) {
-        if(s.length() == 5 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
-            int x = Integer.valueOf(s.substring(0,1));
-            int y = Integer.valueOf(s.substring(2,3));
-            if(x >= 1 && x <= plateau.getLength() && y >= 1 && y <= plateau.getLength()) {
-                if(Character.toLowerCase(s.charAt(3)) == 'h') {
-                    if(Character.toLowerCase(s.charAt(4)) == 'g') {
-                        return plateau.getCase(x, y).getHG();
+        try {
+            if(s.length() == 5 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
+                int x = Integer.valueOf(s.substring(0,1));
+                int y = Integer.valueOf(s.substring(2,3));
+                if(x >= 1 && x <= plateau.getLength() && y >= 1 && y <= plateau.getLength()) {
+                    if(Character.toLowerCase(s.charAt(3)) == 'h') {
+                        if(Character.toLowerCase(s.charAt(4)) == 'g') {
+                            return plateau.getCase(x, y).getHG();
+                        }
+                        else if(Character.toLowerCase(s.charAt(4)) == 'd') {
+                            return plateau.getCase(x, y).getHD();
+                        }
                     }
-                    else if(Character.toLowerCase(s.charAt(4)) == 'd') {
-                        return plateau.getCase(x, y).getHD();
-                    }
-                }
-                else if(Character.toLowerCase(s.charAt(3)) == 'b') {
-                    if(Character.toLowerCase(s.charAt(4)) == 'g') {
-                        return plateau.getCase(x, y).getBG();
-                    }
-                    else if(Character.toLowerCase(s.charAt(4)) == 'd') {
-                        return plateau.getCase(x, y).getBD();
+                    else if(Character.toLowerCase(s.charAt(3)) == 'b') {
+                        if(Character.toLowerCase(s.charAt(4)) == 'g') {
+                            return plateau.getCase(x, y).getBG();
+                        }
+                        else if(Character.toLowerCase(s.charAt(4)) == 'd') {
+                            return plateau.getCase(x, y).getBD();
+                        }
                     }
                 }
             }
+            return null;
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 
     public Chemin coordonéesToChemin(Plateau plateau, String s) {
@@ -291,22 +299,22 @@ public class Humain extends Joueur{
         }
         if(!premierTour) {
             if(inter.getCheminH() != null) {
-                if(inter.getCheminH().getRoute().equals(this)) {
+                if(inter.getCheminH().getRoute() != null && inter.getCheminH().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminB() != null) {
-                if(inter.getCheminB().getRoute().equals(this)) {
+                if(inter.getCheminB().getRoute() != null && inter.getCheminB().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminG() != null) {
-                if(inter.getCheminG().getRoute().equals(this)) {
+                if(inter.getCheminG().getRoute() != null && inter.getCheminG().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminD() != null) {
-                if(inter.getCheminD().getRoute().equals(this)) {
+                if(inter.getCheminD().getRoute() != null && inter.getCheminD().getRoute().equals(this)) {
                     return true;
                 }
             }
@@ -401,11 +409,14 @@ public class Humain extends Joueur{
     }
     
     @Override
-    public void tour(Jeu jeu) {
+    public void tour(Jeu jeu) throws IOException, InterruptedException {
         cartesUtilisables();
         jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
         while (true) {
             afficheRessource();
+            if(jeu.graphique) {
+                jeu.vue.refresh(jeu.actuel);
+            }
             System.out.print(this + ", quelle action voulez vous faire ?");
             if(possedeRessourcesRoute().size() == 0) {
                 System.out.print(" [Route]");
@@ -420,8 +431,9 @@ public class Humain extends Joueur{
                 System.out.print(" [Développement]");
             }
             System.out.println(" [Echange] [Fin]");
-            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            String reponse = Jeu.scan();
             if(reponse.equals("fin")) {
+                jeu.actuel = jeu.getJoueurs().get(jeu.joueurSuivant());
                 break;
             }
             reponseToAction(jeu, reponse);
@@ -432,7 +444,7 @@ public class Humain extends Joueur{
         System.out.println("Voullez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while (true) {
-            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            String reponse = Jeu.scan();
             if(reponse.equals("annuler")) {
                 return false;
             }
@@ -496,7 +508,7 @@ public class Humain extends Joueur{
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while(true){
             System.out.println("Vous avez actuellement un echange de " + ressources[0] + " bois, " + ressources[1] + " argile, " + ressources[2] + " laine, " + ressources[3] + " blé, " + ressources[4] + " roche.");
-            String reponse = Jeu.MotToMotMinuscule(Jeu.scan());
+            String reponse = Jeu.scan();
             if(reponse.equals("annuler")) {
                 return;
             }
@@ -910,11 +922,11 @@ public class Humain extends Joueur{
         return tab;
     }
 
-    public void echangeJouer(Jeu jeu) {
-        //TODO
-    }
+    // public void echangeJouer(Jeu jeu) {
+    //     //TODO
+    // }
 
-    private void reponseToAction(Jeu jeu, String reponse) {
+    private void reponseToAction(Jeu jeu, String reponse) throws IOException, InterruptedException {
         LinkedList<Ressource> l;
         switch (reponse) {
             default:

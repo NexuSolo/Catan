@@ -1,6 +1,7 @@
 package Catan;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -184,7 +185,7 @@ public abstract class Joueur {
         cartes.remove(e);
     }
 
-    public abstract boolean placerColonie(Jeu jeu,boolean premierTour);
+    public abstract boolean placerColonie(Jeu jeu,boolean premierTour) throws IOException, InterruptedException;
 
     public abstract boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour);
 
@@ -192,7 +193,7 @@ public abstract class Joueur {
 
     public abstract void deplaceVoleur(Plateau p);
 
-    public abstract void tour(Jeu jeu);
+    public abstract void tour(Jeu jeu) throws IOException, InterruptedException;
 
     public abstract boolean echange(Jeu jeu);
 
@@ -215,31 +216,8 @@ public abstract class Joueur {
     }
 
     public void afficheRessource() {
-        int bois = 0;
-        int ble = 0;
-        int roche = 0;
-        int laine = 0;
-        int argile = 0;
-        for (Ressource r : ressources) {
-            switch(r.toString()) {
-                case "BOIS":
-                    bois++;
-                    break;
-                case "BLE":
-                    ble++;
-                    break;
-                case "ROCHE":
-                    roche++;
-                    break;
-                case "LAINE":
-                    laine++;
-                    break;
-                case "ARGILE":
-                    argile++;
-                    break;
-            }
-        }
-        System.out.println("Vous avez : " + bois + " bois " + argile + " argile " + laine + " laine " + ble + " blé " + roche + " roche ");
+        int[] tab = listeRessources();
+        System.out.println("Vous avez : " + tab[0] + " bois " + tab[1] + " argile " + tab[2] + " laine " + tab[3] + " blé " + tab[4] + " roche ");
     }
 
     public LinkedList<Ressource> getRessources() {
@@ -413,4 +391,32 @@ public abstract class Joueur {
     public int getTailleRoute() {
         return tailleRoute;
     }
+
+    public int[] listeRessources() {
+        LinkedList<Ressource> ressources = getRessources();
+        int[] res = new int[5];
+        for (Ressource r : ressources) {
+            if(r.equals(Ressource.BOIS)) {
+                res[0]++;
+            }
+            if(r.equals(Ressource.ARGILE)) {
+                res[1]++;
+            }
+            if(r.equals(Ressource.LAINE)) {
+                res[2]++;
+            }
+            if(r.equals(Ressource.BLE)) {
+                res[3]++;
+            }
+            if(r.equals(Ressource.ROCHE)) {
+                res[4]++;
+            }
+        }
+        return res;
+    }
+
+    public Joueur getsuivant(LinkedList<Joueur> joueurs) {
+        return null;
+    }
+
 }

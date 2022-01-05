@@ -1,7 +1,5 @@
 package Catan;
 
-import Catan.*;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -11,7 +9,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.LinkedList;
 
 public class Vue extends JFrame {
@@ -22,6 +19,7 @@ public class Vue extends JFrame {
     JPanel information;
     JPanel model = new JPanel();
     Jeu jeu;
+    Joueur joueur;
 
     public static BufferedImage bois40;
     public static BufferedImage argile40;
@@ -44,6 +42,10 @@ public class Vue extends JFrame {
     public static BufferedImage ressources;
     public static BufferedImage rlpl;
     public static BufferedImage dvpt;
+
+    Vue(boolean b) {
+
+    }
 
     Vue(Jeu jeu) throws IOException, InterruptedException {
         bois40 = ImageIO.read(new File("src/Catan/Images/bois40-40.png"));
@@ -69,6 +71,7 @@ public class Vue extends JFrame {
         dvpt = ImageIO.read(new File("src/Catan/Images/Dvpt.png"));
 
         this.jeu = jeu;
+        this.joueur = jeu.getJoueurs().get(0);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1600,939);
@@ -78,13 +81,12 @@ public class Vue extends JFrame {
         setLocationRelativeTo(this.getParent());
 
         stats = afficheStats(jeu);
-        stats.setBackground(Color.BLACK);
         stats.setBounds(0, 0, 1600, 200);
 
         plateau = plateauToPanel(jeu.getPlateau());
         plateau.setBounds(500, 200, 700, 700);
 
-        information = new JPanel();
+        information = afficheInformations();
         information.setBackground(Color.RED);
         information.setBounds(1200,202,400,696);
 
@@ -103,7 +105,30 @@ public class Vue extends JFrame {
 
         jeu.getPlateau().affiche();
         add(model);
+        repaint();
         revalidate();
+    }
+
+    public void refresh(Joueur j) throws IOException, InterruptedException {
+        System.out.println("yo");
+
+        model.remove(plateau);
+        plateau = plateauToPanel(jeu.getPlateau());
+        plateau.setBounds(500, 200, 700, 700);
+        model.add(plateau);
+
+        model.remove(ressource);
+        ressource = afficheRessource(j);
+        ressource.setBounds(0,802,500,96);
+        model.add(ressource);
+
+        model.remove(stats);
+        stats = afficheStats(jeu);
+        stats.setBounds(0, 0, 1600, 200);
+        model.add(stats);
+
+        revalidate();
+        repaint();
     }
 
     public class RouteGraphique extends JPanel implements MouseInputListener {
@@ -153,6 +178,7 @@ public class Vue extends JFrame {
     }
 
     public JPanel plateauToPanel(Plateau plateau) throws IOException {
+        System.out.println("yo2");
         JPanel panel = new JPanel();
         JPanel contenu = new JPanel();
         panel.setLayout(new GridLayout(plateau.getLength() + 1, plateau.getLength() + 1));
@@ -193,38 +219,54 @@ public class Vue extends JFrame {
                         pan.setBackground(new Color(254,231,122));
                         pan.setImage(desert);
                         contenu.setLayout(new GridLayout(2, 1));
-                        contenu.add(new JLabel("Desert", SwingConstants.CENTER));
+                        JLabel text = new JLabel("Desert", SwingConstants.CENTER);
+                        text.setForeground(Color.WHITE);
+                        contenu.add(text);
                     }
                     else {
                         switch (c.ressource) {
                             case BOIS: //123 56 42
                                 pan.setBackground(new Color(88,41,0));
                                 pan.setImage(foret);
-                                contenu.add(new JLabel("Forêt", SwingConstants.CENTER));
+                                JLabel text = new JLabel("Forêt", SwingConstants.CENTER);
+                                text.setForeground(Color.WHITE);
+                                contenu.add(text);
                                 break;
                             case ARGILE: // 226 38 41
                                 pan.setBackground(new Color(226,38,41));
                                 pan.setImage(carriere);
-                                contenu.add(new JLabel("Carrière", SwingConstants.CENTER));
+                                text = new JLabel("Carrière", SwingConstants.CENTER);
+                                text.setForeground(Color.WHITE);
+                                contenu.add(text);
                                 break;
                             case BLE: // 234 204 54
                                 pan.setBackground(new Color(234,204,54));
                                 pan.setImage(champ);
-                                contenu.add(new JLabel("Champ", SwingConstants.CENTER));
+                                text = new JLabel("Champ", SwingConstants.CENTER);
+                                text.setForeground(Color.WHITE);
+                                contenu.add(text);
                                 break;
                             case LAINE: // 236 234 226
                                 pan.setBackground(new Color(236,234,226));
                                 pan.setImage(enclos);
-                                contenu.add(new JLabel("Enclos", SwingConstants.CENTER));
+                                text = new JLabel("Enclos", SwingConstants.CENTER);
+                                text.setForeground(Color.WHITE);
+                                contenu.add(text);
                                 break;
                             case ROCHE: // 143 141 127
                                 pan.setBackground(new Color(143,141,127));
                                 pan.setImage(mont);
-                                contenu.add(new JLabel("Mont", SwingConstants.CENTER));
+                                text = new JLabel("Mont", SwingConstants.CENTER);
+                                text.setForeground(Color.WHITE);
+                                contenu.add(text);
                                 break;
                         }
-                        contenu.add(new JLabel(intToPoint(c.getNumero()), SwingConstants.CENTER));
-                        contenu.add(new JLabel(String.valueOf(c.getNumero()), SwingConstants.CENTER));
+                        JLabel point = new JLabel(intToPoint(c.getNumero()), SwingConstants.CENTER);
+                        point.setForeground(Color.WHITE);
+                        contenu.add(point);
+                        JLabel valeur = new JLabel(String.valueOf(c.getNumero()), SwingConstants.CENTER);
+                        valeur.setForeground(Color.WHITE);
+                        contenu.add(valeur);
                     }
 
                     if(c.getVoleur()) {
@@ -438,11 +480,12 @@ public class Vue extends JFrame {
         jp.add(new JLabel(new ImageIcon(laine40)));
         jp.add(new JLabel(new ImageIcon(ble40)));
         jp.add(new JLabel(new ImageIcon(roche40)));
-        jp.add(new JLabel("               0"));
-        jp.add(new JLabel("               0"));
-        jp.add(new JLabel("               0"));
-        jp.add(new JLabel("               0"));
-        jp.add(new JLabel("               0"));
+        int[] ressource = j.listeRessources();
+        jp.add(new JLabel("               " + ressource[0]));
+        jp.add(new JLabel("               " + ressource[1]));
+        jp.add(new JLabel("               " + ressource[2]));
+        jp.add(new JLabel("               " + ressource[3]));
+        jp.add(new JLabel("               " + ressource[4]));
         return jp;
     }
 
@@ -477,6 +520,7 @@ public class Vue extends JFrame {
         ImagePane im = new ImagePane(medaille,10);
         im.setBackground(new Color(0,0,0,0));
         JLabel s = new JLabel("" + j.point);
+        im.setToolTipText("Score");
         score.add(im);
         score.add(s);
         score.add(Box.createHorizontalGlue());
@@ -491,6 +535,7 @@ public class Vue extends JFrame {
         ImagePane im2 = new ImagePane(ressources,10);
         im2.setBackground(new Color(0,0,0,0));
         JLabel s2 = new JLabel("" + j.getRessources().size());
+        im2.setToolTipText("Cartes Ressources");
         carteRessource.add(im2);
         carteRessource.add(s2);
         carteRessource.add(Box.createHorizontalGlue());
@@ -504,7 +549,8 @@ public class Vue extends JFrame {
         carteDev.add(Box.createHorizontalGlue());
         ImagePane im3 = new ImagePane(dvpt,10);
         im3.setBackground(new Color(0,0,0,0));
-        JLabel s3 = new JLabel("" + j.getCartes().size());
+        JLabel s3 = new JLabel("" + j.getCartes().size()); //TODO
+        im3.setToolTipText("Cartes Développement");
         carteDev.add(im3);
         carteDev.add(s3);
         carteDev.add(Box.createHorizontalGlue());
@@ -518,7 +564,8 @@ public class Vue extends JFrame {
         route.add(Box.createHorizontalGlue());
         ImagePane im4 = new ImagePane(rlpl,10);
         im4.setBackground(new Color(0,0,0,0));
-        JLabel s4 = new JLabel("" + j.getCartes().size());
+        JLabel s4 = new JLabel("" + j.getCartes().size()); // TODO
+        im4.setToolTipText("Route la plus longue");
         route.add(im4);
         route.add(s4);
         route.add(Box.createHorizontalGlue());
@@ -532,7 +579,8 @@ public class Vue extends JFrame {
         arme.add(Box.createHorizontalGlue());
         ImagePane im5 = new ImagePane(armee,11);
         im5.setBackground(new Color(0,0,0,0));
-        JLabel s5 = new JLabel("" + j.getCartes().size());
+        JLabel s5 = new JLabel("" + j.getCartes().size()); //TODO
+        im5.setToolTipText("Armée la plus puissante");
         arme.add(im5);
         arme.add(s5);
         arme.add(Box.createHorizontalGlue());
@@ -542,8 +590,15 @@ public class Vue extends JFrame {
         return jp;
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        new Vue(new Jeu(true));
+    public JPanel afficheInformations() {
+        JPanel res = new JPanel();
+        JTextArea area = new JTextArea("",30,30);
+        area.setBackground(Color.LIGHT_GRAY);
+        area.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(area);
+        area.setBounds(10, 10, 100, 300);
+        res.add(scrollPane);
+        return res;
     }
 
 }

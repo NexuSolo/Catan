@@ -1,9 +1,7 @@
 package Catan;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
 import Catan.Joueurs.Humain;
@@ -15,61 +13,59 @@ public class Jeu {
     private Joueur routeLaPlusLongue = null;
     private Plateau plateau;
     private Joueur vainqueur = null;
+    public boolean graphique = false;
+    public Vue vue;
+    public Joueur actuel;
  
-    public Jeu(boolean b) {
+    public Jeu(boolean b) throws IOException, InterruptedException {
         joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
         joueurs.add(new Humain("Mizaxus", "jaune"));
-        plateau = new Plateau(4);
-        plateau.getCase(1,1).getH().setRoute(joueurs.get(0));
-        plateau.getCase(2,1).getB().setRoute(joueurs.get(1));
-        plateau.getCase(3,1).getG().setRoute(joueurs.get(0));
-        plateau.getCase(4,1).getD().setRoute(joueurs.get(2));
-
-
-        plateau.getCase(1,1).getHG().setColonie(new Colonie(joueurs.get(0)));
-        plateau.getCase(4,4).getHD().setColonie(new Colonie(joueurs.get(2)));
-        plateau.getCase(2,2).getBG().setColonie(new Colonie(joueurs.get(1)));;
-        //jouer();
+        joueurs.add(new Humain("Mez", "rouge"));
+        actuel = joueurs.get(0);
+        plateau = new Plateau(8);
+        graphique = true;
+        jouer();
     }
 
-    public Jeu(int i) {
-        switch (i) {
-            default : break;
-            case 1 : joueurs.add(new Humain("Iruma","bleu"));
-            joueurs.get(0).addRessource(Ressource.LAINE, 20);
-            joueurs.get(0).addRessource(Ressource.ROCHE, 20);
-            joueurs.get(0).addRessource(Ressource.BLE, 20);
-            joueurs.get(0).addRessource(Ressource.BOIS, 20);
-            joueurs.get(0).addRessource(Ressource.ARGILE, 20);
-            plateau = new Plateau(8);
-            jouer();
-            break;
-            case 2 : joueurs.add(new Humain("Iruma","bleu"));
-            joueurs.add(new Humain("Ameri","rouge"));
-            joueurs.get(0).addRessource(Ressource.LAINE, 20);
-            joueurs.get(0).addRessource(Ressource.ROCHE, 20);
-            joueurs.get(0).addRessource(Ressource.BLE, 20);
-            joueurs.get(1).addRessource(Ressource.LAINE, 20);
-            joueurs.get(1).addRessource(Ressource.ROCHE, 20);
-            joueurs.get(1).addRessource(Ressource.BLE, 20);
-            joueurs.get(1).addRessource(Ressource.BOIS, 20);
-            joueurs.get(1).addRessource(Ressource.ARGILE, 20);
- joueurs.get(0).addRessource(Ressource.BOIS, 20);
-            joueurs.get(0).addRessource(Ressource.ARGILE, 20);
+    // public Jeu(int i) throws IOException, InterruptedException {
+    //     switch (i) {
+    //         default : break;
+    //         case 1 : joueurs.add(new Humain("Iruma","bleu"));
+    //         joueurs.get(0).addRessource(Ressource.LAINE, 20);
+    //         joueurs.get(0).addRessource(Ressource.ROCHE, 20);
+    //         joueurs.get(0).addRessource(Ressource.BLE, 20);
+    //         joueurs.get(0).addRessource(Ressource.BOIS, 20);
+    //         joueurs.get(0).addRessource(Ressource.ARGILE, 20);
+    //         plateau = new Plateau(8);
+    //         jouer();
+    //         break;
+    //         case 2 : joueurs.add(new Humain("Iruma","bleu"));
+    //         joueurs.add(new Humain("Ameri","rouge"));
+    //         joueurs.get(0).addRessource(Ressource.LAINE, 20);
+    //         joueurs.get(0).addRessource(Ressource.ROCHE, 20);
+    //         joueurs.get(0).addRessource(Ressource.BLE, 20);
+    //         joueurs.get(1).addRessource(Ressource.LAINE, 20);
+    //         joueurs.get(1).addRessource(Ressource.ROCHE, 20);
+    //         joueurs.get(1).addRessource(Ressource.BLE, 20);
+    //         joueurs.get(1).addRessource(Ressource.BOIS, 20);
+    //         joueurs.get(1).addRessource(Ressource.ARGILE, 20);
+    //         joueurs.get(0).addRessource(Ressource.BOIS, 20);
+    //         joueurs.get(0).addRessource(Ressource.ARGILE, 20);
 
-            plateau = new Plateau(5);
-            jouer();
-            break;
-        }
-    } 
+    //         plateau = new Plateau(5);
+    //         jouer();
+    //         break;
+    //     }
+    // } 
 
-    public Jeu() {
+    public Jeu() throws IOException, InterruptedException {
         String reponse; 
         while (true) {
             System.out.println("Voulez vous une interface graphique ? [Oui][Non]");
-            reponse = MotToMotMinuscule(scan());
+            reponse = scan();
             if(reponse.equals("oui")) {
+                graphique = true;
                 break;
             }
             else if(reponse.equals("non")) {
@@ -78,7 +74,7 @@ public class Jeu {
         }
         while (true) {
             System.out.println("Combien voulez vous de joueur ? [3][4]");
-            reponse = MotToMotMinuscule(scan());
+            reponse = scan();
             if(reponse.equals("3")) {
                 break;
             }
@@ -100,7 +96,7 @@ public class Jeu {
                     break;
                 }
                 System.out.println("Le joueur " + i + " est il une IA ? [Oui][Non]");
-                reponse = MotToMotMinuscule(scan());
+                reponse = scan();
                 if(reponse.equals("oui")) {
                     break;
                 }
@@ -124,7 +120,7 @@ public class Jeu {
                     System.out.print(string.substring(1, string.length()) + "]");
                 }
                 System.out.println();
-                reponse = MotToMotMinuscule(scan());
+                reponse = scan();
                 if(couleurDisponible.contains(reponse)) {
                     couleurDisponible.remove(reponse);
                     if(reponse.equals("bleu")) {
@@ -179,7 +175,7 @@ public class Jeu {
             plateau.affiche();
             System.out.println("\n" +"Voulez-vous jouer sur ce plateau ? [Oui][Non]");
             while (true) {
-                reponse = MotToMotMinuscule(scan());
+                reponse = scan();
                 if(reponse.equals("oui")) {
                     break;
                 }
@@ -191,16 +187,36 @@ public class Jeu {
                 break;
             }
         }
+        actuel = joueurs.get(0);
         jouer();
     }
 
-    public void jouer() {
+    public void jouer() throws IOException, InterruptedException {
+        if(graphique) {
+            vue = new Vue(this);
+        }
         plateau.affiche();
         for (int i = 0; i < joueurs.size(); i++) {
             joueurs.get(i).placerColonie(this, true);
+            if(graphique) {
+                if(i == joueurs.size() - 1) {
+                    vue.refresh(joueurs.get(joueurs.size() - 1));
+                }
+                else {
+                    vue.refresh(joueurs.get(i + 1));
+                }
+            }
         }
         for (int i = joueurs.size() - 1; i >= 0; i--) {
             joueurs.get(i).placerColonie(this, true);
+            if(graphique) {
+                if(i == 0) {
+                    vue.refresh(joueurs.get(0));
+                }
+                else {
+                    vue.refresh(joueurs.get(i - 1));
+                }
+            }
         }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
@@ -212,6 +228,18 @@ public class Jeu {
             }
         }
         System.out.println(vainqueur.pseudo + "a gagné");
+    }
+
+    public int joueurSuivant() {
+        int i = joueurs.indexOf(actuel);
+        if(i == joueurs.size() - 1) {
+            actuel = joueurs.get(0);
+            return 0;
+        }
+        else {
+            actuel = joueurs.get(i++);
+            return i++;
+        }
     }
 
     public boolean gagne() {
@@ -260,11 +288,7 @@ public class Jeu {
 
     public static String scan() {
         Scanner sc = new Scanner(System.in);
-        return sc.next();
-    }
-
-    public static String MotToMotMinuscule(String s) {
-        return s.toLowerCase();
+        return sc.next().toLowerCase();
     }
 
     public LinkedList<Joueur> getJoueurs() {

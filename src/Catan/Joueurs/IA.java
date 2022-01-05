@@ -1,6 +1,5 @@
 package Catan.Joueurs;
 
-import Catan.Colonie;
 import Catan.Intersection;
 import Catan.Jeu;
 import Catan.Joueur;

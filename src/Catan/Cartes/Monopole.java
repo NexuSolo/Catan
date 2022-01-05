@@ -28,7 +28,7 @@ public class Monopole extends Carte{
                 }
             }
         }
-        System.out.println("Vous avez volé "+ressVolees+" ressources, quel enculé.");
+        System.out.println("Vous avez volé "+ressVolees+" ressources.");
         return true;
         
     }
