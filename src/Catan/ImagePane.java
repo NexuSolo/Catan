@@ -50,6 +50,9 @@ public class ImagePane extends JPanel {
         else if(taille == 11) {
             g.drawImage(image, -3, -5 , 30, 30, this);
         }
+        else if(taille == 12) {
+            g.drawImage(image, 2, 10 , 40, 40, this);
+        }
     }
 
     public void setImage(Image image) {

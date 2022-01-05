@@ -87,14 +87,14 @@ public class Vue extends JFrame {
         plateau.setBounds(500, 200, 700, 700);
 
         information = afficheInformations();
-        information.setBackground(Color.RED);
+        information.setBackground(Color.ORANGE);
         information.setBounds(1200,202,400,696);
 
-        action = new JPanel();
-        action.setBackground(Color.GREEN);
+        action = actionPrincipale(true);
+        action.setBackground(Color.ORANGE);
         action.setBounds(0,202,500,598);
 
-        ressource = afficheRessource(jeu.getJoueurs().get(0));
+        ressource = afficheRessource();
         ressource.setBounds(0,802,500,96);
 
         model.add(information);
@@ -109,7 +109,8 @@ public class Vue extends JFrame {
         revalidate();
     }
 
-    public void refresh(Joueur j) throws IOException, InterruptedException {
+    public void refresh(Joueur j, boolean premierTour) throws IOException, InterruptedException {
+        joueur = j;
         System.out.println("yo");
 
         model.remove(plateau);
@@ -118,7 +119,7 @@ public class Vue extends JFrame {
         model.add(plateau);
 
         model.remove(ressource);
-        ressource = afficheRessource(j);
+        ressource = afficheRessource();
         ressource.setBounds(0,802,500,96);
         model.add(ressource);
 
@@ -126,6 +127,18 @@ public class Vue extends JFrame {
         stats = afficheStats(jeu);
         stats.setBounds(0, 0, 1600, 200);
         model.add(stats);
+
+        model.remove(information);
+        information = afficheInformations();
+        information.setBackground(Color.ORANGE);
+        information.setBounds(1200,202,400,696);
+        model.add(information);
+
+        model.remove(action);
+        action = actionPrincipale(premierTour);
+        action.setBackground(Color.ORANGE);
+        action.setBounds(0,202,500,598);
+        model.add(action);
 
         revalidate();
         repaint();
@@ -471,7 +484,7 @@ public class Vue extends JFrame {
 
     }
 
-    public static JPanel afficheRessource(Joueur j) {
+    public JPanel afficheRessource() {
         JPanel jp = new JPanel();
         jp.setBackground(Color.GRAY);
         jp.setLayout(new GridLayout(2,5));
@@ -480,7 +493,7 @@ public class Vue extends JFrame {
         jp.add(new JLabel(new ImageIcon(laine40)));
         jp.add(new JLabel(new ImageIcon(ble40)));
         jp.add(new JLabel(new ImageIcon(roche40)));
-        int[] ressource = j.listeRessources();
+        int[] ressource = joueur.listeRessources();
         jp.add(new JLabel("               " + ressource[0]));
         jp.add(new JLabel("               " + ressource[1]));
         jp.add(new JLabel("               " + ressource[2]));
@@ -502,6 +515,190 @@ public class Vue extends JFrame {
             p2.setBackground(Color.GRAY);
             jp.add(p2);
         }
+        return jp;
+    }
+
+    public JPanel actionPrincipale(boolean premierTour) {
+        JPanel jp = new JPanel();
+        jp.setLayout(new GridLayout(7,1));
+        JLabel jo = new JLabel("Tour de " + this.joueur.getPseudo());
+        jo.setFont(new Font(null, 0,40));
+        JPanel joueur = new JPanel();
+        joueur.add(Box.createHorizontalGlue());
+        joueur.add(jo);
+        joueur.add(Box.createHorizontalGlue());
+        joueur.setBackground(new Color(0,0,0,0));
+        jp.add(joueur);
+
+        jp.add(Box.createVerticalGlue());
+
+        JPanel boutonPlacement = new JPanel();
+        boutonPlacement.setBackground(new Color(0,0,0,0));
+        boutonPlacement.setLayout(new GridLayout(1,7));
+        if(this.joueur.possedeRessourcesRoute().size() == 0) {
+            boutonPlacement.add(Box.createHorizontalGlue());
+            JButton route = new JButton("Route");
+            boutonPlacement.add(route);
+        }
+        if(this.joueur.possedeRessourcesColonie().size() == 0) {
+            boutonPlacement.add(Box.createHorizontalGlue());
+            JButton colonie = new JButton("Colonie");
+            boutonPlacement.add(colonie);
+        }
+        if(this.joueur.possedeRessourcesVille().size() == 0) {
+            boutonPlacement.add(Box.createHorizontalGlue());
+            JButton ville = new JButton("Ville");
+            boutonPlacement.add(ville);
+        }
+        boutonPlacement.add(Box.createHorizontalGlue());
+        jp.add(boutonPlacement);
+        jp.add(Box.createVerticalGlue());
+
+
+        JPanel devEchange = new JPanel();
+        devEchange.setBackground(new Color(0,0,0,0));
+        devEchange.setLayout(new GridLayout(1,5));
+        if(this.joueur.possedeRessourcesDeveloppement().size() == 0 || !this.joueur.cartesUtilisables) { // TODO verifier carteUtilisable
+            devEchange.add(Box.createHorizontalGlue());
+            JButton dev = new JButton("Developpement");
+            devEchange.add(dev);
+        }
+        if(!premierTour) {
+            devEchange.add(Box.createHorizontalGlue());
+            JButton echange = new JButton("Echange");
+            devEchange.add(echange);
+        }
+        devEchange.add(Box.createHorizontalGlue());
+        jp.add(devEchange);
+        jp.add(Box.createVerticalGlue());
+
+
+        JPanel choix = new JPanel();
+        choix.setLayout(new GridLayout(1,7));
+        choix.setBackground(new Color(0,0,0,0));
+        choix.add(Box.createHorizontalGlue());
+        JButton valider = new JButton("Valider");
+        choix.add(valider);
+        choix.add(Box.createHorizontalGlue());
+        if(!premierTour) {
+            JButton annuler = new JButton("annuler");
+            choix.add(annuler);
+            choix.add(Box.createHorizontalGlue());
+            JButton next = new JButton("Suivant");
+            choix.add(next);
+            choix.add(Box.createHorizontalGlue());
+        }
+        jp.add(choix);
+
+        return jp;
+    }
+
+    public JPanel actionEchange() {
+        JPanel jp = new JPanel();
+        jp.setLayout(new GridLayout(10,1));
+        int bois = 0;
+        int argile = 0;
+        int laine = 0;
+        int ble = 0;
+        int roche = 0;
+        JButton boisP = new JButton("+");
+        JButton boisM  = new JButton("-");
+        JButton argileP = new JButton("+");
+        JButton argileM  = new JButton("-");
+        JButton laineP = new JButton("+");
+        JButton laineM  = new JButton("-");
+        JButton bleP = new JButton("+");
+        JButton bleM  = new JButton("-");
+        JButton rocheP = new JButton("+");
+        JButton rocheM  = new JButton("-");
+
+        JLabel jo = new JLabel("Tour de " + joueur.getPseudo());
+        jo.setFont(new Font(null, 0,40));
+        JPanel joueur = new JPanel();
+        joueur.add(Box.createHorizontalGlue());
+        joueur.add(jo);
+        joueur.add(Box.createHorizontalGlue());
+        joueur.setBackground(new Color(0,0,0,0));
+        jp.add(joueur);
+
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+
+        JPanel ressource = new JPanel();
+        ressource.setBackground(new Color(0,0,0,0));
+        ressource.setLayout(new GridLayout(1,11));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(bois40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(argile40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(laine40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(ble40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(roche40, 12));
+        ressource.add(Box.createVerticalGlue());
+        for (Component c : ressource.getComponents()) {
+            c.setBackground(new Color(0,0,0,0));
+        }
+        jp.add(ressource);
+
+        JPanel plus = new JPanel();
+        plus.setBackground(new Color(0,0,0,0));
+        plus.setLayout(new GridLayout(1,11));
+        plus.add(Box.createHorizontalGlue());
+        plus.add(boisP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(argileP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(laineP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(bleP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(rocheP);
+        plus.add(Box.createHorizontalGlue());
+        jp.add(plus);
+
+        JPanel numero = new JPanel();
+        numero.setBackground(new Color(0,0,0,0));
+        numero.setLayout(new GridLayout(1,11));
+        numero.add(Box.createHorizontalGlue());
+        JLabel b = new JLabel("       " + bois);
+        numero.add(b);
+        numero.add(Box.createHorizontalGlue());
+        JLabel a = new JLabel("       " + argile);
+        numero.add(a);
+        numero.add(Box.createHorizontalGlue());
+        JLabel l = new JLabel("       " + laine);
+        numero.add(l);
+        numero.add(Box.createHorizontalGlue());
+        JLabel bl = new JLabel("       " + ble);
+        numero.add(bl);
+        numero.add(Box.createHorizontalGlue());
+        JLabel r = new JLabel("       " + roche);
+        numero.add(r);
+        numero.add(Box.createHorizontalGlue());
+        jp.add(numero);
+
+        JPanel moins = new JPanel();
+        moins.setBackground(new Color(0,0,0,0));
+        moins.setLayout(new GridLayout(1,11));
+        moins.add(Box.createHorizontalGlue());
+        moins.add(boisM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(argileM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(laineM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(bleM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(rocheM);
+        moins.add(Box.createHorizontalGlue());
+        jp.add(moins);
+
         return jp;
     }
 

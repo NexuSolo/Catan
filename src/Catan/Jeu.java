@@ -21,9 +21,8 @@ public class Jeu {
         joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
         joueurs.add(new Humain("Mizaxus", "jaune"));
-        joueurs.add(new Humain("Mez", "rouge"));
         actuel = joueurs.get(0);
-        plateau = new Plateau(8);
+        plateau = new Plateau(5);
         graphique = true;
         jouer();
     }
@@ -200,10 +199,10 @@ public class Jeu {
             joueurs.get(i).placerColonie(this, true);
             if(graphique) {
                 if(i == joueurs.size() - 1) {
-                    vue.refresh(joueurs.get(joueurs.size() - 1));
+                    vue.refresh(joueurs.get(joueurs.size() - 1), true);
                 }
                 else {
-                    vue.refresh(joueurs.get(i + 1));
+                    vue.refresh(joueurs.get(i + 1), true);
                 }
             }
         }
@@ -211,10 +210,10 @@ public class Jeu {
             joueurs.get(i).placerColonie(this, true);
             if(graphique) {
                 if(i == 0) {
-                    vue.refresh(joueurs.get(0));
+                    vue.refresh(joueurs.get(0), true);
                 }
                 else {
-                    vue.refresh(joueurs.get(i - 1));
+                    vue.refresh(joueurs.get(i - 1), true);
                 }
             }
         }
