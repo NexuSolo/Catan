@@ -8,6 +8,7 @@ import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
 public class Jeu {
+    private Controleur control;
     private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
     private Joueur ArmeeLaPlusPuissante = null;
     private Joueur routeLaPlusLongue = null;
@@ -192,7 +193,7 @@ public class Jeu {
 
     public void jouer() throws IOException, InterruptedException {
         if(graphique) {
-            vue = new Vue(this);
+            vue = new Vue(this, this.control);
         }
         plateau.affiche();
         for (int i = 0; i < joueurs.size(); i++) {
@@ -312,6 +313,8 @@ public class Jeu {
         }
     }
 
-   
+   public Controleur getControl() {
+       return control;
+   }
     
 }

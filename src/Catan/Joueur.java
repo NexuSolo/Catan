@@ -20,6 +20,7 @@ public abstract class Joueur {
     public int nombreVilles = 0;
     private int nombreChevalier = 0;
     protected LinkedList<Port> ports = new LinkedList<Port>();
+    protected LinkedList<Intersection> colonies = new LinkedList<Intersection>();
 
     public Joueur(String pseudo, String couleur) {
         this.pseudo = pseudo;
@@ -355,6 +356,99 @@ public abstract class Joueur {
         cartesUtilisables = true;
     }
 
+    public boolean colonieEstPlaceable(Intersection inter, boolean premierTour) {
+        if(inter.getColonie() != null) {
+           return false; 
+        }
+        if(inter.getCheminH() != null) {
+            if(inter.getCheminH().getIntersection1().getColonie() != null) {
+                return false;
+            }
+        }
+        if(inter.getCheminB() != null) {
+            if(inter.getCheminB().getIntersection2().getColonie() != null) {
+                return false;
+            }
+        }
+        if(inter.getCheminG() != null) {
+            if(inter.getCheminG().getIntersection1().getColonie() != null) {
+                return false;
+            }
+        }
+        if(inter.getCheminD() != null) {
+            if(inter.getCheminD().getIntersection2().getColonie() != null) {
+                return false;
+            }
+        }
+        if(!premierTour) {
+            if(inter.getCheminH() != null) {
+                if(inter.getCheminH().getRoute().equals(this)) {
+                    return true;
+                }
+            }
+            if(inter.getCheminB() != null) {
+                if(inter.getCheminB().getRoute().equals(this)) {
+                    return true;
+                }
+            }
+            if(inter.getCheminG() != null) {
+                if(inter.getCheminG().getRoute().equals(this)) {
+                    return true;
+                }
+            }
+            if(inter.getCheminD() != null) {
+                if(inter.getCheminD().getRoute().equals(this)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+   public boolean routeEstPlaceable(Chemin chemin) {
+        if(chemin.getRoute() == null) {
+            if((chemin.getIntersection1().getColonie() != null && chemin.getIntersection1().getColonie().getJoueur().equals(this)) ||(chemin.getIntersection2().getColonie() != null && chemin.getIntersection2().getColonie().getJoueur().equals(this))) {
+                return true;
+            }
+            else {
+                if(chemin.getIntersection1().getCheminH() != null && chemin.getIntersection1().getCheminH().getRoute() != null && chemin.getIntersection1().getCheminH().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection1().getCheminB() != null && chemin.getIntersection1().getCheminB().getRoute() != null && chemin.getIntersection1().getCheminB().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection1().getCheminG() != null && chemin.getIntersection1().getCheminG().getRoute() != null && chemin.getIntersection1().getCheminG().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection1().getCheminD() != null && chemin.getIntersection1().getCheminD().getRoute() != null && chemin.getIntersection1().getCheminD().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminH() != null && chemin.getIntersection2().getCheminH().getRoute() != null && chemin.getIntersection2().getCheminH().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminB() != null && chemin.getIntersection2().getCheminB().getRoute() != null && chemin.getIntersection2().getCheminB().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminG() != null && chemin.getIntersection2().getCheminG().getRoute() != null && chemin.getIntersection2().getCheminG().getRoute().equals(this)) {
+                    return true;
+                }
+                else if(chemin.getIntersection2().getCheminD() != null && chemin.getIntersection2().getCheminD().getRoute() != null && chemin.getIntersection2().getCheminD().getRoute().equals(this)) {
+                    return true;
+                }
+                else {
+                    System.out.println("Vous devez avoir une colonie ou une route juxtaposé a votre route");
+                }
+            }
+        }
+        else {
+            System.out.println("Vous ne pouvez pas placer de route sur une route deja existante");
+        }
+        return false;
+    }
+
+
     public void addRoute(Chemin c){
         routes.add(c);
     }
@@ -418,5 +512,10 @@ public abstract class Joueur {
     public Joueur getsuivant(LinkedList<Joueur> joueurs) {
         return null;
     }
+
+    public LinkedList<Intersection> getColonies() {
+        return colonies;
+    }
+
 
 }

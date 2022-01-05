@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 public class Vue extends JFrame {
+    Controleur control;
     JPanel plateau;
     JPanel action;
     JPanel stats;
@@ -47,7 +48,8 @@ public class Vue extends JFrame {
 
     }
 
-    Vue(Jeu jeu) throws IOException, InterruptedException {
+    Vue(Jeu jeu, Controleur control) throws IOException, InterruptedException {
+        this.control = control;
         bois40 = ImageIO.read(new File("src/Catan/Images/bois40-40.png"));
         argile40 = ImageIO.read(new File("src/Catan/Images/argile40-40.png"));
         laine40 = ImageIO.read(new File("src/Catan/Images/laine40-40.png"));
@@ -566,6 +568,15 @@ public class Vue extends JFrame {
         if(!premierTour) {
             devEchange.add(Box.createHorizontalGlue());
             JButton echange = new JButton("Echange");
+            echange.addActionListener(event -> {
+                model.remove(action);
+                action = actionEchange();
+                action.setBackground(Color.ORANGE);
+                action.setBounds(0,202,500,598);
+                model.add(action);
+                action.revalidate();
+                action.repaint();
+            });
             devEchange.add(echange);
         }
         devEchange.add(Box.createHorizontalGlue());
@@ -623,7 +634,10 @@ public class Vue extends JFrame {
 
         jp.add(Box.createVerticalGlue());
         jp.add(Box.createVerticalGlue());
-        jp.add(Box.createVerticalGlue());
+
+        JPanel ac = new JPanel();
+        ac.setBackground(new Color(0,0,0,0));
+
         jp.add(Box.createVerticalGlue());
         jp.add(Box.createVerticalGlue());
 
