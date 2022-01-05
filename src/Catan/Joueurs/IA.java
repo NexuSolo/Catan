@@ -179,7 +179,6 @@ public class IA extends Joueur{
         prochaineRoute.setRoute(this);
         System.out.println("Intersection 1 :x"+prochaineRoute.getIntersection1().getX()+"y"+prochaineRoute.getIntersection1().getY()+" x"+prochaineRoute.getIntersection2().getX()+"y"+prochaineRoute.getIntersection2().getY());
     }
-    
     @Override
     public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour) {
         // TODO Auto-generated method stub
