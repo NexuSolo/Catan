@@ -156,7 +156,7 @@ public abstract class Joueur {
             while(nombre != 0) {
                 this.ressources.remove(ressource);
                 nombre--; 
-             }
+            }
         }
         else {
             System.out.println("Erreur : Pas Assez de Ressources !");
@@ -196,7 +196,7 @@ public abstract class Joueur {
 
     public abstract void tour(Jeu jeu) throws IOException, InterruptedException;
 
-    public abstract boolean echange(Jeu jeu);
+    public abstract boolean echange(Jeu jeu) throws IOException, InterruptedException;
 
     public int calculPoint(boolean ArmeeLaPlusPuissante,boolean RouteLaPlusLongue,boolean PdV) {
         int res = point;
@@ -515,6 +515,10 @@ public abstract class Joueur {
 
     public LinkedList<Intersection> getColonies() {
         return colonies;
+    }
+
+    public LinkedList<Port> getPorts() {
+        return ports;
     }
 
 

@@ -200,10 +200,10 @@ public class Jeu {
             joueurs.get(i).placerColonie(this, true);
             if(graphique) {
                 if(i == joueurs.size() - 1) {
-                    vue.refresh(joueurs.get(joueurs.size() - 1), true);
+                    vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
                 }
                 else {
-                    vue.refresh(joueurs.get(i + 1), true);
+                    vue.refresh(joueurs.get(i + 1), true, false);
                 }
             }
         }
@@ -211,10 +211,10 @@ public class Jeu {
             joueurs.get(i).placerColonie(this, true);
             if(graphique) {
                 if(i == 0) {
-                    vue.refresh(joueurs.get(0), true);
+                    vue.refresh(joueurs.get(0), true, false);
                 }
                 else {
-                    vue.refresh(joueurs.get(i - 1), true);
+                    vue.refresh(joueurs.get(i - 1), true, false);
                 }
             }
         }

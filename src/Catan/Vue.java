@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import Catan.*;
+import Catan.Joueurs.Humain;
 
 public class Vue extends JFrame {
     Controleur control;
@@ -18,6 +20,7 @@ public class Vue extends JFrame {
     JPanel stats;
     JPanel ressource;
     JPanel information;
+    JTextArea terminal;
     JPanel model = new JPanel();
     Jeu jeu;
     Joueur joueur;
@@ -111,7 +114,7 @@ public class Vue extends JFrame {
         revalidate();
     }
 
-    public void refresh(Joueur j, boolean premierTour) throws IOException, InterruptedException {
+    public void refresh(Joueur j, boolean premierTour, boolean echange) throws IOException, InterruptedException {
         joueur = j;
         System.out.println("yo");
 
@@ -130,17 +133,23 @@ public class Vue extends JFrame {
         stats.setBounds(0, 0, 1600, 200);
         model.add(stats);
 
-        model.remove(information);
-        information = afficheInformations();
-        information.setBackground(Color.ORANGE);
-        information.setBounds(1200,202,400,696);
-        model.add(information);
+        
 
-        model.remove(action);
-        action = actionPrincipale(premierTour);
-        action.setBackground(Color.ORANGE);
-        action.setBounds(0,202,500,598);
-        model.add(action);
+        if(!echange) {
+
+            model.remove(information);
+            information = afficheInformations();
+            information.setBackground(Color.ORANGE);
+            information.setBounds(1200,202,400,696);
+            model.add(information);
+
+            model.remove(action);
+            action = actionPrincipale(premierTour);
+            action.setBackground(Color.ORANGE);
+            action.setBounds(0,202,500,598);
+            model.add(action);
+        }
+
 
         revalidate();
         repaint();
@@ -193,7 +202,6 @@ public class Vue extends JFrame {
     }
 
     public JPanel plateauToPanel(Plateau plateau) throws IOException {
-        System.out.println("yo2");
         JPanel panel = new JPanel();
         JPanel contenu = new JPanel();
         panel.setLayout(new GridLayout(plateau.getLength() + 1, plateau.getLength() + 1));
@@ -569,8 +577,14 @@ public class Vue extends JFrame {
             devEchange.add(Box.createHorizontalGlue());
             JButton echange = new JButton("Echange");
             echange.addActionListener(event -> {
+                try {
+                    ((Humain) this.joueur).portPossede(jeu, true);
+                } catch (IOException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 model.remove(action);
-                action = actionEchange();
+                action = actionEchange(new int[5]);
                 action.setBackground(Color.ORANGE);
                 action.setBounds(0,202,500,598);
                 model.add(action);
@@ -604,24 +618,69 @@ public class Vue extends JFrame {
         return jp;
     }
 
-    public JPanel actionEchange() {
+    public void actionRefresh(int[] tab) {
+        model.remove(action);
+        action = actionEchange(tab);
+        action.setBackground(Color.ORANGE);
+        action.setBounds(0,202,500,598);
+        model.add(action);
+        revalidate();
+        repaint();
+    }
+
+    public JPanel actionEchange(int[] tab) {
         JPanel jp = new JPanel();
         jp.setLayout(new GridLayout(10,1));
-        int bois = 0;
-        int argile = 0;
-        int laine = 0;
-        int ble = 0;
-        int roche = 0;
         JButton boisP = new JButton("+");
+        boisP.addActionListener(event -> {
+            tab[0]++;
+            actionRefresh(tab);
+        });
         JButton boisM  = new JButton("-");
+        boisM.addActionListener(event -> {
+            tab[0]--;
+            actionRefresh(tab);
+        });
         JButton argileP = new JButton("+");
+        argileP.addActionListener(event -> {
+            tab[1]++;
+            actionRefresh(tab);
+        });
         JButton argileM  = new JButton("-");
+        argileM.addActionListener(event -> {
+            tab[1]--;
+            actionRefresh(tab);
+        });
         JButton laineP = new JButton("+");
+        laineP.addActionListener(event -> {
+            tab[2]++;
+            actionRefresh(tab);
+        });
         JButton laineM  = new JButton("-");
+        laineM.addActionListener(event -> {
+            tab[2]--;
+            actionRefresh(tab);
+        });
         JButton bleP = new JButton("+");
+        bleP.addActionListener(event -> {
+            tab[3]++;
+            actionRefresh(tab);
+        });
         JButton bleM  = new JButton("-");
+        bleM.addActionListener(event -> {
+            tab[3]--;
+            actionRefresh(tab);
+        });
         JButton rocheP = new JButton("+");
+        rocheP.addActionListener(event -> {
+            tab[4]++;
+            actionRefresh(tab);
+        });
         JButton rocheM  = new JButton("-");
+        rocheM.addActionListener(event -> {
+            tab[4]--;
+            actionRefresh(tab);
+        });
 
         JLabel jo = new JLabel("Tour de " + joueur.getPseudo());
         jo.setFont(new Font(null, 0,40));
@@ -637,6 +696,35 @@ public class Vue extends JFrame {
 
         JPanel ac = new JPanel();
         ac.setBackground(new Color(0,0,0,0));
+        ac.setLayout(new GridLayout(1,5));
+        ac.add(Box.createHorizontalGlue());
+        JButton valider = new JButton("Valider");
+        valider.addActionListener(event -> {
+            try {
+                ((Humain) this.joueur).echangeBanque(jeu, tab);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+        ac.add(valider);
+        ac.add(Box.createHorizontalGlue());
+        JButton annuler = new JButton("Annuler");
+        annuler.addActionListener(event -> {
+            model.remove(action);
+            action = actionPrincipale(false);
+            action.setBackground(Color.ORANGE);
+            action.setBounds(0,202,500,598);
+            model.add(action);
+            revalidate();
+            repaint();
+        });
+        ac.add(annuler);
+        ac.add(Box.createHorizontalGlue());
+        jp.add(ac);
 
         jp.add(Box.createVerticalGlue());
         jp.add(Box.createVerticalGlue());
@@ -680,19 +768,19 @@ public class Vue extends JFrame {
         numero.setBackground(new Color(0,0,0,0));
         numero.setLayout(new GridLayout(1,11));
         numero.add(Box.createHorizontalGlue());
-        JLabel b = new JLabel("       " + bois);
+        JLabel b = new JLabel("       " + tab[0]);
         numero.add(b);
         numero.add(Box.createHorizontalGlue());
-        JLabel a = new JLabel("       " + argile);
+        JLabel a = new JLabel("       " + tab[1]);
         numero.add(a);
         numero.add(Box.createHorizontalGlue());
-        JLabel l = new JLabel("       " + laine);
+        JLabel l = new JLabel("       " + tab[2]);
         numero.add(l);
         numero.add(Box.createHorizontalGlue());
-        JLabel bl = new JLabel("       " + ble);
+        JLabel bl = new JLabel("       " + tab[3]);
         numero.add(bl);
         numero.add(Box.createHorizontalGlue());
-        JLabel r = new JLabel("       " + roche);
+        JLabel r = new JLabel("       " + tab[4]);
         numero.add(r);
         numero.add(Box.createHorizontalGlue());
         jp.add(numero);
@@ -803,13 +891,17 @@ public class Vue extends JFrame {
 
     public JPanel afficheInformations() {
         JPanel res = new JPanel();
-        JTextArea area = new JTextArea("",30,30);
-        area.setBackground(Color.LIGHT_GRAY);
-        area.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(area);
-        area.setBounds(10, 10, 100, 300);
+        terminal = new JTextArea("",30,30);
+        terminal.setBackground(Color.LIGHT_GRAY);
+        terminal.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(terminal);
+        terminal.setBounds(10, 10, 100, 300);
         res.add(scrollPane);
         return res;
+    }
+
+    public JTextArea getTerminal() {
+        return terminal;
     }
 
 }

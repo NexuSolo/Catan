@@ -60,7 +60,7 @@ public class Humain extends Joueur{
                     }
                     jeu.getPlateau().affiche();
                     if(jeu.graphique) {
-                        jeu.vue.refresh(this,true);
+                        jeu.vue.refresh(this, true, false);
                     }
                     if(premierTour) {
                         placerRoute(jeu, true, inter);
@@ -324,7 +324,7 @@ public class Humain extends Joueur{
         while (true) {
             afficheRessource();
             if(jeu.graphique) {
-                jeu.vue.refresh(jeu.actuel,false);
+                jeu.vue.refresh(jeu.actuel, false, false);
             }
             System.out.print(this + ", quelle action voulez vous faire ?");
             if(possedeRessourcesRoute().size() == 0) {
@@ -349,7 +349,7 @@ public class Humain extends Joueur{
         }
     }
 
-    public boolean echange(Jeu jeu) {
+    public boolean echange(Jeu jeu) throws IOException, InterruptedException {
         System.out.println("Voullez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while (true) {
@@ -358,7 +358,7 @@ public class Humain extends Joueur{
                 return false;
             }
             else if(reponse.equals("banque")) {
-                echangeBanque(jeu);
+                echangeBanque(jeu, null);
                 return true;
             }
             else if(reponse.equals("joueur")) {
@@ -371,66 +371,99 @@ public class Humain extends Joueur{
         }
     }
 
-    public void echangeBanque(Jeu jeu) {
-        boolean generale = false;
-        boolean bois = false;
-        boolean argile = false;
-        boolean laine = false;
-        boolean ble = false;
-        boolean roche = false;
+    public boolean[] portPossede(Jeu jeu, boolean affiche) throws IOException, InterruptedException {
+        boolean[] res = new boolean[6];
         if(ports.size() == 0) {
             System.out.println("Vous ne possedez pas de port, vous devez echanger 4 ressources du même type pour en obtenir une nouvelle.");
+            if(jeu.graphique && affiche) {
+                jeu.vue.getTerminal().append("Vous ne possedez pas de port, vous devez echanger 4 ressources du même type pour en obtenir une nouvelle." + "\n");
+                jeu.vue.refresh(this, false, true);
+            }
         }
         else {
             for (Port port : ports) {
                 if(port.getRessource() == null) {
-                    generale = true;
+                    res[5] = true;
                     System.out.println("Vous possedez un port générale, vous devez echanger 3 ressources du même type pour en obtenir une nouvelle.");
+                    if(jeu.graphique && affiche) {
+                        jeu.vue.getTerminal().append("Vous possedez un port générale, vous devez echanger 3 ressources du même type pour en obtenir une nouvelle." + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                 }
                 else {
                     if(port.getRessource().equals(Ressource.BOIS)) {
-                        bois = true;
+                        res[0] = true;
                         System.out.println("Vous possedez un port de bois, vous pouvez echanger 2 bois pour obtenir une nouvelle ressource");
+                        if(jeu.graphique && affiche) {
+                            jeu.vue.getTerminal().append("Vous possedez un port de bois, vous pouvez echanger 2 bois pour obtenir une nouvelle ressource" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                     else if(port.getRessource().equals(Ressource.ARGILE)) {
-                        argile = true;
+                        res[1] = true;
                         System.out.println("Vous possedez un port d'argile, vous pouvez echanger 2 d'argiles pour obtenir une nouvelle ressource");
+                        if(jeu.graphique && affiche) {
+                            jeu.vue.getTerminal().append("Vous possedez un port d'argile, vous pouvez echanger 2 d'argiles pour obtenir une nouvelle ressource" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                     else if(port.getRessource().equals(Ressource.LAINE)){
-                        laine = true;
+                        res[2] = true;
                         System.out.println("Vous possedez un port de laine, vous pouvez echanger 2 laines pour obtenir une nouvelle ressource");
+                        if(jeu.graphique && affiche) {
+                            jeu.vue.getTerminal().append("Vous possedez un port de laine, vous pouvez echanger 2 laines pour obtenir une nouvelle ressource" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                     else if(port.getRessource().equals(Ressource.BLE)){
-                        ble = true;
+                        res[3] = true;
                         System.out.println("Vous possedez un port de blé, vous pouvez echanger 2 blés pour obtenir une nouvelle ressource");
+                        if(jeu.graphique && affiche) {
+                            jeu.vue.getTerminal().append("Vous possedez un port de blé, vous pouvez echanger 2 blés pour obtenir une nouvelle ressource" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                     else if(port.getRessource().equals(Ressource.ROCHE)){
-                        roche = true;
+                        res[4] = true;
                         System.out.println("Vous possedez un port de roche, vous pouvez echanger 2 roches pour obtenir une nouvelle ressource");
+                        if(jeu.graphique && affiche) {
+                            jeu.vue.getTerminal().append("Vous possedez un port de roche, vous pouvez echanger 2 roches pour obtenir une nouvelle ressource" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                 }
             }
         }
+        return res;
+    }
+
+    public void echangeBanque(Jeu jeu, int[] n) throws IOException, InterruptedException {
+        boolean[] p = portPossede(jeu, false);
         int[] ressources = new int[5];
-        System.out.println("Choisissez les ressources a echanger. Exemple -1Bois ou +1Roche");
-        System.out.println("Ou effectuer l'échange en écrivant \"Echange\"");
-        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
-        while(true){
-            System.out.println("Vous avez actuellement un echange de " + ressources[0] + " bois, " + ressources[1] + " argile, " + ressources[2] + " laine, " + ressources[3] + " blé, " + ressources[4] + " roche.");
-            String reponse = Jeu.scan();
-            if(reponse.equals("annuler")) {
-                return;
-            }
-            if(reponse.equals("echange")) {
-                break;
-            }
-            int[] temp;
-            temp = ligneEchange(reponse,ressources);
-            if(temp != null) {
-                ressources = temp;
+        if(!jeu.graphique) {
+            System.out.println("Choisissez les ressources a echanger. Exemple -1Bois ou +1Roche");
+            System.out.println("Ou effectuer l'échange en écrivant \"Echange\"");
+            System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+            while(true){
+                System.out.println("Vous avez actuellement un echange de " + ressources[0] + " bois, " + ressources[1] + " argile, " + ressources[2] + " laine, " + ressources[3] + " blé, " + ressources[4] + " roche.");
+                String reponse = Jeu.scan();
+                if(reponse.equals("annuler")) {
+                    return;
+                }
+                if(reponse.equals("echange")) {
+                    break;
+                }
+                int[] temp;
+                temp = ligneEchange(reponse,ressources);
+                if(temp != null) {
+                    ressources = temp;
+                }
             }
         }
-        int[] coeff = coefficientsPort(ressources,bois,argile,laine,ble,roche,generale);
+        else {
+            ressources = n;
+        }
+        int[] coeff = coefficientsPort(jeu, ressources,p[0],p[1],p[2],p[3],p[4],p[5]);
         if(coeff != null) {
             int ajout = 0;
             int supprimer = 0;
@@ -443,69 +476,150 @@ public class Humain extends Joueur{
                 }
             }
             if(supprimer + ajout == 0) {
+                if(jeu.graphique) {
+                    if(ressources[0] < 0) {
+                        if(!possede(Ressource.BOIS,Math.abs(ressources[0]))) {
+                            jeu.vue.getTerminal().append("Vous n'avez pas assez de bois" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                            return;
+                        }
+                    }
+                    if(ressources[1] < 0) {
+                        if(!possede(Ressource.ARGILE,Math.abs(ressources[1]))) {
+                            jeu.vue.getTerminal().append("Vous n'avez pas assez d'argile" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                            return;
+                        }
+                    }
+                    if(ressources[2] < 0) {
+                        if(!possede(Ressource.LAINE,Math.abs(ressources[2]))) {
+                            jeu.vue.getTerminal().append("Vous n'avez pas assez de laine" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                            return;
+                        }
+                    }
+                    if(ressources[3] < 0) {
+                        if(!possede(Ressource.BLE,Math.abs(ressources[3]))) {
+                            jeu.vue.getTerminal().append("Vous n'avez pas assez de blé" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                            return;
+                        }
+                    }
+                    if(ressources[4] < 0) {
+                        if(!possede(Ressource.ROCHE,Math.abs(ressources[4]))) {
+                            jeu.vue.getTerminal().append("Vous n'avez pas assez de roche" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                            return;
+                        }
+                    }
+                }
                 if(ressources[0] > 0) {
                     addRessource(Ressource.BOIS, ressources[0]);
                     System.out.println("Vous avez gagné " + ressources[0] + " bois");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Vous avez gagné " + ressources[0] + " bois" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                 }
                 else {
                     if(ressources[0] != 0) {
                         removeRessource(Ressource.BOIS, Math.abs(ressources[0]));
                         System.out.println("Vous avez échangé " + Math.abs(ressources[0]) + " bois");
+                        if(jeu.graphique) {
+                            jeu.vue.getTerminal().append("Vous avez échangé " + Math.abs(ressources[0]) + " bois" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                 }
-
                 if(ressources[1] > 0) {
                     addRessource(Ressource.ARGILE, ressources[1]);
                     System.out.println("Vous avez gagné " + ressources[1] + " argile");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Vous avez gagné " + ressources[1] + " argile" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                 }
                 else {
                     if(ressources[1] != 0) {
                         removeRessource(Ressource.ARGILE, Math.abs(ressources[1]));
                         System.out.println("Vous avez échangé " + Math.abs(ressources[1]) + " argile");
+                        if(jeu.graphique) {
+                            jeu.vue.getTerminal().append("Vous avez échangé " + Math.abs(ressources[1]) + " argile" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                 }
 
                 if(ressources[2] > 0) {
                     addRessource(Ressource.LAINE, ressources[2]);
                     System.out.println("Vous avez gagné " + ressources[2] + " laine");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Vous avez gagné " + ressources[2] + " laine" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                 }
                 else {
                     if(ressources[2] != 0) {
                         removeRessource(Ressource.LAINE, Math.abs(ressources[2]));
                         System.out.println("Vous avez échangé " + Math.abs(ressources[2]) + " laine");
+                        if(jeu.graphique) {
+                            jeu.vue.getTerminal().append("Vous avez échangé " + Math.abs(ressources[2]) + " laine" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                 }
                 
                 if(ressources[3] > 0) {
                     addRessource(Ressource.BLE, ressources[3]);
                     System.out.println("Vous avez gagné " + ressources[3] + " blé");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Vous avez gagné " + ressources[3] + " blé" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                 }
                 else {
                     if(ressources[3] != 0) {
                         removeRessource(Ressource.BLE, Math.abs(ressources[3]));
                         System.out.println("Vous avez échangé " + Math.abs(ressources[3]) + " blé");
+                        if(jeu.graphique) {
+                            jeu.vue.getTerminal().append("Vous avez échangé " + Math.abs(ressources[3]) + " blé" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                 }
 
                 if(ressources[4] > 0) {
                     addRessource(Ressource.ROCHE, ressources[4]);
                     System.out.println("Vous avez gagné " + ressources[4] + " roche");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Vous avez gagné " + ressources[4] + " roche" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                 }
                 else {
                     if(ressources[4] != 0) {
                         removeRessource(Ressource.ROCHE, Math.abs(ressources[4]));
                         System.out.println("Vous avez échangé " + Math.abs(ressources[4]) + " roche");
+                        if(jeu.graphique) {
+                            jeu.vue.getTerminal().append("Vous avez échangé " + Math.abs(ressources[4]) + " roche" + "\n");
+                            jeu.vue.refresh(this, false, true);
+                        }
                     }
                 }
                 System.out.println();
             }
             else {
                 System.out.println("Vos ressources ne sont pas équilibrer");
+                if(jeu.graphique) {
+                    jeu.vue.getTerminal().append("Vos ressources ne sont pas équilibrer" + "\n");
+                    jeu.vue.revalidate();
+                    jeu.vue.repaint();
+                }
             }
         }
     }
 
-    public int[] coefficientsPort(int[] tab, boolean bois, boolean argile, boolean laine, boolean ble, boolean roche, boolean global) {
+    public int[] coefficientsPort(Jeu jeu, int[] tab, boolean bois, boolean argile, boolean laine, boolean ble, boolean roche, boolean global) throws IOException, InterruptedException {
         int[] res = new int[5];
         if(tab[0] < 0) {
             if(bois) {
@@ -514,6 +628,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de bois, le nombre de bois donné doit etre de 2 ou 4 ou 6");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de bois, le nombre de bois donné doit etre de 2 ou 4 ou 6" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -522,7 +640,11 @@ public class Humain extends Joueur{
                     res[0] = tab[0]/3;
                 }
                 else {
-                    System.out.println("Échange invalide. Vous possedez un port de générale, le nombre de bois donné doit etre de 3 ou 6 ou 9");
+                    System.out.println("Échange invalide. Vous possedez un port générale, le nombre de bois donné doit etre de 3 ou 6 ou 9");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port générale, le nombre de bois donné doit etre de 3 ou 6 ou 9" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -532,6 +654,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Le nombre de bois donné doit etre de 4 ou 8 ou 12");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Le nombre de bois donné doit etre de 4 ou 8 ou 12" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -546,6 +672,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de argile, le nombre de argile donné doit etre de 2 ou 4 ou 6");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de argile, le nombre de argile donné doit etre de 2 ou 4 ou 6" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -555,6 +685,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de générale, le nombre de argile donné doit etre de 3 ou 6 ou 9");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de générale, le nombre de argile donné doit etre de 3 ou 6 ou 9" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -564,6 +698,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Le nombre de argile donné doit etre de 4 ou 8 ou 12");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Le nombre de argile donné doit etre de 4 ou 8 ou 12" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -578,6 +716,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de laine, le nombre de laine donné doit etre de 2 ou 4 ou 6");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de laine, le nombre de laine donné doit etre de 2 ou 4 ou 6" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -587,6 +729,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de générale, le nombre de laine donné doit etre de 3 ou 6 ou 9");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de générale, le nombre de laine donné doit etre de 3 ou 6 ou 9" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -596,6 +742,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Le nombre de laine donné doit etre de 4 ou 8 ou 12");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Le nombre de laine donné doit etre de 4 ou 8 ou 12" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -610,6 +760,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de blé, le nombre de blé donné doit etre de 2 ou 4 ou 6");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de blé, le nombre de blé donné doit etre de 2 ou 4 ou 6" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -619,6 +773,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de générale, le nombre de blé donné doit etre de 3 ou 6 ou 9");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de générale, le nombre de blé donné doit etre de 3 ou 6 ou 9" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -628,6 +786,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Le nombre de blé donné doit etre de 4 ou 8 ou 12");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Le nombre de blé donné doit etre de 4 ou 8 ou 12" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -642,6 +804,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de roche, le nombre de roche donné doit etre de 2 ou 4 ou 6");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de roche, le nombre de roche donné doit etre de 2 ou 4 ou 6" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -651,6 +817,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Vous possedez un port de générale, le nombre de roche donné doit etre de 3 ou 6 ou 9");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Vous possedez un port de générale, le nombre de roche donné doit etre de 3 ou 6 ou 9" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }
@@ -660,6 +830,10 @@ public class Humain extends Joueur{
                 }
                 else {
                     System.out.println("Échange invalide. Le nombre de roche donné doit etre de 4 ou 8 ou 12");
+                    if(jeu.graphique) {
+                        jeu.vue.getTerminal().append("Échange invalide. Le nombre de roche donné doit etre de 4 ou 8 ou 12" + "\n");
+                        jeu.vue.refresh(this, false, true);
+                    }
                     return null;
                 }
             }

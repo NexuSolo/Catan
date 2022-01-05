@@ -1,5 +1,4 @@
 package Catan;
-
 import java.io.IOException;
 
 public class Test {
