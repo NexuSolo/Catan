@@ -280,11 +280,14 @@ public class Plateau {
         valDe.put("12",douze);
     }
 
-    public void LancerDes(Joueur J,LinkedList<Joueur> listeJoueurs) {
+    public void LancerDes(Jeu jeu, Joueur J,LinkedList<Joueur> listeJoueurs) {
         int de1 = new Random().nextInt(6)+1;
         int de2 = new Random().nextInt(6)+1;
         int total = de1 + de2;
         System.out.println("Le résultat des dés est " + total);
+        jeu.vue.getTerminal().append("Le résultat des dés est " + total);
+        jeu.vue.getTerminal().repaint();
+        jeu.vue.getTerminal().revalidate();
         String valeur = String.valueOf(total);
         if (total != 7) {
             LinkedList<Case> lol = valDe.get(valeur);
@@ -296,13 +299,21 @@ public class Plateau {
             for (Joueur joueurs : listeJoueurs) {
                 joueurs.defausseVoleur();
             }
-            deplaceVoleur(J);
+            deplaceVoleur(jeu, J);
         }     
     }
 
-    public void deplaceVoleur(Joueur j) {
-        System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur "+j);
-        j.deplaceVoleur(this);
+    public void deplaceVoleur(Jeu jeu, Joueur j) {
+        if(jeu.graphique) {
+            jeu.vue.setAction(jeu.vue.actionVoleur());
+            while(jeu.vue.getSelectionCase() == null && !jeu.vue.getActions());
+            jeu.vue.setActions(false);
+            j.deplaceVoleur(jeu);
+        }
+        else {
+            System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur " + j);
+            j.deplaceVoleur(jeu);
+        }
         volRessource(j);
     }
 

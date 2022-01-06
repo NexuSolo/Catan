@@ -303,49 +303,65 @@ public class Humain extends Joueur{
     }
     
     @Override
-    public void deplaceVoleur(Plateau p) {
-        p.affiche();
-        System.out.println("Ou voulez-vous placer le voleur ? Exemple : 1:1 représente l'emplacement en haut à gauche de la case x = 1 y = 1 ");
-        String scan = Jeu.scan();
-        Case c = coordonéesToCase(p,scan);
-        while (c == null) {
-            System.out.println("Case invalide, veuillez réinsérer des coordonnées (Rappel \"2:3\" renvoie la case x = 2 et y = 3) ");
-            scan = Jeu.scan();
-            c = coordonéesToCase(p,scan);
+    public void deplaceVoleur(Jeu jeu) {
+        jeu.getPlateau().affiche();
+        Case c = null;
+        if(jeu.graphique) {
+            c = jeu.vue.getSelectionCase();
         }
-        p.setVoleur(c);
-        
+        else {
+            System.out.println("Ou voulez-vous placer le voleur ? Exemple : 1:1 représente l'emplacement en haut à gauche de la case x = 1 y = 1 ");
+            String scan = Jeu.scan();
+            c = coordonéesToCase(jeu.getPlateau(),scan);
+            while (c == null) {
+                System.out.println("Case invalide, veuillez réinsérer des coordonnées (Rappel \"2:3\" renvoie la case x = 2 et y = 3) ");
+                scan = Jeu.scan();
+                c = coordonéesToCase(jeu.getPlateau(),scan);
+            }
+        }
+        jeu.getPlateau().setVoleur(c);
     }
     
     @Override
     public void tour(Jeu jeu) throws IOException, InterruptedException {
         cartesUtilisables();
-        jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
+        jeu.getPlateau().LancerDes(jeu, this, jeu.getJoueurs());
+        if(jeu.graphique){
+            jeu.vue.refresh(this, false, false);
+        }
         while (true) {
-            afficheRessource();
+            System.out.println(jeu.vue.getTourFini());
             if(jeu.graphique) {
-                jeu.vue.refresh(jeu.actuel, false, false);
+                if(jeu.vue.getTourFini()) {
+                    jeu.vue.setTourFini(false);
+                    jeu.actuel = jeu.getJoueurs().get(jeu.joueurSuivant());
+                    break;
+                }
             }
-            System.out.print(this + ", quelle action voulez vous faire ?");
-            if(possedeRessourcesRoute().size() == 0) {
-                System.out.print(" [Route]");
+            else {
+                afficheRessource();
+                System.out.print(this + ", quelle action voulez vous faire ?");
+                if(possedeRessourcesRoute().size() == 0) {
+                    System.out.print(" [Route]");
+                }
+                if(possedeRessourcesColonie().size() == 0) {
+                    System.out.print(" [Colonie]");
+                }
+                if(possedeRessourcesVille().size() == 0){
+                    System.out.print(" [Ville]");
+                }
+                if(possedeRessourcesDeveloppement().size() == 0) {
+                    System.out.print(" [Développement]");
+                }
+    
+                System.out.println(" [Echange] [Fin]");
+                String reponse = Jeu.scan();
+                if(reponse.equals("fin")) {
+                    jeu.actuel = jeu.getJoueurs().get(jeu.joueurSuivant());
+                    break;
+                }
+                reponseToAction(jeu, reponse, jeu.getControl());
             }
-            if(possedeRessourcesColonie().size() == 0) {
-                System.out.print(" [Colonie]");
-            }
-            if(possedeRessourcesVille().size() == 0){
-                System.out.print(" [Ville]");
-            }
-            if(possedeRessourcesDeveloppement().size() == 0) {
-                System.out.print(" [Développement]");
-            }
-            System.out.println(" [Echange] [Fin]");
-            String reponse = Jeu.scan();
-            if(reponse.equals("fin")) {
-                jeu.actuel = jeu.getJoueurs().get(jeu.joueurSuivant());
-                break;
-            }
-            reponseToAction(jeu, reponse, jeu.getControl());
         }
     }
 

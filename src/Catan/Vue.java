@@ -24,6 +24,11 @@ public class Vue extends JFrame {
     JPanel model = new JPanel();
     Jeu jeu;
     Joueur joueur;
+    boolean tourFini = false;
+    Intersection selectionIntersection = null;
+    Chemin selectionChemin = null;
+    Case selectionCase = null;
+    boolean actions = false;
 
     public static BufferedImage bois40;
     public static BufferedImage argile40;
@@ -610,6 +615,9 @@ public class Vue extends JFrame {
             choix.add(annuler);
             choix.add(Box.createHorizontalGlue());
             JButton next = new JButton("Suivant");
+            next.addActionListener(event -> {
+                tourFini = true;
+            });
             choix.add(next);
             choix.add(Box.createHorizontalGlue());
         }
@@ -804,6 +812,38 @@ public class Vue extends JFrame {
         return jp;
     }
 
+    public JPanel actionVoleur() {
+        JPanel jp = new JPanel();
+        jp.setBackground(new Color(0, 0, 0,0));
+        jp.setLayout(new GridLayout(7,1));
+
+        JLabel jo = new JLabel("Tour de " + joueur.getPseudo());
+        jo.setFont(new Font(null, 0,40));
+        JPanel joueur = new JPanel();
+        joueur.add(Box.createHorizontalGlue());
+        joueur.add(jo);
+        joueur.add(Box.createHorizontalGlue());
+        joueur.setBackground(new Color(0,0,0,0));
+        jp.add(joueur);
+
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+
+        JButton valider = new JButton("Valider");
+        valider.addActionListener(event -> {
+            if(selectionCase != null) {
+                actions = true;
+            }
+        });
+        jp.add(valider);
+
+        jp.add(Box.createVerticalGlue());
+
+        return jp;
+    }
+
     public static JPanel statsJoueur(Joueur j) {
         JPanel jp = new JPanel();
         jp.setBackground(new Color(240,147,70));
@@ -902,6 +942,40 @@ public class Vue extends JFrame {
 
     public JTextArea getTerminal() {
         return terminal;
+    }
+
+    public boolean getTourFini() {
+        return tourFini;
+    }
+
+    public void setTourFini(boolean b) {
+        tourFini = b;
+    }
+
+    public Case getSelectionCase() {
+        return selectionCase;
+    }
+
+    public Chemin getSelectionChemin() {
+        return selectionChemin;
+    }
+
+    public boolean getActions() {
+        return actions;
+    }
+
+    public void setActions(boolean actions) {
+        this.actions = actions;
+    }
+
+    public void setAction(JPanel action) {
+        model.remove(this.action);
+        this.action = action;
+        this.action.setBackground(Color.ORANGE);
+        this.action.setBounds(0,202,500,598);
+        model.add(this.action);
+        revalidate();
+        repaint();
     }
 
 }

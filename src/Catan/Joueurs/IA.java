@@ -200,7 +200,7 @@ public class IA extends Joueur{
     }
 
     @Override
-    public void deplaceVoleur(Plateau p) {
+    public void deplaceVoleur(Jeu jeu) {
         // TODO Auto-generated method stub
         
     }

@@ -192,7 +192,7 @@ public abstract class Joueur {
 
     public abstract void defausseVoleur();
 
-    public abstract void deplaceVoleur(Plateau p);
+    public abstract void deplaceVoleur(Jeu jeu);
 
     public abstract void tour(Jeu jeu) throws IOException, InterruptedException;
 
