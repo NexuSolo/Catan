@@ -123,6 +123,9 @@ public class Humain extends Joueur{
                         }
                         inter.setColonie(new Colonie(this));
                         colonies.add(inter);
+                        if(secondTour) {
+                            freeRessource(jeu, inter);
+                        }
                         System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
                         if(inter.port != null) {
                             if(inter.port.getRessource() == null) {
@@ -491,11 +494,11 @@ public class Humain extends Joueur{
     
     @Override
     public void deplaceVoleur(Jeu jeu) {
-        jeu.getPlateau().affiche();
-        jeu.vue.repaint();
-        jeu.vue.revalidate();
         Case c = null;
         if(jeu.graphique) {
+            jeu.getPlateau().affiche();
+            jeu.vue.repaint();
+            jeu.vue.revalidate();
             c = jeu.vue.getSelectionCase();
         }
         else {

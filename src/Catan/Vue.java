@@ -1124,7 +1124,7 @@ public class Vue extends JFrame {
         JPanel l3 = new JPanel();
         l3.setBackground(new Color(0,0,0,0));
         l3.setLayout(new GridLayout(1,3));
-        JButton b5 = new JButton( " Invention"); // ajouter la nombres de cartes
+        JButton b5 = new JButton( " Bonus"); // ajouter la nombres de cartes
         l3.add(Box.createHorizontalGlue());
         l3.add(b5);
         l3.add(Box.createHorizontalGlue());
@@ -1140,6 +1140,9 @@ public class Vue extends JFrame {
         a.add(acheter);
         a.add(Box.createHorizontalGlue());
         JButton annuler = new JButton("Annuler");
+        annuler.addActionListener( event -> {
+            setAction(actionPrincipale(false));
+        });
         a.add(annuler);
         a.add(Box.createHorizontalGlue());
         jp.add(a);

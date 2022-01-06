@@ -28,7 +28,7 @@ public class Jeu {
         // joueurs.add(new IA("Nexaka", "rouge"));
         actuel = joueurs.get(0);
         plateau = new Plateau(5);
-        graphique = false;
+        graphique = true;
         jouer();
     }
 
