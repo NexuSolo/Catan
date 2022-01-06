@@ -4,8 +4,8 @@ public class Colonie {
 
     public Colonie(Joueur joueur) {
         this.joueur = joueur;
-        joueur.setPoint(joueur.getPoint() + 1);
         joueur.nombreColonies++;
+        joueur.ajouterPoint();
     }
     
     public Joueur getJoueur() {

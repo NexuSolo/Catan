@@ -5,5 +5,6 @@ public enum Ressource {
     BLE,
     ROCHE,
     LAINE
+    
 }
 

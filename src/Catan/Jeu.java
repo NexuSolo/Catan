@@ -1,35 +1,34 @@
 package Catan;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import Catan.Cartes.Chevalier;
 import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
 public class Jeu {
+    private Controleur control;
     private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
-    private Joueur chevalierLePlusPuissant = null;
-    private Joueur RouteLaPlusLongue = null;
+    private Joueur ArmeeLaPlusPuissante = null;
+    private Joueur routeLaPlusLongue = null;
     private Plateau plateau;
     private Joueur vainqueur = null;
+    public boolean graphique = false;
+    public Vue vue;
+    public Joueur actuel;
 
-    public Jeu(boolean b) {
-        joueurs.add(new Humain("Nex", "bleu"));
-        joueurs.add(new Humain("Miz", "vert"));
-        joueurs.add(new Humain("Mizaxus", "jaune"));
-        plateau = new Plateau(5);
-        jouer();
-    }
-
-    public Jeu() {
+    public Jeu() throws IOException, InterruptedException {
         String reponse; 
         while (true) {
             System.out.println("Voulez vous une interface graphique ? [Oui][Non]");
-            reponse = MotToMotMinuscule(scan());
+            reponse = scan();
             if(reponse.equals("oui")) {
+                graphique = true;
                 break;
             }
             else if(reponse.equals("non")) {
@@ -38,7 +37,7 @@ public class Jeu {
         }
         while (true) {
             System.out.println("Combien voulez vous de joueur ? [3][4]");
-            reponse = MotToMotMinuscule(scan());
+            reponse = scan();
             if(reponse.equals("3")) {
                 break;
             }
@@ -60,7 +59,7 @@ public class Jeu {
                     break;
                 }
                 System.out.println("Le joueur " + i + " est il une IA ? [Oui][Non]");
-                reponse = MotToMotMinuscule(scan());
+                reponse = scan();
                 if(reponse.equals("oui")) {
                     break;
                 }
@@ -84,7 +83,7 @@ public class Jeu {
                     System.out.print(string.substring(1, string.length()) + "]");
                 }
                 System.out.println();
-                reponse = MotToMotMinuscule(scan());
+                reponse = scan();
                 if(couleurDisponible.contains(reponse)) {
                     couleurDisponible.remove(reponse);
                     if(reponse.equals("bleu")) {
@@ -139,7 +138,7 @@ public class Jeu {
             plateau.affiche();
             System.out.println("\n" +"Voulez-vous jouer sur ce plateau ? [Oui][Non]");
             while (true) {
-                reponse = MotToMotMinuscule(scan());
+                reponse = scan();
                 if(reponse.equals("oui")) {
                     break;
                 }
@@ -151,37 +150,169 @@ public class Jeu {
                 break;
             }
         }
+        actuel = joueurs.get(0);
         jouer();
     }
 
-    public void jouer() {
-        plateau.affiche();
-        for (int i = 0; i < joueurs.size(); i++) {
-            joueurs.get(i).placerColonie(plateau, true);
+    public void jouer() throws IOException, InterruptedException {
+        if(graphique) {
+            vue = new Vue(this, this.control);
+            for (int i = 0; i < joueurs.size(); i++) {
+                Joueur actuel = joueurs.get(i);
+                if(actuel instanceof Humain) {
+                    vue.actionPlacerColonie(true);
+                    while(true) {
+                        if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                            if(joueurs.get(i).placerColonie(this, true, false, this.vue.getSelectionIntersection())) {
+                                break;
+                            }
+                        }
+                        Thread.sleep(5);
+                    }
+                    vue.resetTerminal();
+                }
+                else {
+                    actuel.placerColonie(this, true, false, null);
+                }
+                if(i == joueurs.size() - 1) {
+                    vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
+                }
+                else {
+                    vue.refresh(joueurs.get(i + 1), true, false);
+                }
+            }
+            for (int i = joueurs.size() - 1; i >= 0; i--) {
+                Joueur actuel = joueurs.get(i);
+                if(actuel instanceof Humain) {
+                    vue.actionPlacerColonie(true);
+                    while(true) {
+                        if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                            if(joueurs.get(i).placerColonie(this, true, true, this.vue.getSelectionIntersection())) {
+                                break;
+                            }
+                        }
+                        Thread.sleep(5);
+                    }
+                    vue.resetTerminal();
+                }
+                else {
+                    actuel.placerColonie(this, true, true, null);
+                }
+                if(i == 0) {
+                    vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
+                }
+                else {
+                    vue.refresh(joueurs.get(i - 1), true, false);
+                }
+            }
         }
-        for (int i = joueurs.size() - 1; i >= 0; i--) {
-            joueurs.get(i).placerColonie(plateau, true);
+        else {
+            plateau.affiche();
+            for (int i = 0; i < joueurs.size(); i++) {
+                joueurs.get(i).placerColonie(this, true, false, null);
+            }
+            for (int i = joueurs.size() - 1; i >= 0; i--) {
+                joueurs.get(i).placerColonie(this, true, true, null);
+            }
         }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
+                afficheStats();
                 plateau.affiche();
+                joueur.afficheRessource();
                 joueur.tour(this);
                 if(gagne()) {
                     break;
                 }
             }
         }
+        if(graphique) {
+            JLabel victoire = new JLabel(vainqueur.pseudo + "a gagné");
+            vue.model.removeAll();
+            vue.model.add(victoire);
+            vue.repaint();
+            vue.revalidate();
+        }
         System.out.println(vainqueur.pseudo + "a gagné");
+    }
+
+    public int joueurSuivant() {
+        int i = joueurs.indexOf(actuel);
+        System.out.println("Index "+i);
+        if(i == joueurs.size() - 1) {
+            actuel = joueurs.get(0);
+            return 0;
+        }
+        else {
+            actuel = joueurs.get(i++);
+            return i++;
+        }
     }
 
     public boolean gagne() {
         for (Joueur joueur : joueurs) {
-            if(joueur.calculPoint() == 10) {
+            if(joueur.calculPoint(joueur == ArmeeLaPlusPuissante,joueur == routeLaPlusLongue,true) >= 10) {
                 vainqueur = joueur;
                 return true;
             }
         }
         return false;
+    }
+    public void afficheStats() {
+        System.out.print("*");
+        for (Joueur joueur : joueurs) {
+            System.out.print("----------------*");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            int espace = 16 - joueur.getPseudo().length();
+            for (int j = 0; j < espace/2; j++) {
+                System.out.print(" ");
+            }
+            System.out.print(joueur.getPseudo());
+            for (int j = 0; j < espace/2; j++) {
+                System.out.print(" ");
+            }
+            if(espace % 2 == 1) {
+                System.out.print(" ");
+            }
+            System.out.print("|");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print("    " + joueur.calculPoint(joueur.equals(ArmeeLaPlusPuissante),joueur.equals(routeLaPlusLongue),false)+ " Points    |");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print("  " + joueur.getRessources().size() + " Ressources  |");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print(" " + joueur.getCartes().size() + " Developpement|");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print(" "+joueur.getTailleRoute()+" Taille route |");
+            
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print("  "+joueur.getNombreChevalier()+"  Chevalier  |");
+            
+        }
+        System.out.println();
+        System.out.print("*");
+        for (Joueur joueur : joueurs) {
+            System.out.print("----------------*");
+            
+        }
+        System.out.println();
     }
 
     public static boolean estNombre(String s) {
@@ -220,11 +351,7 @@ public class Jeu {
 
     public static String scan() {
         Scanner sc = new Scanner(System.in);
-        return sc.next();
-    }
-
-    public static String MotToMotMinuscule(String s) {
-        return s.toLowerCase();
+        return sc.next().toLowerCase();
     }
 
     public LinkedList<Joueur> getJoueurs() {
@@ -234,5 +361,28 @@ public class Jeu {
     public Plateau getPlateau() {
         return plateau;
     }
+
+    public void setArmeeLaPlusPuissante(Joueur j) {
+        if (ArmeeLaPlusPuissante == null || j.getNombreChevalier() > ArmeeLaPlusPuissante.getNombreChevalier() ){
+           ArmeeLaPlusPuissante = j;
+        } 
+    }
+
+    public Joueur getArmeeLaPlusPuissante() {
+        return ArmeeLaPlusPuissante;
+    }
+
+    public Joueur getRouteLaPlusLongue() {
+        return routeLaPlusLongue;
+    }
+    public void setRouteLaPlusLongue(Joueur j) {
+        if(routeLaPlusLongue == null || j.getTailleRoute() > routeLaPlusLongue.getTailleRoute() ){
+            routeLaPlusLongue = j;
+        }
+    }
+
+   public Controleur getControl() {
+       return control;
+   }
     
 }

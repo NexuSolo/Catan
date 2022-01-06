@@ -3,6 +3,7 @@ package Catan;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Set;
 
 public class Chemin {
     private final Intersection intersection1, intersection2;
@@ -131,6 +132,51 @@ public class Chemin {
             
         }
 
+    }
+
+    public Chemin routeIA(Joueur j,Intersection cible,Set<Intersection> parcourus) {
+        if(parcourus.contains(intersection2) && parcourus.contains(intersection1)) {
+            System.out.println("Erreur at "+intersection1.getX()+"y"+intersection1.getY()+" x"+intersection2.getX()+"y"+intersection2.getY());
+            for (Intersection intersection : parcourus) {
+                System.out.println("x"+intersection.getX()+"y"+intersection.getY());
+            }
+            return this;
+        }
+        if (route == null) {
+            return this;
+        }
+        if (route != j) {
+            System.out.println("what");
+        }
+            if(parcourus.contains(intersection1)) {
+                return intersection2.routeIA(j,cible,parcourus);
+            }
+            else {
+                return intersection1.routeIA(j,cible,parcourus);
+            }
+    }
+
+
+    public int tailleRouteMax(Joueur j,LinkedList<Chemin> cheminParcourus,LinkedList<Intersection> parc){
+        if (cheminParcourus.contains(this)) {
+            return 0;
+        } 
+        else {
+                cheminParcourus.add(this);
+                if (route == j) {
+                    return Math.max(intersection1.tailleRouteMax(j, cheminParcourus,parc),intersection2.tailleRouteMax(j, cheminParcourus,parc))+1;
+                }
+                else {
+                    return 0;
+                }
+            }
+    }
+
+    public Color cheminToColor(){
+        if(route == null) {
+            return new Color(255, 89, 0);
+        }
+        return route.couleur;
     }
 
     public Intersection getIntersection1() {
