@@ -7,6 +7,7 @@ import java.util.Scanner;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import Catan.Cartes.Chevalier;
 import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
@@ -20,17 +21,6 @@ public class Jeu {
     public boolean graphique = false;
     public Vue vue;
     public Joueur actuel;
- 
-    public Jeu(boolean b) throws IOException, InterruptedException {
-        joueurs.add(new Humain("Nex", "bleu"));
-        joueurs.add(new IA("Miz", "vert"));
-        joueurs.add(new IA("Mizaxus", "jaune"));
-        // joueurs.add(new IA("Nexaka", "rouge"));
-        actuel = joueurs.get(0);
-        plateau = new Plateau(5);
-        graphique = true;
-        jouer();
-    }
 
     public Jeu() throws IOException, InterruptedException {
         String reponse; 
@@ -268,19 +258,6 @@ public class Jeu {
         }
         return false;
     }
-
-    /**
-     *  *----------------*
-     *  |      Nexus     |
-     *  |    2 Points    |
-     *  | 10 Ressources  |
-     *  | 2 Developpement|
-     *  | 6 Longue route |
-     *  |   2 chevalier  |
-     *  *----------------*
-     * 
-     */
-
     public void afficheStats() {
         System.out.print("*");
         for (Joueur joueur : joueurs) {
@@ -305,7 +282,7 @@ public class Jeu {
         System.out.println();
         System.out.print("|");
         for (Joueur joueur : joueurs) {
-            System.out.print("    " + joueur.getPoint() + " Points    |");
+            System.out.print("    " + joueur.calculPoint(joueur.equals(ArmeeLaPlusPuissante),joueur.equals(routeLaPlusLongue),false)+ " Points    |");
         }
         System.out.println();
         System.out.print("|");
@@ -320,13 +297,13 @@ public class Jeu {
         System.out.println();
         System.out.print("|");
         for (Joueur joueur : joueurs) {
-            System.out.print(" 6 Longue route |");
+            System.out.print(" "+joueur.getTailleRoute()+" Taille route |");
             
         }
         System.out.println();
         System.out.print("|");
         for (Joueur joueur : joueurs) {
-            System.out.print("   2 chevalier  |");
+            System.out.print("  "+joueur.getNombreChevalier()+"  Chevalier  |");
             
         }
         System.out.println();
@@ -387,14 +364,19 @@ public class Jeu {
 
     public void setArmeeLaPlusPuissante(Joueur j) {
         if (ArmeeLaPlusPuissante == null || j.getNombreChevalier() > ArmeeLaPlusPuissante.getNombreChevalier() ){
-            System.out.println(j + " = Nvx NBC");
            ArmeeLaPlusPuissante = j;
         } 
     }
 
+    public Joueur getArmeeLaPlusPuissante() {
+        return ArmeeLaPlusPuissante;
+    }
+
+    public Joueur getRouteLaPlusLongue() {
+        return routeLaPlusLongue;
+    }
     public void setRouteLaPlusLongue(Joueur j) {
         if(routeLaPlusLongue == null || j.getTailleRoute() > routeLaPlusLongue.getTailleRoute() ){
-            System.out.println(j + " = Nvx RPL");
             routeLaPlusLongue = j;
         }
     }

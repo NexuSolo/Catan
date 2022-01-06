@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
-
-import Catan.Cartes.PointDeVictoire;
+import Catan.Cartes.*;
 
 public abstract class Joueur {
     public final Color couleur;
@@ -182,8 +181,15 @@ public abstract class Joueur {
     public void addCarte(Carte e){
         cartes.add(e);
     }
+
     public void removeCarte(Carte e){
-        cartes.remove(e);
+        for(Carte c : cartes){
+            if (c.getClass() == e.getClass() ){
+                cartes.remove(c);
+                return;
+            }
+        }
+
     }
 
     public abstract boolean placerColonie(Jeu jeu, boolean premierTour, boolean secondTour, Intersection intersection) throws IOException, InterruptedException;
@@ -217,6 +223,8 @@ public abstract class Joueur {
         }
         return res;
     }
+
+    
 
     public void freeRessource(Jeu jeu,Intersection intersection) {
         System.out.println("e");
@@ -300,16 +308,20 @@ public abstract class Joueur {
         return this.nombreChevalier;
     }
 
-    public void achatDeveloppement(Plateau plateau) {
+    public void achatDeveloppement(Jeu jeu) {
         if(possede(Ressource.ROCHE) && possede(Ressource.BLE) && possede(Ressource.LAINE)) {
             removeRessource(Ressource.ROCHE);
             removeRessource(Ressource.BLE);
             removeRessource(Ressource.LAINE);
-            int random = new Random().nextInt(plateau.getCartes().size());
-            Carte achetee = plateau.getCartes().get(random);
+            int random = new Random().nextInt(jeu.getPlateau().getCartes().size());
+            Carte achetee = jeu.getPlateau().getCartes().get(random);
             addCarte(achetee);
-            plateau.getCartes().remove(random);
-            System.out.println("Vous avez obtenu une carte "+achetee);
+            jeu.getPlateau().getCartes().remove(random);
+            System.out.println("Vous avez obtenu une carte " + achetee);
+            if(jeu.graphique) {
+                jeu.vue.getTerminal().append("Vous avez obtenu une carte " + achetee + "\n");
+                jeu.vue.setAction(jeu.vue.actionPrincipale(false));
+            }
             //plateau.afficheCartes();
         }
         else {
@@ -488,11 +500,12 @@ public abstract class Joueur {
     }
 
     public void setTailleRoute(Jeu jeu){
-        //TODO : Appel dès que route placée
         LinkedList<Integer> tailleRoute = new LinkedList<Integer>();
         LinkedList<Chemin> cheminParcourus = new LinkedList<>();
         LinkedList<Intersection> parc = new LinkedList<>();
+        int d = 0;
         for(Chemin c : routes) {
+            System.out.println(this + "route"+ ++d);
             cheminParcourus.clear();
             parc.clear();
             tailleRoute.add(c.tailleRouteMax(this, cheminParcourus,parc));
@@ -555,5 +568,73 @@ public abstract class Joueur {
         return ports;
     }
 
+    public int[] getNombreCartesChevalier() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof Chevalier){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesInvention() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof Invention){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesMonopole() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof Monopole){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesConstructionRoute() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof ConstructionRoute){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesPointDeVictoire() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof PointDeVictoire){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public void ajouterPoint(){
+        point++;
+    }
 
 }

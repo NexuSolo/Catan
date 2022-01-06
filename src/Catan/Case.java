@@ -156,12 +156,17 @@ public class Case {
         System.out.println("●-------●");
     }
 
-    public void affichageNum() {
-        if(numero > 9) {
-            System.out.print("  " + numero + "   ");
+    public void affichageNum(Plateau p) {
+        if (p.voleur != this){
+            if(numero > 9) {
+                System.out.print("  " + numero + "   ");
+            }
+            else {
+                System.out.print("   " + numero + "   ");
+            }
         }
         else {
-            System.out.print("   " + numero + "   ");
+                System.out.print("   " + "!" + "   ");
         }
     }
 

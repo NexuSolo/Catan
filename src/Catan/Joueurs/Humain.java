@@ -37,7 +37,7 @@ public class Humain extends Joueur{
                             freeRessource(jeu, intersection);
                         }
                         colonies.add(intersection);
-                        jeu.vue.getTerminal().append("Vous avez placer une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
+                        jeu.vue.getTerminal().append("Vous avez placé une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         if(intersection.port != null) {
@@ -80,13 +80,6 @@ public class Humain extends Joueur{
                         return true;
                     }
                     jeu.getPlateau().affiche();
-                    jeu.vue.refresh(this,premierTour, false);
-                    if(premierTour) {
-                        if(secondTour) {
-                            freeRessource(jeu,intersection);
-                        }
-                        placerRoute(jeu, true, intersection, jeu.vue.getSelectionChemin(), premierTour);
-                    }
                 }
                 else {
                     jeu.vue.getTerminal().append("Cette intersection appartient deja a un joueur" + "\n");
@@ -269,7 +262,7 @@ public class Humain extends Joueur{
                     }
                 }
             }
-            System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
+            System.out.println("Ou voulez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
             if (!gratuit) {
                 System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
             }
@@ -304,7 +297,7 @@ public class Humain extends Joueur{
         if(nombreVilles >= 4) {
             System.out.println("Le nombre maximum de ville est de 4.");
             if(jeu.graphique) {
-                jeu.vue.getTerminal().append("Le nombre maximum de ville est de 4. + \n");
+                jeu.vue.getTerminal().append("Le nombre maximum de ville est de 4. \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
             }
@@ -317,37 +310,37 @@ public class Humain extends Joueur{
                         removeRessource(Ressource.ROCHE, 3);
                         removeRessource(Ressource.BLE, 2);
                         intersection.setColonie(new Ville(this));
-                        jeu.vue.getTerminal().append("Félicitation vous avez transformer votre colonie en ville ! \n");
+                        jeu.vue.getTerminal().append("Félicitations vous avez transformé votre colonie en ville ! \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
-                        System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                        System.out.println("Félicitations vous avez transformé votre colonie en ville !");
                         nombreVilles++;
                         nombreColonies--;
                         return true;
                     }
                     else {
-                        jeu.vue.getTerminal().append("Cette colonie ne vous appatient pas + \n");
+                        jeu.vue.getTerminal().append("Cette colonie ne vous appartient pas \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         return false;
                     }
                 }
                 else {
-                    jeu.vue.getTerminal().append("Cette intersection n'est pas une colonie + \n");
+                    jeu.vue.getTerminal().append("Cette intersection n'est pas une colonie \n");
                     jeu.vue.repaint();
                     jeu.vue.revalidate();
                     return false;
                 }
             }
             else {
-                jeu.vue.getTerminal().append("Vous n'avez pas les ressources nécéssaire + \n");
+                jeu.vue.getTerminal().append("Vous n'avez pas les ressources nécessaires \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
                 return false;
             }
         }
         else {
-            System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
+            System.out.println("Où voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
             System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
             while(true) {
                 String reponse = Jeu.scan();
@@ -362,7 +355,7 @@ public class Humain extends Joueur{
                                 removeRessource(Ressource.ROCHE, 3);
                                 removeRessource(Ressource.BLE, 2);
                                 inter.setColonie(new Ville(this));
-                                System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                                System.out.println("Félicitations vous avez transformer votre colonie en ville !");
                                 nombreVilles++;
                                 nombreColonies--;
                                 return true;
@@ -416,6 +409,30 @@ public class Humain extends Joueur{
         }
     }
 
+    public void monopoleIG(Jeu jeu, Ressource ressource) {
+        int actuel = 0;
+        for (Ressource r : ressources) {
+            if(r.equals(ressource)) {
+                actuel++;
+            }
+        }
+        int ajout = 0;
+        for (Joueur j : jeu.getJoueurs()) {
+            int ressj = 0;
+            for (Ressource r : j.getRessources()) {
+                if(r.equals(ressource)) {
+                    ressj++;
+                }
+            }
+            j.removeRessource(ressource, ressj);
+            ajout+= ressj;
+        }
+        this.addRessource(ressource, ajout);
+        jeu.vue.getTerminal().append("Vous avez aggner " + (ajout - actuel) + " " + ressource);
+        jeu.vue.repaint();
+        jeu.vue.revalidate();
+    }
+
     public Chemin coordonéesToChemin(Plateau plateau, String s) {
         if(s.length() == 4 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
             int x = Integer.valueOf(s.substring(0,1));
@@ -461,7 +478,6 @@ public class Humain extends Joueur{
                         e.printStackTrace();
                     }
                 }
-                System.out.println("FINI");
             }
             else {
                 int cartesADefausser = ressources.size()/2  ;
@@ -558,7 +574,7 @@ public class Humain extends Joueur{
     }
 
     public boolean echange(Jeu jeu) throws IOException, InterruptedException {
-        System.out.println("Voullez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
+        System.out.println("Voulez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while (true) {
             String reponse = Jeu.scan();
@@ -817,9 +833,9 @@ public class Humain extends Joueur{
                 System.out.println();
             }
             else {
-                System.out.println("Vos ressources ne sont pas équilibrer");
+                System.out.println("Vos ressources ne sont pas équilibrées");
                 if(jeu.graphique) {
-                    jeu.vue.getTerminal().append("Vos ressources ne sont pas équilibrer" + "\n");
+                    jeu.vue.getTerminal().append("Vos ressources ne sont pas équilibrées" + "\n");
                     jeu.vue.revalidate();
                     jeu.vue.repaint();
                 }
@@ -1213,12 +1229,7 @@ public class Humain extends Joueur{
         return tab;
     }
 
-    // public void echangeJouer(Jeu jeu) {
-    //     //TODO
-    // }
-
     public void reponseToAction(Jeu jeu, String reponse, Controleur control) throws IOException, InterruptedException {
-        //IMPLEMENTER VERSION GRAPHIQUE
         LinkedList<Ressource> l;
         switch (reponse) {
             default:
@@ -1272,13 +1283,13 @@ public class Humain extends Joueur{
                     return;
                 }
                 else if(rep.equals("acheter")) {
-                    achatDeveloppement(jeu.getPlateau());
+                    achatDeveloppement(jeu);
                     afficheCartes();
                     return;
                 }
                 else if (rep.equals("utiliser")) {
                     if(cartesUtilisables){
-                        utiliserCarte(jeu);
+                        utiliserCarte(jeu,null);
                     } 
                     else {
                         System.out.println("Vous ne pouvez pas utiliser de carte ce tour ci.");
@@ -1295,8 +1306,7 @@ public class Humain extends Joueur{
         }
     }
 
-    public void utiliserCarte(Jeu jeu){
-        Carte utilisee = null;
+    public void utiliserCarte(Jeu jeu,Carte utilisee){
         while(utilisee == null ) {
             System.out.println("Quelle carte voulez vous utiliser ? Ou écrivez \"Annuler\" pour revenir en arrière.");
             afficheCartes();
@@ -1313,6 +1323,7 @@ public class Humain extends Joueur{
             }
         }
         if (utilisee.utiliser(this, jeu)) {
+            System.out.println("thumbsup");
             removeCarte(utilisee);
             cartesInutilisables();
         }

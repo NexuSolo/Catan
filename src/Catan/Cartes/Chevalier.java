@@ -8,6 +8,7 @@ public class Chevalier extends Carte{
 
     @Override
     public boolean utiliser(Joueur j,Jeu jeu) {
+        jeu.vue.setAction(jeu.vue.actionPrincipale(false));
         jeu.getPlateau().deplaceVoleur(jeu, j);
         j.addChevalier(jeu);
         return true;

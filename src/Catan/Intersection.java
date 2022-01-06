@@ -107,17 +107,6 @@ public class Intersection {
     }
 
     public String toString() {
-        /**
-         * Regarder la prochaine intersection,
-         *   --P--                         2 tirets P 2 tirets
-         *  /     \                 /
-         * ?-------?-------?-------?
-         *
-         *
-         */
-        // if (port != null) {
-        //     return "P";
-        // }
         if(colonie == null) {
             return "?";
         }
