@@ -330,7 +330,6 @@ public class Humain extends Joueur{
             jeu.vue.refresh(this, false, false);
         }
         while (true) {
-            System.out.println(jeu.vue.getTourFini());
             if(jeu.graphique) {
                 if(jeu.vue.getTourFini()) {
                     jeu.vue.setTourFini(false);

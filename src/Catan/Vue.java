@@ -160,59 +160,13 @@ public class Vue extends JFrame {
         repaint();
     }
 
-    public class RouteGraphique extends JPanel implements MouseInputListener {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-    }
-
     public JPanel plateauToPanel(Plateau plateau) throws IOException {
         JPanel panel = new JPanel();
         JPanel contenu = new JPanel();
         panel.setLayout(new GridLayout(plateau.getLength() + 1, plateau.getLength() + 1));
         for (int y = 0; y <= plateau.getLength(); y++) {
             for (int x = 0; x <= plateau.getLength(); x++) {
-                ImagePane pan = new ImagePane(plateau.getLength() - 1);
+                CaseImage pan = new CaseImage(plateau.getLength() - 1);
                 if(x == 0 || y == 0 || x == plateau.getLength() || y == plateau.getLength()) { // PORT + MER
                     pan.setBackground(new Color(85,206,234));
                     if(!((x == 0 && y == 0) || (x == plateau.getLength() && y == plateau.getLength()) || (x == 0 && y == plateau.getLength()) || (x == plateau.getLength() && y == 0))) {
@@ -240,6 +194,7 @@ public class Vue extends JFrame {
                 }
                 else {
                     Case c = plateau.getCase(x, y);
+                    pan.setCase(c);
                     contenu = new JPanel();
                     contenu.setBackground(new Color(0, 0, 0, 0));
                     contenu.setLayout(new GridLayout(4, 1, -15, -15));
@@ -404,7 +359,7 @@ public class Vue extends JFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
             System.out.println("x"+intersection.getX()+" y"+intersection.getY());
-            // TODO Auto-generated method stub
+            selectionIntersection = this.intersection;
             
         }
 
@@ -457,7 +412,82 @@ public class Vue extends JFrame {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            selectionChemin = this.chemin;            
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
             // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+    }
+
+
+    public class CaseImage extends ImagePane implements MouseInputListener{
+        Case c = null;
+
+        CaseImage(int taille){
+            super(taille);
+            addMouseListener(this);
+        }
+        
+        CaseImage(Image image){
+            super(image);
+            addMouseListener(this);
+        }
+
+        CaseImage(Image image, int taille){
+            super(image, taille);
+            addMouseListener(this);
+        }
+        public Case getCase() {
+            return this.c;
+        }
+        public void setCase(Case c) {
+            this.c = c;
+        }
+        
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            selectionCase = c;
+            if ( c == null) {
+                System.out.println("null");
+            }
+            else{
+
+                System.out.println("Case sélectionée : x"+ c.getX()+"y"+c.getY());
+            }
             
         }
 
