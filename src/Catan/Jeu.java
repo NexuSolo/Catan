@@ -19,12 +19,13 @@ public class Jeu {
     public Joueur actuel;
  
     public Jeu(boolean b) throws IOException, InterruptedException {
-        joueurs.add(new Humain("Nex", "bleu"));
+        joueurs.add(new IA("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
-        joueurs.add(new Humain("Mizaxus", "jaune"));
+        // joueurs.add(new IA("Mizaxus", "jaune"));
+        // joueurs.add(new IA("Nexaka", "rouge"));
         actuel = joueurs.get(0);
         plateau = new Plateau(5);
-        graphique = true;
+        graphique = false;
         jouer();
     }
 
@@ -197,7 +198,7 @@ public class Jeu {
         }
         plateau.affiche();
         for (int i = 0; i < joueurs.size(); i++) {
-            joueurs.get(i).placerColonie(this, true);
+            joueurs.get(i).placerColonie(this, true,false);
             if(graphique) {
                 if(i == joueurs.size() - 1) {
                     vue.refresh(joueurs.get(joueurs.size() - 1), true);
@@ -208,7 +209,7 @@ public class Jeu {
             }
         }
         for (int i = joueurs.size() - 1; i >= 0; i--) {
-            joueurs.get(i).placerColonie(this, true);
+            joueurs.get(i).placerColonie(this, true,true);
             if(graphique) {
                 if(i == 0) {
                     vue.refresh(joueurs.get(0), true);
@@ -218,20 +219,23 @@ public class Jeu {
                 }
             }
         }
+        plateau.affiche();
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
                 plateau.affiche();
+                joueur.afficheRessource();
                 joueur.tour(this);
                 if(gagne()) {
                     break;
                 }
             }
         }
-        System.out.println(vainqueur.pseudo + "a gagné");
+        // System.out.println(vainqueur.pseudo + "a gagné");
     }
 
     public int joueurSuivant() {
         int i = joueurs.indexOf(actuel);
+        System.out.println("Index "+i);
         if(i == joueurs.size() - 1) {
             actuel = joueurs.get(0);
             return 0;

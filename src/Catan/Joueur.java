@@ -186,7 +186,7 @@ public abstract class Joueur {
         cartes.remove(e);
     }
 
-    public abstract boolean placerColonie(Jeu jeu,boolean premierTour) throws IOException, InterruptedException;
+    public abstract boolean placerColonie(Jeu jeu,boolean premierTour,boolean secondTour) throws IOException, InterruptedException;
 
     public abstract boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour);
 
@@ -214,6 +214,42 @@ public abstract class Joueur {
             }
         }
         return res;
+    }
+
+    public void freeRessource(Jeu jeu,Intersection intersection) {
+        System.out.println("e");
+        int x = intersection.getX();
+        int y = intersection.getY();
+        int taillePlateau = jeu.getPlateau().getLength();
+        if (x > 1) {
+            if (y > 1) {
+                if(jeu.getPlateau().getCase(x-1, y-1).ressource != null) {
+                    System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x-1, y-1).ressource);
+                    addRessource(jeu.getPlateau().getCase(x-1, y-1).ressource);
+                }
+            }
+            if (y < taillePlateau) {
+                if(jeu.getPlateau().getCase(x-1, y).ressource != null) {
+                System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x-1, y).ressource);
+                addRessource(jeu.getPlateau().getCase(x-1,y).ressource);
+                }
+            }
+        
+        }
+        if (x < taillePlateau) {
+            if (y > 1) {
+                if(jeu.getPlateau().getCase(x, y-1).ressource != null) {
+                System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x, y-1).ressource);
+                addRessource(jeu.getPlateau().getCase(x, y-1).ressource);
+                }
+            }
+            if (y < taillePlateau) {
+                if(jeu.getPlateau().getCase(x, y).ressource != null) {
+                System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x, y).ressource);
+                addRessource(jeu.getPlateau().getCase(x,y).ressource);
+                }
+            }
+        }
     }
 
     public void afficheRessource() {
@@ -382,22 +418,22 @@ public abstract class Joueur {
         }
         if(!premierTour) {
             if(inter.getCheminH() != null) {
-                if(inter.getCheminH().getRoute().equals(this)) {
+                if(inter.getCheminH().getRoute() != null && inter.getCheminH().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminB() != null) {
-                if(inter.getCheminB().getRoute().equals(this)) {
+                if(inter.getCheminB().getRoute() != null && inter.getCheminB().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminG() != null) {
-                if(inter.getCheminG().getRoute().equals(this)) {
+                if(inter.getCheminG().getRoute() != null && inter.getCheminG().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminD() != null) {
-                if(inter.getCheminD().getRoute().equals(this)) {
+                if(inter.getCheminD().getRoute() != null && inter.getCheminD().getRoute().equals(this) ) {
                     return true;
                 }
             }

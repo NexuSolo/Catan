@@ -12,7 +12,7 @@ public class Humain extends Joueur{
         super(pseudo, color);
     }
 
-    public boolean placerColonie(Jeu jeu, boolean premierTour) throws IOException, InterruptedException {
+    public boolean placerColonie(Jeu jeu, boolean premierTour,boolean secondTour) throws IOException, InterruptedException {
         if(nombreColonies >= 5) {
             System.out.println("Le nombre maximum de colonie est de 5.");
             return false;
@@ -63,6 +63,9 @@ public class Humain extends Joueur{
                         jeu.vue.refresh(this,true);
                     }
                     if(premierTour) {
+                        if(secondTour) {
+                            freeRessource(jeu,inter);
+                        }
                         placerRoute(jeu, true, inter);
                     }
                     return true;
@@ -304,6 +307,7 @@ public class Humain extends Joueur{
     
     @Override
     public void deplaceVoleur(Plateau p) {
+        System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur "+this);
         p.affiche();
         System.out.println("Ou voulez-vous placer le voleur ? Exemple : 1:1 représente l'emplacement en haut à gauche de la case x = 1 y = 1 ");
         String scan = Jeu.scan();
@@ -845,7 +849,7 @@ public class Humain extends Joueur{
             case "colonie":
                 l = possedeRessourcesColonie();
                 if(l.size() == 0) {
-                    placerColonie(jeu, false);
+                    placerColonie(jeu, false,false);;
                 }
                 else {
                     System.out.print("Il vous manque ");
