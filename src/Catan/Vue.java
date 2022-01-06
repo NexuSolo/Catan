@@ -53,6 +53,26 @@ public class Vue extends JFrame {
     public static BufferedImage ressources;
     public static BufferedImage rlpl;
     public static BufferedImage dvpt;
+    public static BufferedImage portHBois;
+    public static BufferedImage portBBois;
+    public static BufferedImage portGBois;
+    public static BufferedImage portDBois;
+    public static BufferedImage portHLaine;
+    public static BufferedImage portBLaine;
+    public static BufferedImage portGLaine;
+    public static BufferedImage portDLaine;
+    public static BufferedImage portHArgile;
+    public static BufferedImage portBArgile;
+    public static BufferedImage portGArgile;
+    public static BufferedImage portDArgile;
+    public static BufferedImage portHBle;
+    public static BufferedImage portBBle;
+    public static BufferedImage portGBle;
+    public static BufferedImage portDBle;
+    public static BufferedImage portHRoche;
+    public static BufferedImage portBRoche;
+    public static BufferedImage portGRoche;
+    public static BufferedImage portDRoche;
 
     Vue(boolean b) {
 
@@ -72,15 +92,36 @@ public class Vue extends JFrame {
         enclos = ImageIO.read(new File("src/Catan/Images/Enclos.png"));
         mont = ImageIO.read(new File("src/Catan/Images/Mont.png"));
         desert = ImageIO.read(new File("src/Catan/Images/Desert.png"));
-        portH = ImageIO.read(new File("src/Catan/Images/PortH.png"));
-        portB = ImageIO.read(new File("src/Catan/Images/PortB.png"));
-        portG = ImageIO.read(new File("src/Catan/Images/PortG.png"));
-        portD = ImageIO.read(new File("src/Catan/Images/PortD.png"));
+        portH = ImageIO.read(new File("src/Catan/Images/PortHNeutre.png"));
+        portB = ImageIO.read(new File("src/Catan/Images/PortBNeutre.png"));
+        portG = ImageIO.read(new File("src/Catan/Images/PortGNeutre.png"));
+        portD = ImageIO.read(new File("src/Catan/Images/PortDNeutre.png"));
         medaille = ImageIO.read(new File("src/Catan/Images/Medaille.png"));
         armee = ImageIO.read(new File("src/Catan/Images/Arme.png"));
         ressources = ImageIO.read(new File("src/Catan/Images/Ressources.png"));
         rlpl = ImageIO.read(new File("src/Catan/Images/RPL.png"));
-        dvpt = ImageIO.read(new File("src/Catan/Images/Dvpt.png"));
+        dvpt = ImageIO.read(new File("src/Catan/Images/Dvpt.png")); 
+         portHBois = ImageIO.read(new File("src/Catan/Images/PortHBois.png"));
+         portBBois = ImageIO.read(new File("src/Catan/Images/PortBBois.png"));
+         portGBois = ImageIO.read(new File("src/Catan/Images/PortGBois.png"));
+         portDBois = ImageIO.read(new File("src/Catan/Images/PortDBois.png"));
+         portHLaine = ImageIO.read(new File("src/Catan/Images/PortHLaine.png"));
+         portBLaine =  ImageIO.read(new File("src/Catan/Images/PortBLaine.png"));
+         portGLaine =  ImageIO.read(new File("src/Catan/Images/PortGLaine.png"));
+         portDLaine =  ImageIO.read(new File("src/Catan/Images/PortDLaine.png"));
+         portHArgile =  ImageIO.read(new File("src/Catan/Images/PortHArgile.png"));
+         portBArgile = ImageIO.read(new File("src/Catan/Images/PortBArgile.png"));
+         portGArgile = ImageIO.read(new File("src/Catan/Images/PortGArgile.png"));
+         portDArgile = ImageIO.read(new File("src/Catan/Images/PortDArgile.png"));
+         portHBle = ImageIO.read(new File("src/Catan/Images/PortHBle.png"));
+         portBBle = ImageIO.read(new File("src/Catan/Images/PortBBle.png"));
+         portGBle = ImageIO.read(new File("src/Catan/Images/PortGBle.png"));
+         portDBle = ImageIO.read(new File("src/Catan/Images/PortDBle.png"));
+         portHRoche = ImageIO.read(new File("src/Catan/Images/PortHRoche.png"));
+         portBRoche = ImageIO.read(new File("src/Catan/Images/PortBRoche.png"));
+         portGRoche = ImageIO.read(new File("src/Catan/Images/PortGRoche.png"));
+         portDRoche = ImageIO.read(new File("src/Catan/Images/PortDRoche.png"));
+        
 
         this.jeu = jeu;
         this.joueur = jeu.getJoueurs().get(0);
@@ -168,22 +209,67 @@ public class Vue extends JFrame {
                     if(!((x == 0 && y == 0) || (x == plateau.getLength() && y == plateau.getLength()) || (x == 0 && y == plateau.getLength()) || (x == plateau.getLength() && y == 0))) {
                         if(x == 0) {
                             if(plateau.getCase(1, y).getHG().getPort() != null && plateau.getCase(1, y).getBG().getPort() != null) {
-                                pan.setImage(portG);
+                                if (plateau.getCase(1, y).getHG().getPort().getRessource() == null) {
+                                    pan.setImage(portG);
+                                }
+                                else {
+                                    switch(plateau.getCase(1, y).getHG().getPort().getRessource()) {
+                                        case BOIS : pan.setImage(portGBois);break;
+                                        case ARGILE : pan.setImage(portGArgile);break;
+                                        case BLE : pan.setImage(portGBle);break;
+                                        case ROCHE : pan.setImage(portGRoche);break;
+                                        case LAINE : pan.setImage(portGLaine);break;
+                                    }
+                                }
+                                //pan.setImage(portG);
                             }
                         }
                         else if(y == 0) {
                             if(plateau.getCase(x, 1).getHG().getPort() != null && plateau.getCase(x, 1).getHD().getPort() != null) {
-                                pan.setImage(portH);
+                                if (plateau.getCase(x, 1).getHG().getPort().getRessource() == null) {
+                                    pan.setImage(portH);
+                                }
+                                else {
+                                    switch(plateau.getCase(x, 1).getHG().getPort().getRessource()) {
+                                        case BOIS : pan.setImage(portHBois);break;
+                                        case ARGILE : pan.setImage(portHArgile);break;
+                                        case BLE : pan.setImage(portHBle);break;
+                                        case ROCHE : pan.setImage(portHRoche);break;
+                                        case LAINE : pan.setImage(portHLaine);break;
+                                    }
+                                }
                             }
                         }
                         else if(y == plateau.getLength()) {
                             if(plateau.getCase(x, y - 1).getBD().getPort() != null && plateau.getCase(x, y - 1).getBG().getPort() != null) {
-                                pan.setImage(portB);
+                                if (plateau.getCase(x, y - 1).getBD().getPort().getRessource() == null) {
+                                    pan.setImage(portB);
+                                }
+                                else {
+                                    switch(plateau.getCase(x, y-1).getBD().getPort().getRessource()) {
+                                        case BOIS : pan.setImage(portBBois);break;
+                                        case ARGILE : pan.setImage(portBArgile);break;
+                                        case BLE : pan.setImage(portBBle);break;
+                                        case ROCHE : pan.setImage(portBRoche);break;
+                                        case LAINE : pan.setImage(portBLaine);break;
+                                    }
+                                }
                             }
                         }
                         else if(x == plateau.getLength()) {
                             if(plateau.getCase(x - 1, y).getHD().getPort() != null && plateau.getCase(x - 1, y).getBD().getPort() != null) {
-                                pan.setImage(portD);
+                                if (plateau.getCase(x-1, y ).getHD().getPort().getRessource() == null) {
+                                    pan.setImage(portD);
+                                }
+                                else {
+                                    switch(plateau.getCase(x-1, y).getHD().getPort().getRessource()) {
+                                        case BOIS : pan.setImage(portDBois);break;
+                                        case ARGILE : pan.setImage(portDArgile);break;
+                                        case BLE : pan.setImage(portDBle);break;
+                                        case ROCHE : pan.setImage(portDRoche);break;
+                                        case LAINE : pan.setImage(portDLaine);break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -481,7 +567,6 @@ public class Vue extends JFrame {
                 System.out.println("null");
             }
             else{
-
                 System.out.println("Case sélectionée : x"+ c.getX()+"y"+c.getY());
             }
             
