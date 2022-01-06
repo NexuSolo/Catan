@@ -301,7 +301,7 @@ public class Plateau {
         }
         else {
             for (Joueur joueurs : listeJoueurs) {
-                joueurs.defausseVoleur(jeu);
+                // joueurs.defausseVoleur(jeu);
             }
             deplaceVoleur(jeu, J);
         }     

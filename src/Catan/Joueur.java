@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
-
-import Catan.Cartes.PointDeVictoire;
+import Catan.Cartes.*;
 
 public abstract class Joueur {
     public final Color couleur;
@@ -555,5 +554,73 @@ public abstract class Joueur {
         return ports;
     }
 
+    public int[] getNombreCartesChevalier() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof Chevalier){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesInvention() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof Invention){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesMonopole() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof Monopole){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesConstructionRoute() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof ConstructionRoute){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public int[] getNombreCartesPointDeVictoire() {
+        int [] nombre = new int[2];
+        for (Carte c : cartes){
+            if(c instanceof PointDeVictoire){
+                nombre[1]++;
+                if (c.utilisable){
+                    nombre[0]++;
+                }
+            }
+        }
+        return nombre;
+    }
+
+    public void ajouterPoint(){
+        point++;
+    }
 
 }

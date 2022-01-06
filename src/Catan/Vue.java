@@ -12,7 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import Catan.*;
-import Catan.Joueurs.Humain;
+import Catan.Cartes.*;
+import Catan.Joueurs.*;
 
 public class Vue extends JFrame {
     Controleur control;
@@ -654,7 +655,7 @@ public class Vue extends JFrame {
         p1.setBackground(Color.GRAY);
         jp.add(p1);
         for (Joueur joueur : joueurs) {
-            jp.add(statsJoueur(joueur));
+            jp.add(statsJoueur(joueur,jeu));
             JPanel p2 = new JPanel();
             p2.setBackground(Color.GRAY);
             jp.add(p2);
@@ -814,7 +815,7 @@ public class Vue extends JFrame {
         JPanel devEchange = new JPanel();
         devEchange.setBackground(new Color(0,0,0,0));
         devEchange.setLayout(new GridLayout(1,5));
-        if(this.joueur.possedeRessourcesDeveloppement().size() == 0 || !this.joueur.cartesUtilisables) { // TODO verifier carteUtilisable
+        if(this.joueur.possedeRessourcesDeveloppement().size() == 0 || this.joueur.cartesUtilisables) { // TODO verifier carteUtilisable
             devEchange.add(Box.createHorizontalGlue());
             JButton dev = new JButton("Developpement");
             dev.addActionListener(event -> {
@@ -1092,39 +1093,67 @@ public class Vue extends JFrame {
 
         JLabel jo = new JLabel("Tour de " + joueur.getPseudo());
         jo.setFont(new Font(null, 0,40));
-        JPanel joueur = new JPanel();
-        joueur.add(Box.createHorizontalGlue());
-        joueur.add(jo);
-        joueur.add(Box.createHorizontalGlue());
-        joueur.setBackground(new Color(0,0,0,0));
-        jp.add(joueur);
+        JPanel joueurPanel = new JPanel();
+        joueurPanel.add(Box.createHorizontalGlue());
+        joueurPanel.add(jo);
+        joueurPanel.add(Box.createHorizontalGlue());
+        joueurPanel.setBackground(new Color(0,0,0,0));
+        jp.add(joueurPanel);
 
         jp.add(Box.createVerticalGlue());
 
         JPanel l1 = new JPanel();
         l1.setBackground(new Color(0,0,0,0));
         l1.setLayout(new GridLayout(1,3));
-        JButton b1 = new JButton( " Chevalier"); // ajouter la nombres de cartes
+        JButton b1 = new JButton( " Chevalier");
+        b1.addActionListener( event -> {
+            ((Humain) this.joueur).utiliserCarte(jeu,new Chevalier());
+        }
+        );// ajouter la nombres de cartes
         l1.add(b1);
+        int [] nbr = joueur.getNombreCartesChevalier();
+        l1.add(new JLabel(nbr[0]+"("+nbr[1]+")"));
         l1.add(Box.createHorizontalGlue());
-        JButton b2 = new JButton( " Construction"); // ajouter la nombres de cartes
+        JButton b2 = new JButton( " Construction");
+        b2.addActionListener( event -> {
+            ((Humain) this.joueur).utiliserCarte(jeu,new ConstructionRoute());
+        }
+        );
+         // ajouter la nombres de cartes
         l1.add(b2);
         jp.add(l1);
 
         JPanel l2 = new JPanel();
         l2.setBackground(new Color(0,0,0,0));
         l2.setLayout(new GridLayout(1,3));
-        JButton b3 = new JButton( " Invention"); // ajouter la nombres de cartes
+        JButton b3 = new JButton( " Invention");
+        b2.addActionListener( event -> {
+            ((Humain) this.joueur).utiliserCarte(jeu,new Invention());
+        }
+        );
+         // ajouter la nombres de cartes
         l2.add(b3);
+        int [] nbr2 = joueur.getNombreCartesInvention();
+        l1.add(new JLabel(nbr2[0]+"("+nbr2[1]+")"));
         l2.add(Box.createHorizontalGlue());
-        JButton b4 = new JButton( " Monopole"); // ajouter la nombres de cartes
+        JButton b4 = new JButton( " Monopole");
+        b2.addActionListener( event -> {
+            ((Humain) this.joueur).utiliserCarte(jeu,new Monopole());
+        }
+        );
+         // ajouter la nombres de cartes
         l2.add(b4);
         jp.add(l2);
 
         JPanel l3 = new JPanel();
         l3.setBackground(new Color(0,0,0,0));
         l3.setLayout(new GridLayout(1,3));
-        JButton b5 = new JButton( " Bonus"); // ajouter la nombres de cartes
+        JButton b5 = new JButton( " Bonus");
+        b2.addActionListener( event -> {
+            ((Humain) this.joueur).utiliserCarte(jeu,new PointDeVictoire());
+        }
+        );
+         // ajouter la nombres de cartes
         l3.add(Box.createHorizontalGlue());
         l3.add(b5);
         l3.add(Box.createHorizontalGlue());
@@ -1389,7 +1418,7 @@ public class Vue extends JFrame {
         return jp;
     }
 
-    public static JPanel statsJoueur(Joueur j) {
+    public static JPanel statsJoueur(Joueur j,Jeu jeu) {
         JPanel jp = new JPanel();
         jp.setBackground(new Color(240,147,70));
         jp.setBorder(BorderFactory.createLineBorder(j.couleur, 10));
@@ -1403,7 +1432,7 @@ public class Vue extends JFrame {
         score.add(Box.createHorizontalGlue());
         ImagePane im = new ImagePane(medaille,10);
         im.setBackground(new Color(0,0,0,0));
-        JLabel s = new JLabel("" + j.point);
+        JLabel s = new JLabel("" + j.calculPoint(j.equals(jeu.getArmeeLaPlusPuissante()),j.equals(jeu.getRouteLaPlusLongue()),false)+"" ); 
         im.setToolTipText("Score");
         score.add(im);
         score.add(s);
@@ -1448,7 +1477,7 @@ public class Vue extends JFrame {
         route.add(Box.createHorizontalGlue());
         ImagePane im4 = new ImagePane(rlpl,10);
         im4.setBackground(new Color(0,0,0,0));
-        JLabel s4 = new JLabel("" + j.getCartes().size()); // TODO
+        JLabel s4 = new JLabel("" + j.getTailleRoute()); // TODO
         im4.setToolTipText("Route la plus longue");
         route.add(im4);
         route.add(s4);
@@ -1463,7 +1492,7 @@ public class Vue extends JFrame {
         arme.add(Box.createHorizontalGlue());
         ImagePane im5 = new ImagePane(armee,11);
         im5.setBackground(new Color(0,0,0,0));
-        JLabel s5 = new JLabel("" + j.getCartes().size()); //TODO
+        JLabel s5 = new JLabel("" + j.getNombreChevalier()); //TODO
         im5.setToolTipText("Armée la plus puissante");
         arme.add(im5);
         arme.add(s5);

@@ -8,7 +8,12 @@ public class PointDeVictoire extends Carte{
 
     @Override
     public boolean utiliser(Joueur j,Jeu jeu) {
-        System.out.println("Vous ne pouvez pas utiliser une carte Point de Victoire");
+        if (jeu.graphique) {
+            // A faire
+        }
+        else {
+            System.out.println("Vous ne pouvez pas utiliser une carte Point de Victoire");
+        }
         return false;   
     }
 

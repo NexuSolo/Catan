@@ -7,6 +7,7 @@ import java.util.Scanner;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import Catan.Cartes.Chevalier;
 import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
@@ -22,12 +23,13 @@ public class Jeu {
     public Joueur actuel;
  
     public Jeu(boolean b) throws IOException, InterruptedException {
-        joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new IA("Miz", "vert"));
+        joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new IA("Mizaxus", "jaune"));
+      
         // joueurs.add(new IA("Nexaka", "rouge"));
         actuel = joueurs.get(0);
-        plateau = new Plateau(5);
+        plateau = new Plateau(7);
         graphique = true;
         jouer();
     }
@@ -392,6 +394,13 @@ public class Jeu {
         } 
     }
 
+    public Joueur getArmeeLaPlusPuissante() {
+        return ArmeeLaPlusPuissante;
+    }
+
+    public Joueur getRouteLaPlusLongue() {
+        return routeLaPlusLongue;
+    }
     public void setRouteLaPlusLongue(Joueur j) {
         if(routeLaPlusLongue == null || j.getTailleRoute() > routeLaPlusLongue.getTailleRoute() ){
             System.out.println(j + " = Nvx RPL");

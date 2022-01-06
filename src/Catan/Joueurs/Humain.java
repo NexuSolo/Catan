@@ -80,13 +80,6 @@ public class Humain extends Joueur{
                         return true;
                     }
                     jeu.getPlateau().affiche();
-                    jeu.vue.refresh(this,premierTour, false);
-                    if(premierTour) {
-                        if(secondTour) {
-                            freeRessource(jeu,intersection);
-                        }
-                        placerRoute(jeu, true, intersection, jeu.vue.getSelectionChemin(), premierTour);
-                    }
                 }
                 else {
                     jeu.vue.getTerminal().append("Cette intersection appartient deja a un joueur" + "\n");
@@ -516,7 +509,15 @@ public class Humain extends Joueur{
     
     @Override
     public void tour(Jeu jeu) throws IOException, InterruptedException {
+        addRessource(Ressource.ARGILE,20);
+        addRessource(Ressource.BOIS,20);
+        addRessource(Ressource.LAINE,20);
+        addRessource(Ressource.BLE,20);
+        addRessource(Ressource.ROCHE,20);
+        addCarte(new Chevalier());
         cartesUtilisables();
+        afficheCartes();
+        System.out.println(cartesUtilisables);
         jeu.getPlateau().LancerDes(jeu, this, jeu.getJoueurs());
         if(jeu.graphique){
             jeu.vue.refresh(this, false, false);
@@ -1278,7 +1279,7 @@ public class Humain extends Joueur{
                 }
                 else if (rep.equals("utiliser")) {
                     if(cartesUtilisables){
-                        utiliserCarte(jeu);
+                        utiliserCarte(jeu,null);
                     } 
                     else {
                         System.out.println("Vous ne pouvez pas utiliser de carte ce tour ci.");
@@ -1295,8 +1296,7 @@ public class Humain extends Joueur{
         }
     }
 
-    public void utiliserCarte(Jeu jeu){
-        Carte utilisee = null;
+    public void utiliserCarte(Jeu jeu,Carte utilisee){
         while(utilisee == null ) {
             System.out.println("Quelle carte voulez vous utiliser ? Ou écrivez \"Annuler\" pour revenir en arrière.");
             afficheCartes();
@@ -1313,6 +1313,7 @@ public class Humain extends Joueur{
             }
         }
         if (utilisee.utiliser(this, jeu)) {
+            System.out.println("thumbsup");
             removeCarte(utilisee);
             cartesInutilisables();
         }
