@@ -194,11 +194,20 @@ public class Jeu {
     public void jouer() throws IOException, InterruptedException {
         if(graphique) {
             vue = new Vue(this, this.control);
-        }
-        plateau.affiche();
-        for (int i = 0; i < joueurs.size(); i++) {
-            joueurs.get(i).placerColonie(this, true);
-            if(graphique) {
+            for (int i = 0; i < joueurs.size(); i++) {
+                vue.actionPlacerColonie(true);
+                while(true) {
+                    if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                        if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
+                            break;
+                        }
+                        else {
+                            this.vue.getTerminal().append("Impossible" + "\n");
+                            this.vue.setSelectionIntersection(null);
+                        }
+                    }
+                    Thread.sleep(5);
+                }
                 if(i == joueurs.size() - 1) {
                     vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
                 }
@@ -206,17 +215,33 @@ public class Jeu {
                     vue.refresh(joueurs.get(i + 1), true, false);
                 }
             }
-        }
-        for (int i = joueurs.size() - 1; i >= 0; i--) {
-            joueurs.get(i).placerColonie(this, true);
-            if(graphique) {
-                if(i == 0) {
-                    vue.refresh(joueurs.get(0), true, false);
+            for (int i = joueurs.size() - 1; i >= 0; i--) {
+                vue.actionPlacerColonie(true);
+                while(true) {
+                    if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                        if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
+                            break;
+                        }
+                        else {
+                            this.vue.getTerminal().append("Impossible" + "\n");
+                            this.vue.setSelectionIntersection(null);
+                        }
+                    }
+                    Thread.sleep(5);
                 }
-                else {
-                    vue.refresh(joueurs.get(i - 1), true, false);
+                if(graphique) {
+                    if(i == 0) {
+                        vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
+                    }
+                    else {
+                        vue.refresh(joueurs.get(i - 1), true, false);
+                    }
                 }
             }
+        }
+        else {
+            plateau.affiche();
+            //TODO REFAIRE LE NON GRAPHIQUE
         }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {

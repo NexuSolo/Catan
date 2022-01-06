@@ -29,7 +29,6 @@ public class Plateau {
         }        
     }
 
-
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -285,9 +284,12 @@ public class Plateau {
         int de2 = new Random().nextInt(6)+1;
         int total = de1 + de2;
         System.out.println("Le résultat des dés est " + total);
-        jeu.vue.getTerminal().append("Le résultat des dés est " + total);
-        jeu.vue.getTerminal().repaint();
-        jeu.vue.getTerminal().revalidate();
+        if(jeu.graphique) {
+            jeu.vue.resetTerminal();
+            jeu.vue.getTerminal().append("Le résultat des dés est " + total + "\n");
+            jeu.vue.getTerminal().repaint();
+            jeu.vue.getTerminal().revalidate();
+        }
         String valeur = String.valueOf(total);
         if (total != 7) {
             LinkedList<Case> lol = valDe.get(valeur);
@@ -297,7 +299,7 @@ public class Plateau {
         }
         else {
             for (Joueur joueurs : listeJoueurs) {
-                joueurs.defausseVoleur();
+                joueurs.defausseVoleur(jeu);
             }
             deplaceVoleur(jeu, J);
         }     
@@ -306,8 +308,14 @@ public class Plateau {
     public void deplaceVoleur(Jeu jeu, Joueur j) {
         if(jeu.graphique) {
             jeu.vue.setAction(jeu.vue.actionVoleur());
-            while(jeu.vue.getSelectionCase() == null && !jeu.vue.getActions());
-            jeu.vue.setActions(false);
+            while(jeu.vue.getSelectionCase() == null || !jeu.vue.getActions()) {
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("fin");
             j.deplaceVoleur(jeu);
         }
         else {

@@ -12,156 +12,280 @@ public class Humain extends Joueur{
         super(pseudo, color);
     }
 
-    public boolean placerColonie(Jeu jeu, boolean premierTour) throws IOException, InterruptedException {
+    public boolean placerColonie(Jeu jeu, boolean premierTour, Intersection intersection) throws IOException, InterruptedException {
         if(nombreColonies >= 5) {
             System.out.println("Le nombre maximum de colonie est de 5.");
+            if(jeu.graphique) {
+                jeu.vue.getTerminal().append("Le nombre maximum de colonie est de 5.");
+                jeu.vue.repaint();
+                jeu.vue.revalidate();
+            }
             return false;
         }
-        System.out.println("Ou voulez-vous placer votre colonie ? Exemple : 1:1HG représente l'emplacement en haut à gauche de la case x = 1 y = 1");
-        if(!premierTour) {
-            System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
-        }
-        while(true) {
-            String reponse = Jeu.scan();
-            if(reponse.equals("annuler") && !premierTour) {
-                return false;
-            }
-            Intersection inter = coordonéesToIntersection(jeu.getPlateau(), reponse);
-            if(inter != null) {
-                if(colonieEstPlaceable(inter, premierTour)) {
-                    if(!premierTour) {
-                        super.removeRessource(Ressource.BOIS, 1);
-                        super.removeRessource(Ressource.ARGILE,1);
-                        super.removeRessource(Ressource.BLE,1);
-                        super.removeRessource(Ressource.LAINE,1);
-                    }
-                    inter.setColonie(new Colonie(this));
-                    colonies.add(inter);
-                    System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
-                    if(inter.port != null) {
-                        if(inter.port.getRessource() == null) {
-                            ports.add(inter.port);
+        if(jeu.graphique) {
+            if(premierTour || possedeRessourcesColonie().size() == 0) {
+                if(intersection.getColonie() == null) {
+                    if(colonieEstPlaceable(intersection, premierTour)) {
+                        if(!premierTour) {
+                            super.removeRessource(Ressource.BOIS, 1);
+                            super.removeRessource(Ressource.ARGILE,1);
+                            super.removeRessource(Ressource.BLE,1);
+                            super.removeRessource(Ressource.LAINE,1);
                         }
-                        else if(inter.port.getRessource().equals(Ressource.BOIS)) {
-                            ports.add(inter.port);
+                        intersection.setColonie(new Colonie(this));
+                        colonies.add(intersection);
+                        jeu.vue.getTerminal().append("Vous avez placer une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
+                        jeu.vue.repaint();
+                        jeu.vue.revalidate();
+                        if(intersection.port != null) {
+                            if(intersection.port.getRessource() == null) {
+                                ports.add(intersection.port);
+                            }
+                            else if(intersection.port.getRessource().equals(Ressource.BOIS)) {
+                                ports.add(intersection.port);
+                            }
+                            else if(intersection.port.getRessource().equals(Ressource.ARGILE)) {
+                                ports.add(intersection.port);
+                            }
+                            else if(intersection.port.getRessource().equals(Ressource.BLE)) {
+                                ports.add(intersection.port);
+                            }
+                            else if(intersection.port.getRessource().equals(Ressource.LAINE)) {
+                                ports.add(intersection.port);
+                            }
+                            else if(intersection.port.getRessource().equals(Ressource.ROCHE)) {
+                                ports.add(intersection.port);
+                            }
                         }
-                        else if(inter.port.getRessource().equals(Ressource.ARGILE)) {
-                            ports.add(inter.port);
-                        }
-                        else if(inter.port.getRessource().equals(Ressource.BLE)) {
-                            ports.add(inter.port);
-                        }
-                        else if(inter.port.getRessource().equals(Ressource.LAINE)) {
-                            ports.add(inter.port);
-                        }
-                        else if(inter.port.getRessource().equals(Ressource.ROCHE)) {
-                            ports.add(inter.port);
-                        }
-                    }
-                    jeu.getPlateau().affiche();
-                    if(jeu.graphique) {
                         jeu.vue.refresh(this, true, false);
+                        if(premierTour) {
+                            jeu.vue.actionPlacerRoute(true);
+                            while(true) {
+                                if(jeu.vue.getActions() && jeu.vue.getSelectionChemin() != null) {
+                                    if(placerRoute(jeu, true, intersection, jeu.vue.getSelectionChemin(), true)) {
+                                        break;
+                                    }
+                                    else {
+                                        jeu.vue.setSelectionChemin(null);
+                                    }
+                                }
+                                Thread.sleep(5);
+                            }
+                            
+                        }
+                        return true;
                     }
-                    if(premierTour) {
-                        placerRoute(jeu, true, inter);
+                    else {
+                        jeu.vue.getTerminal().append("Impossible de placer unecolonie ici" + "\n");
+                        jeu.vue.repaint();
+                        jeu.vue.revalidate();
+                        return false;
                     }
-                    return true;
                 }
                 else {
-                    System.out.println("Il doit y avoir au moins 2 routes entres 2 Colonies");
-                    if(!premierTour) {
-                        System.out.println("Votre colonie doit etre a coté d'une route");
-                    }
+                    jeu.vue.getTerminal().append("Cette intersection appartient deja a un joueur" + "\n");
+                    jeu.vue.repaint();
+                    jeu.vue.revalidate();
+                    return false;
                 }
             }
             else {
-                System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+                jeu.vue.getTerminal().append("Vous n'avez pas assez de ressources" + "\n");
+                jeu.vue.repaint();
+                jeu.vue.revalidate();
+                return false;
+            }
+        }
+        else {
+            System.out.println("Ou voulez-vous placer votre colonie ? Exemple : 1:1HG représente l'emplacement en haut à gauche de la case x = 1 y = 1");
+            if(!premierTour) {
+                System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+            }
+            while(true) {
+                String reponse = Jeu.scan();
+                if(reponse.equals("annuler") && !premierTour) {
+                    return false;
+                }
+                Intersection inter = coordonéesToIntersection(jeu.getPlateau(), reponse);
+                if(inter != null) {
+                    if(colonieEstPlaceable(inter, premierTour)) {
+                        if(!premierTour) {
+                            super.removeRessource(Ressource.BOIS, 1);
+                            super.removeRessource(Ressource.ARGILE,1);
+                            super.removeRessource(Ressource.BLE,1);
+                            super.removeRessource(Ressource.LAINE,1);
+                        }
+                        inter.setColonie(new Colonie(this));
+                        colonies.add(inter);
+                        System.out.println("Vous avez placer une colonie en x = " + inter.x + ", y = " + inter.y);
+                        if(inter.port != null) {
+                            if(inter.port.getRessource() == null) {
+                                ports.add(inter.port);
+                            }
+                            else if(inter.port.getRessource().equals(Ressource.BOIS)) {
+                                ports.add(inter.port);
+                            }
+                            else if(inter.port.getRessource().equals(Ressource.ARGILE)) {
+                                ports.add(inter.port);
+                            }
+                            else if(inter.port.getRessource().equals(Ressource.BLE)) {
+                                ports.add(inter.port);
+                            }
+                            else if(inter.port.getRessource().equals(Ressource.LAINE)) {
+                                ports.add(inter.port);
+                            }
+                            else if(inter.port.getRessource().equals(Ressource.ROCHE)) {
+                                ports.add(inter.port);
+                            }
+                        }
+                        jeu.getPlateau().affiche();
+                        if(premierTour) {
+                            placerRoute(jeu, true, inter, null, true);
+                        }
+                        return true;
+                    }
+                    else {
+                        System.out.println("Il doit y avoir au moins 2 routes entres 2 Colonies");
+                        if(!premierTour) {
+                            System.out.println("Votre colonie doit etre a coté d'une route");
+                        }
+                    }
+                }
+                else {
+                    System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+                }
             }
         }
     }
 
-    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour) {
-        if(premierTour != null) {
-            System.out.print("Placer une route a coté de votre nouvelle colonie en x = " + premierTour.getX() + " y = " + premierTour.getY() + ". ");
-            if(premierTour.getCheminH() != null) {
-                System.out.print("[H] ");
-            }
-            if(premierTour.getCheminB() != null) {
-                System.out.print("[B] ");
-            }
-            if(premierTour.getCheminG() != null) {
-                System.out.print("[G] ");
-            }
-            if(premierTour.getCheminD() != null) {
-                System.out.print("[D]");
-            }
-            System.out.println();
-            while (true) {
-                String reponse = Jeu.scan();
-                if(premierTour.getCheminH() != null && reponse.equals("h")) {
-                    if(routeEstPlaceable(premierTour.getCheminH())) {
-                        premierTour.getCheminH().setRoute(this);
-                        addRoute(premierTour.getCheminH());
+    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour, Chemin cheminn, boolean premierTourB) {
+        if(jeu.graphique) {
+            if(cheminn.getRoute() == null) {
+                if(premierTourB) {
+                    if(cheminn.getIntersection1().equals(premierTour) || cheminn.getIntersection2().equals(premierTour)) {
+                        cheminn.setRoute(this);
+                        addRoute(cheminn);
                         setTailleRoute(jeu);
-                        jeu.getPlateau().affiche();
                         return true;
                     }
+                    else {
+                        jeu.vue.getTerminal().append("Vous devez placer une route a coté de vottre nouvelle colonie");
+                        jeu.vue.repaint();
+                        jeu.vue.revalidate();
+                        return false;
+                    }
                 }
-                else if(premierTour.getCheminB() != null && reponse.equals("b")) {
-                    if(routeEstPlaceable(premierTour.getCheminB())) {
-                        premierTour.getCheminB().setRoute(this);
-                        addRoute(premierTour.getCheminB());
+                else {
+                    if(routeEstPlaceable(cheminn)) {
+                        if(!gratuit) {
+                            removeRessource(Ressource.BOIS);
+                            removeRessource(Ressource.ARGILE);
+                            removeRessource(Ressource.LAINE);
+                            removeRessource(Ressource.BLE);
+                        }
+                        cheminn.setRoute(this);
+                        addRoute(cheminn);
                         setTailleRoute(jeu);
-                        jeu.getPlateau().affiche();
                         return true;
                     }
-                }
-                else if(premierTour.getCheminG() != null && reponse.equals("g")) {
-                    if(routeEstPlaceable(premierTour.getCheminG())) {
-                        premierTour.getCheminG().setRoute(this);
-                        addRoute(premierTour.getCheminG());
-                        setTailleRoute(jeu);
-                        jeu.getPlateau().affiche();
-                        return true;
+                    else {
+                        jeu.vue.getTerminal().append("Vous devez placer une route a coté d'une de vos colonies'");
+                        jeu.vue.repaint();
+                        jeu.vue.revalidate();
+                        return false;
                     }
-                }
-                else if(premierTour.getCheminD() != null && reponse.equals("d")) {
-                    if(routeEstPlaceable(premierTour.getCheminD())) {
-                        premierTour.getCheminD().setRoute(this);
-                        addRoute(premierTour.getCheminD());
-                        setTailleRoute(jeu);
-                        jeu.getPlateau().affiche();
-                        return true;
-                    }
-                }
-            }
-        }
-        System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
-        if (!gratuit) {
-            System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
-        }
-        while (true) {
-            String reponse = Jeu.scan();
-            if(reponse.equals("annuler") && !gratuit) {
-                return false;
-            }
-            Chemin chemin = coordonéesToChemin(jeu.getPlateau(), reponse);
-            if(chemin != null) {
-                if(routeEstPlaceable(chemin)) {
-                    if(!gratuit) {
-                        super.removeRessource(Ressource.BOIS, 1);
-                        super.removeRessource(Ressource.ARGILE,1);
-                    }
-                    chemin.setRoute(this);
-                    addRoute(chemin);
-                    setTailleRoute(jeu);
-                    jeu.getPlateau().affiche();
-                    System.out.println("Vous avez placé une route");
-                    return true;
                 }
             }
             else {
-                System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
+                jeu.vue.getTerminal().append("Cette route appartiens deja a un joueur");
+                jeu.vue.repaint();
+                jeu.vue.revalidate();
+                return false;
+            }
+        }
+        else {
+            if(premierTour != null) {
+                System.out.print("Placer une route a coté de votre nouvelle colonie en x = " + premierTour.getX() + " y = " + premierTour.getY() + ". ");
+                if(premierTour.getCheminH() != null) {
+                    System.out.print("[H] ");
+                }
+                if(premierTour.getCheminB() != null) {
+                    System.out.print("[B] ");
+                }
+                if(premierTour.getCheminG() != null) {
+                    System.out.print("[G] ");
+                }
+                if(premierTour.getCheminD() != null) {
+                    System.out.print("[D]");
+                }
+                System.out.println();
+                while (true) {
+                    String reponse = Jeu.scan();
+                    if(premierTour.getCheminH() != null && reponse.equals("h")) {
+                        if(routeEstPlaceable(premierTour.getCheminH())) {
+                            premierTour.getCheminH().setRoute(this);
+                            addRoute(premierTour.getCheminH());
+                            setTailleRoute(jeu);
+                            jeu.getPlateau().affiche();
+                            return true;
+                        }
+                    }
+                    else if(premierTour.getCheminB() != null && reponse.equals("b")) {
+                        if(routeEstPlaceable(premierTour.getCheminB())) {
+                            premierTour.getCheminB().setRoute(this);
+                            addRoute(premierTour.getCheminB());
+                            setTailleRoute(jeu);
+                            jeu.getPlateau().affiche();
+                            return true;
+                        }
+                    }
+                    else if(premierTour.getCheminG() != null && reponse.equals("g")) {
+                        if(routeEstPlaceable(premierTour.getCheminG())) {
+                            premierTour.getCheminG().setRoute(this);
+                            addRoute(premierTour.getCheminG());
+                            setTailleRoute(jeu);
+                            jeu.getPlateau().affiche();
+                            return true;
+                        }
+                    }
+                    else if(premierTour.getCheminD() != null && reponse.equals("d")) {
+                        if(routeEstPlaceable(premierTour.getCheminD())) {
+                            premierTour.getCheminD().setRoute(this);
+                            addRoute(premierTour.getCheminD());
+                            setTailleRoute(jeu);
+                            jeu.getPlateau().affiche();
+                            return true;
+                        }
+                    }
+                }
+            }
+            System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
+            if (!gratuit) {
+                System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+            }
+            while (true) {
+                String reponse = Jeu.scan();
+                if(reponse.equals("annuler") && !gratuit) {
+                    return false;
+                }
+                Chemin chemin = coordonéesToChemin(jeu.getPlateau(), reponse);
+                if(chemin != null) {
+                    if(routeEstPlaceable(chemin)) {
+                        if(!gratuit) {
+                            super.removeRessource(Ressource.BOIS, 1);
+                            super.removeRessource(Ressource.ARGILE,1);
+                        }
+                        chemin.setRoute(this);
+                        addRoute(chemin);
+                        setTailleRoute(jeu);
+                        jeu.getPlateau().affiche();
+                        System.out.println("Vous avez placé une route");
+                        return true;
+                    }
+                }
+                else {
+                    System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
+                }
             }
         }
     }
@@ -273,30 +397,45 @@ public class Humain extends Joueur{
         return null;
     }
     
-    public void defausseVoleur(){
-        if(this.ressources.size() > 7) {
-            int cartesADefausser = this.ressources.size()/2  ;
-            if(cartesADefausser > 0) {
-                System.out.println("Le voleur s'empare de vos cartes, veuillez choisir lesquels défausser");
-            }
-            while( cartesADefausser > 0 ) {
-                System.out.println("Il vous reste "+cartesADefausser+" carte(s) à défausser");
-                this.afficheRessource();
-                String scan = Jeu.scan();
-                Ressource defaussee = stringToRessource(scan);
-                System.out.println("Vous allez défausser " + defaussee);
-                while(defaussee == null || !this.possede(defaussee)) {
-                    if (defaussee == null) {
-                        System.out.println("Ressource invalide");
-                    } 
-                    else{
-                        System.out.println("Vous ne possédez pas cette ressource");
+    public void defausseVoleur(Jeu jeu){
+        if(ressources.size() > 7) {
+            if(jeu.graphique) {
+                int i = ressources.size()/2 + ressources.size()%2;
+                System.out.println("taille voulu " + i);
+                jeu.vue.setAction(jeu.vue.actionVoleurDefausse(this, new int[5]));
+                while(ressources.size() != i) {
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    scan = Jeu.scan();
-                    defaussee = stringToRessource(scan);
                 }
-                this.removeRessource(defaussee);
-                cartesADefausser--;
+                System.out.println("FINI");
+            }
+            else {
+                int cartesADefausser = ressources.size()/2  ;
+                if(cartesADefausser > 0) {
+                    System.out.println("Le voleur s'empare de vos cartes, veuillez choisir lesquels défausser");
+                }
+                while( cartesADefausser > 0 ) {
+                    System.out.println("Il vous reste "+cartesADefausser+" carte(s) à défausser");
+                    this.afficheRessource();
+                    String scan = Jeu.scan();
+                    Ressource defaussee = stringToRessource(scan);
+                    System.out.println("Vous allez défausser " + defaussee);
+                    while(defaussee == null || !this.possede(defaussee)) {
+                        if (defaussee == null) {
+                            System.out.println("Ressource invalide");
+                        } 
+                        else{
+                            System.out.println("Vous ne possédez pas cette ressource");
+                        }
+                        scan = Jeu.scan();
+                        defaussee = stringToRessource(scan);
+                    }
+                    this.removeRessource(defaussee);
+                    cartesADefausser--;
+                }
             }
         }
         
@@ -361,6 +500,7 @@ public class Humain extends Joueur{
                 }
                 reponseToAction(jeu, reponse, jeu.getControl());
             }
+            Thread.sleep(5);
         }
     }
 
@@ -1034,7 +1174,7 @@ public class Humain extends Joueur{
             case "colonie":
                 l = possedeRessourcesColonie();
                 if(l.size() == 0) {
-                    placerColonie(jeu, false);
+                    placerColonie(jeu, false,null);
                 }
                 else {
                     System.out.print("Il vous manque ");
@@ -1047,7 +1187,7 @@ public class Humain extends Joueur{
             case "route":
                 l = possedeRessourcesRoute();
                 if(l.size() == 0) {
-                    placerRoute(jeu, false, null);
+                    placerRoute(jeu, false, null, null, false);
                 }
                 else {
                     System.out.print("Il vous manque ");

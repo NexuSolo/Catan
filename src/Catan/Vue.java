@@ -6,6 +6,7 @@ import javax.swing.event.MouseInputListener;
 import java.awt.image.BufferedImage;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class Vue extends JFrame {
     JPanel ressource;
     JPanel information;
     JTextArea terminal;
+    JButton valider;
     JPanel model = new JPanel();
     Jeu jeu;
     Joueur joueur;
@@ -120,8 +122,11 @@ public class Vue extends JFrame {
     }
 
     public void refresh(Joueur j, boolean premierTour, boolean echange) throws IOException, InterruptedException {
+        actions = false;
         joueur = j;
-        System.out.println("yo");
+        selectionCase = null;
+        selectionChemin = null;
+        selectionIntersection = null;
 
         model.remove(plateau);
         plateau = plateauToPanel(jeu.getPlateau());
@@ -138,15 +143,13 @@ public class Vue extends JFrame {
         stats.setBounds(0, 0, 1600, 200);
         model.add(stats);
 
-        
-
         if(!echange) {
 
-            model.remove(information);
-            information = afficheInformations();
-            information.setBackground(Color.ORANGE);
-            information.setBounds(1200,202,400,696);
-            model.add(information);
+            // model.remove(information);
+            // information = afficheInformations();
+            // information.setBackground(Color.ORANGE);
+            // information.setBounds(1200,202,400,696);
+            // model.add(information);
 
             model.remove(action);
             action = actionPrincipale(premierTour);
@@ -311,7 +314,7 @@ public class Vue extends JFrame {
                         g.setPreferredSize(new Dimension(4,4));
                     }
                     CheminImage d = new CheminImage(jeu.getPlateau().getCase(x, y).getD());
-                    IntersectionImage hdv = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y)); 
+                    IntersectionImage hdv = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y));
                     IntersectionImage bdv = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y+1));
                     d.setLayout(new GridLayout(0,1,0,tailleCroixX));
                     d.add(hdv);
@@ -547,6 +550,24 @@ public class Vue extends JFrame {
         return jp;
     }
 
+    public JPanel afficheRessource(Joueur j) {
+        JPanel jp = new JPanel();
+        jp.setBackground(Color.GRAY);
+        jp.setLayout(new GridLayout(2,5));
+        jp.add(new JLabel(new ImageIcon(bois40)));
+        jp.add(new JLabel(new ImageIcon(argile40)));
+        jp.add(new JLabel(new ImageIcon(laine40)));
+        jp.add(new JLabel(new ImageIcon(ble40)));
+        jp.add(new JLabel(new ImageIcon(roche40)));
+        int[] ressource = j.listeRessources();
+        jp.add(new JLabel("               " + ressource[0]));
+        jp.add(new JLabel("               " + ressource[1]));
+        jp.add(new JLabel("               " + ressource[2]));
+        jp.add(new JLabel("               " + ressource[3]));
+        jp.add(new JLabel("               " + ressource[4]));
+        return jp;
+    }
+
     public static JPanel afficheStats(Jeu jeu) {
         JPanel jp = new JPanel();
         LinkedList<Joueur> joueurs = jeu.getJoueurs();
@@ -561,6 +582,69 @@ public class Vue extends JFrame {
             jp.add(p2);
         }
         return jp;
+    }
+
+    public void actionPlacerColonie(boolean b) {
+        for (ActionListener al : valider.getActionListeners()) {
+            valider.removeActionListener(al);
+        }
+        if(b) {
+            valider.addActionListener(event -> {
+                if(selectionIntersection != null) {
+                    actions = true;
+                    try {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    actions = false;
+                }
+            });
+        }
+        else {
+            selectionIntersection = null;
+            valider.addActionListener(event -> {
+                if(selectionChemin != null) {
+                    try {
+                        joueur.placerColonie(jeu, false, selectionIntersection);
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    public void actionPlacerRoute(boolean b) {
+        for (ActionListener al : valider.getActionListeners()) {
+            valider.removeActionListener(al);
+        }
+        if(b) {
+            System.out.println("yooo");
+            valider.addActionListener(event -> {
+                if(selectionChemin != null) {
+                    actions = true;
+                    try {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    actions = false;
+                }
+            });
+        }
+        else {
+            System.out.println("yo");
+            selectionChemin = null;
+            valider.addActionListener(event -> {
+                System.out.println("action route");
+                if(selectionChemin != null) {
+                    joueur.placerRoute(jeu, false, null, selectionChemin, false);
+                }
+            });
+        }
     }
 
     public JPanel actionPrincipale(boolean premierTour) {
@@ -583,16 +667,37 @@ public class Vue extends JFrame {
         if(this.joueur.possedeRessourcesRoute().size() == 0) {
             boutonPlacement.add(Box.createHorizontalGlue());
             JButton route = new JButton("Route");
+            route.addActionListener(event -> {
+                actionPlacerRoute(false);
+                try {
+                    refresh(this.joueur, false, false);
+                } catch (IOException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
             boutonPlacement.add(route);
         }
         if(this.joueur.possedeRessourcesColonie().size() == 0) {
             boutonPlacement.add(Box.createHorizontalGlue());
             JButton colonie = new JButton("Colonie");
+            colonie.addActionListener(event -> {
+                actionPlacerColonie(false);
+                try {
+                    refresh(this.joueur, false, false);
+                } catch (IOException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
             boutonPlacement.add(colonie);
         }
         if(this.joueur.possedeRessourcesVille().size() == 0) {
             boutonPlacement.add(Box.createHorizontalGlue());
             JButton ville = new JButton("Ville");
+            ville.addActionListener(event -> {
+                //actionPlacerColonie(false); // TODO
+            });
             boutonPlacement.add(ville);
         }
         boutonPlacement.add(Box.createHorizontalGlue());
@@ -632,12 +737,24 @@ public class Vue extends JFrame {
         jp.add(devEchange);
         jp.add(Box.createVerticalGlue());
 
-
         JPanel choix = new JPanel();
         choix.setLayout(new GridLayout(1,7));
         choix.setBackground(new Color(0,0,0,0));
         choix.add(Box.createHorizontalGlue());
-        JButton valider = new JButton("Valider");
+        valider = new JButton("Valider");
+        valider.addActionListener( event -> {
+            if(selectionIntersection != null) {
+                actions = true;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                actions = false;
+            }
+            
+        });
         choix.add(valider);
         choix.add(Box.createHorizontalGlue());
         if(!premierTour) {
@@ -664,6 +781,27 @@ public class Vue extends JFrame {
         model.add(action);
         revalidate();
         repaint();
+    }
+
+    public void actionRefreshVoleur(Joueur j,int[] tab) {
+        model.remove(action);
+        action = actionVoleurDefausse(j,tab);
+        action.setBackground(Color.ORANGE);
+        action.setBounds(0,202,500,598);
+        model.add(action);
+        revalidate();
+        repaint();
+    }
+
+    public void resetTerminal() {
+        model.remove(information);
+        model.remove(information);
+        information = afficheInformations();
+        information.setBackground(Color.ORANGE);
+        information.setBounds(1200,202,400,696);
+        model.add(information);
+        repaint();
+        revalidate();
     }
 
     public JPanel actionEchange(int[] tab) {
@@ -857,7 +995,16 @@ public class Vue extends JFrame {
         jp.add(joueur);
 
         jp.add(Box.createVerticalGlue());
-        jp.add(Box.createVerticalGlue());
+
+        JPanel devez = new JPanel();
+        devez.setBackground(new Color(0,0,0,0));
+        devez.setLayout(new GridLayout(1,3));
+        JLabel vous = new JLabel("Vous devez placer le voleur");
+        devez.add(Box.createHorizontalGlue());
+        devez.add(vous);
+        devez.add(Box.createHorizontalGlue());
+        jp.add(devez);
+
         jp.add(Box.createVerticalGlue());
         jp.add(Box.createVerticalGlue());
 
@@ -865,11 +1012,209 @@ public class Vue extends JFrame {
         valider.addActionListener(event -> {
             if(selectionCase != null) {
                 actions = true;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                actions = false;
             }
+        });
+        jp.add(valider);
+        jp.add(Box.createVerticalGlue());
+
+        return jp;
+    }
+
+    public JPanel actionVoleurDefausse(Joueur j, int[] tab) {
+        model.remove(ressource);
+        ressource = afficheRessource(j);
+        ressource.setBounds(0,802,500,96);
+        model.add(ressource);
+        repaint();
+        revalidate();
+
+        JPanel jp = new JPanel();
+        jp.setBackground(new Color(0, 0, 0,0));
+        jp.setLayout(new GridLayout(10,1));
+
+        JButton boisP = new JButton("+");
+        boisP.addActionListener(event -> {
+            tab[0]++;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton boisM  = new JButton("-");
+        boisM.addActionListener(event -> {
+            tab[0]--;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton argileP = new JButton("+");
+        argileP.addActionListener(event -> {
+            tab[1]++;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton argileM  = new JButton("-");
+        argileM.addActionListener(event -> {
+            tab[1]--;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton laineP = new JButton("+");
+        laineP.addActionListener(event -> {
+            tab[2]++;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton laineM  = new JButton("-");
+        laineM.addActionListener(event -> {
+            tab[2]--;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton bleP = new JButton("+");
+        bleP.addActionListener(event -> {
+            tab[3]++;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton bleM  = new JButton("-");
+        bleM.addActionListener(event -> {
+            tab[3]--;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton rocheP = new JButton("+");
+        rocheP.addActionListener(event -> {
+            tab[4]++;
+            actionRefreshVoleur(j,tab);
+        });
+        JButton rocheM  = new JButton("-");
+        rocheM.addActionListener(event -> {
+            tab[4]--;
+            actionRefreshVoleur(j,tab);
+        });
+
+        jp.add(Box.createVerticalGlue());
+
+        JLabel jou = new JLabel(j.getPseudo());
+        jou.setFont(new Font(null, 0,40));
+        JPanel joueur = new JPanel();
+        joueur.add(Box.createHorizontalGlue());
+        joueur.add(jou);
+        joueur.add(Box.createHorizontalGlue());
+        joueur.setBackground(new Color(0,0,0,0));
+        jp.add(joueur);
+
+        JPanel text = new JPanel();
+        text.add(Box.createHorizontalGlue());
+        JLabel t = new JLabel("Vous devez devez donner " + (j.getRessources().size()/2) + " cartes");
+        text.add(t);
+        text.add(Box.createHorizontalGlue());
+        text.setBackground(new Color(0,0,0,0));
+        jp.add(text);
+
+        jp.add(Box.createVerticalGlue());
+
+        JButton valider = new JButton("Valider");
+        valider.addActionListener(event -> {
+            boolean b = true;
+            for (int i : tab) {
+                if(i < 0) {
+                    b = false;
+                    break;
+                }
+            }
+            if(b && tab[0] + tab[1] + tab[2] + tab[3] + tab[4] == j.getRessources().size()/2) {
+                if(j.possede(Ressource.BOIS, tab[0]) && j.possede(Ressource.ARGILE, tab[1]) && j.possede(Ressource.LAINE, tab[2]) && j.possede(Ressource.BLE, tab[3]) && j.possede(Ressource.ROCHE, tab[4])) {
+                    j.removeRessource(Ressource.BOIS, tab[0]);
+                    j.removeRessource(Ressource.ARGILE, tab[1]);
+                    j.removeRessource(Ressource.LAINE, tab[2]);
+                    j.removeRessource(Ressource.BLE, tab[3]);
+                    j.removeRessource(Ressource.ROCHE, tab[4]);
+                }
+                else {
+                    terminal.append("Vous n'avez pas assez de ressources" + "\n");
+                }
+            }
+            else {
+                terminal.append("Le nombre de ressource n'est pas correct" + "\n");
+            }
+            repaint();
+            revalidate();
+            System.out.println(j.getRessources().size() + "taille actuel");
         });
         jp.add(valider);
 
         jp.add(Box.createVerticalGlue());
+
+
+        JPanel ressource = new JPanel();
+        ressource.setBackground(new Color(0,0,0,0));
+        ressource.setLayout(new GridLayout(1,11));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(bois40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(argile40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(laine40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(ble40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(roche40, 12));
+        ressource.add(Box.createVerticalGlue());
+        for (Component c : ressource.getComponents()) {
+            c.setBackground(new Color(0,0,0,0));
+        }
+        jp.add(ressource);
+
+        JPanel plus = new JPanel();
+        plus.setBackground(new Color(0,0,0,0));
+        plus.setLayout(new GridLayout(1,11));
+        plus.add(Box.createHorizontalGlue());
+        plus.add(boisP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(argileP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(laineP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(bleP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(rocheP);
+        plus.add(Box.createHorizontalGlue());
+        jp.add(plus);
+
+        JPanel numero = new JPanel();
+        numero.setBackground(new Color(0,0,0,0));
+        numero.setLayout(new GridLayout(1,11));
+        numero.add(Box.createHorizontalGlue());
+        JLabel b = new JLabel("       " + tab[0]);
+        numero.add(b);
+        numero.add(Box.createHorizontalGlue());
+        JLabel a = new JLabel("       " + tab[1]);
+        numero.add(a);
+        numero.add(Box.createHorizontalGlue());
+        JLabel l = new JLabel("       " + tab[2]);
+        numero.add(l);
+        numero.add(Box.createHorizontalGlue());
+        JLabel bl = new JLabel("       " + tab[3]);
+        numero.add(bl);
+        numero.add(Box.createHorizontalGlue());
+        JLabel r = new JLabel("       " + tab[4]);
+        numero.add(r);
+        numero.add(Box.createHorizontalGlue());
+        jp.add(numero);
+
+        JPanel moins = new JPanel();
+        moins.setBackground(new Color(0,0,0,0));
+        moins.setLayout(new GridLayout(1,11));
+        moins.add(Box.createHorizontalGlue());
+        moins.add(boisM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(argileM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(laineM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(bleM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(rocheM);
+        moins.add(Box.createHorizontalGlue());
+        jp.add(moins);
 
         return jp;
     }
@@ -990,6 +1335,10 @@ public class Vue extends JFrame {
         return selectionChemin;
     }
 
+    public Intersection getSelectionIntersection() {
+        return selectionIntersection;
+    }
+
     public boolean getActions() {
         return actions;
     }
@@ -1006,6 +1355,18 @@ public class Vue extends JFrame {
         model.add(this.action);
         revalidate();
         repaint();
+    }
+
+    public void setSelectionCase(Case selectionCase) {
+        this.selectionCase = selectionCase;
+    }
+
+    public void setSelectionChemin(Chemin selectionChemin) {
+        this.selectionChemin = selectionChemin;
+    }
+
+    public void setSelectionIntersection(Intersection selectionIntersection) {
+        this.selectionIntersection = selectionIntersection;
     }
 
 }

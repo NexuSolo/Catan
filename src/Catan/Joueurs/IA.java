@@ -22,7 +22,7 @@ public class IA extends Joueur{
     }
 
     @Override
-    public boolean placerColonie(Jeu jeu, boolean premierTour) {
+    public boolean placerColonie(Jeu jeu, boolean premierTour, Intersection intersetcion) {
         Intersection[] intersectionTri = jeu.getPlateau().getIntersectionTri();
         int [] valeurInter = jeu.getPlateau().getValeurInter();
         int i = valeurInter.length-1;
@@ -62,7 +62,7 @@ public class IA extends Joueur{
         }
         jeu.getPlateau().affiche();
         if(premierTour) {
-            placerRoute(jeu, true, inter);
+            placerRoute(jeu, true, inter, null, true);
         }
        prochaineRoute();
         return true;
@@ -188,13 +188,13 @@ public class IA extends Joueur{
     }
 
     @Override
-    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour) {
+    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour, Chemin cheminn, boolean premierTourB) {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public void defausseVoleur() {
+    public void defausseVoleur(Jeu jeu) {
         // TODO Auto-generated method stub
         
     }
