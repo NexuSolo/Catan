@@ -270,19 +270,6 @@ public class Jeu {
         }
         return false;
     }
-
-    /**
-     *  *----------------*
-     *  |      Nexus     |
-     *  |    2 Points    |
-     *  | 10 Ressources  |
-     *  | 2 Developpement|
-     *  | 6 Longue route |
-     *  |   2 chevalier  |
-     *  *----------------*
-     * 
-     */
-
     public void afficheStats() {
         System.out.print("*");
         for (Joueur joueur : joueurs) {
@@ -389,7 +376,6 @@ public class Jeu {
 
     public void setArmeeLaPlusPuissante(Joueur j) {
         if (ArmeeLaPlusPuissante == null || j.getNombreChevalier() > ArmeeLaPlusPuissante.getNombreChevalier() ){
-            System.out.println(j + " = Nvx NBC");
            ArmeeLaPlusPuissante = j;
         } 
     }
@@ -403,7 +389,6 @@ public class Jeu {
     }
     public void setRouteLaPlusLongue(Joueur j) {
         if(routeLaPlusLongue == null || j.getTailleRoute() > routeLaPlusLongue.getTailleRoute() ){
-            System.out.println(j + " = Nvx RPL");
             routeLaPlusLongue = j;
         }
     }

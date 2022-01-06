@@ -37,7 +37,7 @@ public class Humain extends Joueur{
                             freeRessource(jeu, intersection);
                         }
                         colonies.add(intersection);
-                        jeu.vue.getTerminal().append("Vous avez placer une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
+                        jeu.vue.getTerminal().append("Vous avez placé une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         if(intersection.port != null) {
@@ -262,7 +262,7 @@ public class Humain extends Joueur{
                     }
                 }
             }
-            System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
+            System.out.println("Ou voulez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
             if (!gratuit) {
                 System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
             }
@@ -454,7 +454,6 @@ public class Humain extends Joueur{
                         e.printStackTrace();
                     }
                 }
-                System.out.println("FINI");
             }
             else {
                 int cartesADefausser = ressources.size()/2  ;
@@ -562,7 +561,7 @@ public class Humain extends Joueur{
     }
 
     public boolean echange(Jeu jeu) throws IOException, InterruptedException {
-        System.out.println("Voullez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
+        System.out.println("Voulez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while (true) {
             String reponse = Jeu.scan();
@@ -821,9 +820,9 @@ public class Humain extends Joueur{
                 System.out.println();
             }
             else {
-                System.out.println("Vos ressources ne sont pas équilibrer");
+                System.out.println("Vos ressources ne sont pas équilibrées");
                 if(jeu.graphique) {
-                    jeu.vue.getTerminal().append("Vos ressources ne sont pas équilibrer" + "\n");
+                    jeu.vue.getTerminal().append("Vos ressources ne sont pas équilibrées" + "\n");
                     jeu.vue.revalidate();
                     jeu.vue.repaint();
                 }
@@ -1217,9 +1216,7 @@ public class Humain extends Joueur{
         return tab;
     }
 
-    // public void echangeJouer(Jeu jeu) {
-    //     //TODO
-    // }
+
 
     public void reponseToAction(Jeu jeu, String reponse, Controleur control) throws IOException, InterruptedException {
         //IMPLEMENTER VERSION GRAPHIQUE
