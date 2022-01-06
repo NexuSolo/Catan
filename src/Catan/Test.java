@@ -1,14 +1,10 @@
 package Catan;
-
-import java.util.Random;
-
-import Catan.Joueurs.Humain;
-
-import java.awt.Color;
+import java.io.IOException;
 
 public class Test {
 
-    public static void main(String[] args) {
-        Jeu j = new Jeu(true);
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new Jeu(true);
     }
+    
 }

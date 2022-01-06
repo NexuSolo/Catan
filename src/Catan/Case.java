@@ -26,7 +26,7 @@ public class Case {
     }
 
 
-    public void production() {
+    public void production(Jeu jeu) {
         if (!voleur) {
             String s2 = "La case " + x + ":" + y + " produit ";
             String s = "";
@@ -72,10 +72,20 @@ public class Case {
             }
             if(!s.equals("")) {
                 System.out.println(s2 + s);
+                if(jeu.graphique) {
+                    jeu.vue.getTerminal().append(s2 + s + "\n");
+                    jeu.vue.getTerminal().repaint();
+                    jeu.vue.getTerminal().revalidate();
+                }
             }
         }
         else {
             System.out.println("Le voleur s'est emparé des ressources sur la case " + x + ":" + y +" !");
+            if(jeu.graphique) {
+                jeu.vue.getTerminal().append("Le voleur s'est emparé des ressources sur la case " + x + ":" + y +" !" + "\n");
+                jeu.vue.getTerminal().repaint();
+                jeu.vue.getTerminal().revalidate();
+            }
         }
 
     }
