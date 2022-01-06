@@ -308,7 +308,7 @@ public class Plateau {
     }
 
     public void deplaceVoleur(Jeu jeu, Joueur j) {
-        if(jeu.graphique) {
+        if(jeu.graphique && j instanceof Humain) {
             jeu.vue.setAction(jeu.vue.actionVoleur());
             while(jeu.vue.getSelectionCase() == null || !jeu.vue.getActions()) {
                 try {

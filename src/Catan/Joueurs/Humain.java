@@ -33,6 +33,9 @@ public class Humain extends Joueur{
                             super.removeRessource(Ressource.LAINE,1);
                         }
                         intersection.setColonie(new Colonie(this));
+                        if(secondTour) {
+                            freeRessource(jeu, intersection);
+                        }
                         colonies.add(intersection);
                         jeu.vue.getTerminal().append("Vous avez placer une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
                         jeu.vue.repaint();

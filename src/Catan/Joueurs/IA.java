@@ -356,14 +356,14 @@ public class IA extends Joueur{
     }
 
     @Override
-    public void tour(Jeu jeu) { // ENLEVER LES RESSOURCES
+    public void tour(Jeu jeu) {
         System.out.println("Tour de "+ this +" il possède "+point+"points");
         cartesUtilisables();
         jeu.getPlateau().LancerDes(jeu, this, jeu.getJoueurs());
         if(possede(Ressource.BLE,2) && possede(Ressource.ROCHE,3)) {
             for (Intersection colonie : colonies) {
                 if(!(colonie.getColonie() instanceof Ville) ) {
-                    colonie.setColonie(new Ville(this));
+                    placerVille(jeu, colonie);
                     System.out.println(this+"a placé une ville en " + colonie.getX()+"y"+colonie.getY());
                 }
             }
@@ -406,8 +406,10 @@ public class IA extends Joueur{
 
     @Override
     public boolean placerVille(Jeu jeu, Intersection intersection) {
-        // TODO Auto-generated method stub
-        return false;
+        removeRessource(Ressource.ROCHE,3);
+        removeRessource(Ressource.BLE,2);
+        intersection.setColonie(new Ville(this));
+        return true;
     }
     
 }
