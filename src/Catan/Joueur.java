@@ -503,7 +503,9 @@ public abstract class Joueur {
         LinkedList<Integer> tailleRoute = new LinkedList<Integer>();
         LinkedList<Chemin> cheminParcourus = new LinkedList<>();
         LinkedList<Intersection> parc = new LinkedList<>();
+        int d = 0;
         for(Chemin c : routes) {
+            System.out.println(this + "route"+ ++d);
             cheminParcourus.clear();
             parc.clear();
             tailleRoute.add(c.tailleRouteMax(this, cheminParcourus,parc));

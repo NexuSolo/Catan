@@ -37,7 +37,7 @@ public class Humain extends Joueur{
                             freeRessource(jeu, intersection);
                         }
                         colonies.add(intersection);
-                        jeu.vue.getTerminal().append("Vous avez placer une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
+                        jeu.vue.getTerminal().append("Vous avez placé une colonie en x = " + intersection.x + ", y = " + intersection.y + "\n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         if(intersection.port != null) {
@@ -262,7 +262,7 @@ public class Humain extends Joueur{
                     }
                 }
             }
-            System.out.println("Ou voullez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
+            System.out.println("Ou voulez-vous placer votre route ? Exemple : 1:1G représente le chemin a gauche de la case x = 1 y = 1");
             if (!gratuit) {
                 System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
             }
@@ -297,7 +297,7 @@ public class Humain extends Joueur{
         if(nombreVilles >= 4) {
             System.out.println("Le nombre maximum de ville est de 4.");
             if(jeu.graphique) {
-                jeu.vue.getTerminal().append("Le nombre maximum de ville est de 4. + \n");
+                jeu.vue.getTerminal().append("Le nombre maximum de ville est de 4. \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
             }
@@ -310,37 +310,37 @@ public class Humain extends Joueur{
                         removeRessource(Ressource.ROCHE, 3);
                         removeRessource(Ressource.BLE, 2);
                         intersection.setColonie(new Ville(this));
-                        jeu.vue.getTerminal().append("Félicitation vous avez transformer votre colonie en ville ! \n");
+                        jeu.vue.getTerminal().append("Félicitations vous avez transformé votre colonie en ville ! \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
-                        System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                        System.out.println("Félicitations vous avez transformé votre colonie en ville !");
                         nombreVilles++;
                         nombreColonies--;
                         return true;
                     }
                     else {
-                        jeu.vue.getTerminal().append("Cette colonie ne vous appatient pas + \n");
+                        jeu.vue.getTerminal().append("Cette colonie ne vous appartient pas \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         return false;
                     }
                 }
                 else {
-                    jeu.vue.getTerminal().append("Cette intersection n'est pas une colonie + \n");
+                    jeu.vue.getTerminal().append("Cette intersection n'est pas une colonie \n");
                     jeu.vue.repaint();
                     jeu.vue.revalidate();
                     return false;
                 }
             }
             else {
-                jeu.vue.getTerminal().append("Vous n'avez pas les ressources nécéssaire + \n");
+                jeu.vue.getTerminal().append("Vous n'avez pas les ressources nécessaires \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
                 return false;
             }
         }
         else {
-            System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
+            System.out.println("Où voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
             System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
             while(true) {
                 String reponse = Jeu.scan();
@@ -355,7 +355,7 @@ public class Humain extends Joueur{
                                 removeRessource(Ressource.ROCHE, 3);
                                 removeRessource(Ressource.BLE, 2);
                                 inter.setColonie(new Ville(this));
-                                System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                                System.out.println("Félicitations vous avez transformer votre colonie en ville !");
                                 nombreVilles++;
                                 nombreColonies--;
                                 return true;
@@ -478,7 +478,6 @@ public class Humain extends Joueur{
                         e.printStackTrace();
                     }
                 }
-                System.out.println("FINI");
             }
             else {
                 int cartesADefausser = ressources.size()/2  ;
@@ -575,7 +574,7 @@ public class Humain extends Joueur{
     }
 
     public boolean echange(Jeu jeu) throws IOException, InterruptedException {
-        System.out.println("Voullez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
+        System.out.println("Voulez vous echanger avec la banque ou d'autres joueurs ? [Banque] [Joueur]");
         System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
         while (true) {
             String reponse = Jeu.scan();
@@ -834,9 +833,9 @@ public class Humain extends Joueur{
                 System.out.println();
             }
             else {
-                System.out.println("Vos ressources ne sont pas équilibrer");
+                System.out.println("Vos ressources ne sont pas équilibrées");
                 if(jeu.graphique) {
-                    jeu.vue.getTerminal().append("Vos ressources ne sont pas équilibrer" + "\n");
+                    jeu.vue.getTerminal().append("Vos ressources ne sont pas équilibrées" + "\n");
                     jeu.vue.revalidate();
                     jeu.vue.repaint();
                 }

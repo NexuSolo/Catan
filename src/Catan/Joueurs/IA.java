@@ -17,6 +17,7 @@ import Catan.*;
 public class IA extends Joueur{
     Intersection prochaineColonie = null;
     Chemin prochaineRoute = null;
+    boolean blocage = false;
 
     public IA(String pseudo, String color) {
         super(pseudo, color);
@@ -24,6 +25,9 @@ public class IA extends Joueur{
 
     @Override
     public boolean placerColonie(Jeu jeu, boolean premierTour, boolean secondTour, Intersection intersetcion) {
+        if (nombreColonies >= 5){
+            return false;
+        }
         Intersection[] intersectionTri = jeu.getPlateau().getIntersectionTri();
         int [] valeurInter = jeu.getPlateau().getValeurInter();
         int i = valeurInter.length-1;
@@ -140,8 +144,10 @@ public class IA extends Joueur{
             int r = new Random().nextInt(randColonie.size());
             ValMax = randColonie.get(r);
         }
+        // if (ValMax == null) {
+        //     blocage = true;
+        // }
         this.prochaineColonie = ValMax;
-        System.out.println("ValMax x"+ValMax.getX()+"y"+ValMax.getY());
     }
 
     public void prochaineRoute(){
@@ -265,64 +271,98 @@ public class IA extends Joueur{
             if (prochaineColonie.getY() < premierTour.getY()) {
                 if (premierTour.getCheminH()!=null) {
                     premierTour.getCheminH().setRoute(this);
+                    routes.add(premierTour.getCheminH());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminG()!=null) {
                     premierTour.getCheminG().setRoute(this);
+                    routes.add(premierTour.getCheminG());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminD()!=null) {
                     premierTour.getCheminD().setRoute(this);
+                    routes.add(premierTour.getCheminD());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminB()!=null) {
                     premierTour.getCheminB().setRoute(this);
+                    routes.add(premierTour.getCheminB());
+                    setTailleRoute(jeu);
                 }
             }
             else if (prochaineColonie.getY() < premierTour.getY()) {
                 if (premierTour.getCheminH()!=null) {
                     premierTour.getCheminH().setRoute(this);
+                    routes.add(premierTour.getCheminH());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminG()!=null) {
                     premierTour.getCheminG().setRoute(this);
+                    routes.add(premierTour.getCheminG());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminD()!=null) {
                     premierTour.getCheminD().setRoute(this);
+                    routes.add(premierTour.getCheminD());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminB()!=null) {
                     premierTour.getCheminB().setRoute(this);
+                    routes.add(premierTour.getCheminB());
+                    setTailleRoute(jeu);
                 }
             }
             else if (prochaineColonie.getY() >= premierTour.getY()) {
                 if (premierTour.getCheminD()!=null) {
                     premierTour.getCheminD().setRoute(this);
+                    routes.add(premierTour.getCheminD());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminH()!=null) {
                     premierTour.getCheminH().setRoute(this);
+                    routes.add(premierTour.getCheminH());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminB()!=null) {
                     premierTour.getCheminB().setRoute(this);
+                    routes.add(premierTour.getCheminB());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminG()!=null) {
                     premierTour.getCheminG().setRoute(this);
+                    routes.add(premierTour.getCheminG());
+                    setTailleRoute(jeu);
                 }
             }
             else {
                 if (premierTour.getCheminB()!=null) {
                     premierTour.getCheminB().setRoute(this);
+                    routes.add(premierTour.getCheminB());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminG()!=null) {
                     premierTour.getCheminG().setRoute(this);
+                    routes.add(premierTour.getCheminG());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminD()!=null) {
                     premierTour.getCheminD().setRoute(this);
+                    routes.add(premierTour.getCheminD());
+                    setTailleRoute(jeu);
                 }
                 else if (premierTour.getCheminH()!=null) {
                     premierTour.getCheminH().setRoute(this);
+                    routes.add(premierTour.getCheminH());
+                    setTailleRoute(jeu);
                 }
             }
         }
         else {
             prochaineRoute.setRoute(this);
+            routes.add(prochaineRoute);
             prochaineRoute();
         }
+        jeu.getPlateau().affiche();
         return false;
     }
 
@@ -351,7 +391,7 @@ public class IA extends Joueur{
 
     @Override
     public void tour(Jeu jeu) {
-        System.out.println("Tour de "+ this +" il possède "+point+"points");
+        System.out.println("Tour de "+ this);
         cartesUtilisables();
         jeu.getPlateau().LancerDes(jeu, this, jeu.getJoueurs());
         if(possede(Ressource.BLE,2) && possede(Ressource.ROCHE,3)) {
@@ -362,28 +402,23 @@ public class IA extends Joueur{
                 }
             }
         }
-        if(prochaineColonie == null || !colonieEstPlaceable(prochaineColonie,true)){
+        if(!blocage && prochaineColonie == null || !colonieEstPlaceable(prochaineColonie,true)){
             setProchaineColonie(jeu);      
         }
         if (possede(Ressource.BOIS) && possede(Ressource.ARGILE)) {
-            if (colonieEstPlaceable(prochaineColonie,false)) {
+            if (!blocage && colonieEstPlaceable(prochaineColonie,false)) {
                 if(possede(Ressource.LAINE) && possede(Ressource.BLE)){
                         placerColonie(jeu,false, false, prochaineColonie);
                 }
             }
             else {
                 placerRoute(jeu, false, null, prochaineRoute, false);
+
+                setTailleRoute(jeu);
             }
 
         }
-        // if (colonieEstPlaceable(prochaineColonie,false)) {
-        //     prochaineColonie.setColonie(new Colonie(this));
-        //     setProchaineColonie(jeu);
-        // }
-        // else {
-        //     prochaineRoute.setRoute(this);
-        //     prochaineRoute();
-        // }
+        System.out.println(this + " taille route" + this.getTailleRoute());
     }
 
     @Override
@@ -400,6 +435,9 @@ public class IA extends Joueur{
 
     @Override
     public boolean placerVille(Jeu jeu, Intersection intersection) {
+        if (nombreVilles >= 4){
+            return false;
+        }
         removeRessource(Ressource.ROCHE,3);
         removeRessource(Ressource.BLE,2);
         intersection.setColonie(new Ville(this));
