@@ -23,14 +23,14 @@ public class Jeu {
     public Joueur actuel;
  
     public Jeu(boolean b) throws IOException, InterruptedException {
-        joueurs.add(new IA("Miz", "vert"));
-        joueurs.add(new Humain("Nex", "bleu"));
+        joueurs.add(new Humain("Miz", "vert"));
+        // joueurs.add(new Humain("Nex", "bleu"));
         joueurs.add(new IA("Mizaxus", "jaune"));
       
         // joueurs.add(new IA("Nexaka", "rouge"));
         actuel = joueurs.get(0);
         plateau = new Plateau(7);
-        graphique = true;
+        graphique = false;
         jouer();
     }
 
@@ -307,7 +307,7 @@ public class Jeu {
         System.out.println();
         System.out.print("|");
         for (Joueur joueur : joueurs) {
-            System.out.print("    " + joueur.getPoint() + " Points    |");
+            System.out.print("    " + joueur.calculPoint(joueur.equals(ArmeeLaPlusPuissante),joueur.equals(routeLaPlusLongue),false)+ " Points    |");
         }
         System.out.println();
         System.out.print("|");
@@ -322,13 +322,13 @@ public class Jeu {
         System.out.println();
         System.out.print("|");
         for (Joueur joueur : joueurs) {
-            System.out.print(" 6 Longue route |");
+            System.out.print(" "+joueur.getTailleRoute()+" Taille route |");
             
         }
         System.out.println();
         System.out.print("|");
         for (Joueur joueur : joueurs) {
-            System.out.print("   2 chevalier  |");
+            System.out.print("  "+joueur.getNombreChevalier()+"  Chevalier  |");
             
         }
         System.out.println();

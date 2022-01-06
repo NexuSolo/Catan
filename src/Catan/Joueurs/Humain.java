@@ -297,7 +297,7 @@ public class Humain extends Joueur{
         if(nombreVilles >= 4) {
             System.out.println("Le nombre maximum de ville est de 4.");
             if(jeu.graphique) {
-                jeu.vue.getTerminal().append("Le nombre maximum de ville est de 4. + \n");
+                jeu.vue.getTerminal().append("Le nombre maximum de ville est de 4. \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
             }
@@ -310,37 +310,37 @@ public class Humain extends Joueur{
                         removeRessource(Ressource.ROCHE, 3);
                         removeRessource(Ressource.BLE, 2);
                         intersection.setColonie(new Ville(this));
-                        jeu.vue.getTerminal().append("Félicitation vous avez transformer votre colonie en ville ! \n");
+                        jeu.vue.getTerminal().append("Félicitations vous avez transformé votre colonie en ville ! \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
-                        System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                        System.out.println("Félicitations vous avez transformé votre colonie en ville !");
                         nombreVilles++;
                         nombreColonies--;
                         return true;
                     }
                     else {
-                        jeu.vue.getTerminal().append("Cette colonie ne vous appatient pas + \n");
+                        jeu.vue.getTerminal().append("Cette colonie ne vous appartient pas \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         return false;
                     }
                 }
                 else {
-                    jeu.vue.getTerminal().append("Cette intersection n'est pas une colonie + \n");
+                    jeu.vue.getTerminal().append("Cette intersection n'est pas une colonie \n");
                     jeu.vue.repaint();
                     jeu.vue.revalidate();
                     return false;
                 }
             }
             else {
-                jeu.vue.getTerminal().append("Vous n'avez pas les ressources nécéssaire + \n");
+                jeu.vue.getTerminal().append("Vous n'avez pas les ressources nécessaires \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
                 return false;
             }
         }
         else {
-            System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
+            System.out.println("Où voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
             System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
             while(true) {
                 String reponse = Jeu.scan();
@@ -355,7 +355,7 @@ public class Humain extends Joueur{
                                 removeRessource(Ressource.ROCHE, 3);
                                 removeRessource(Ressource.BLE, 2);
                                 inter.setColonie(new Ville(this));
-                                System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                                System.out.println("Félicitations vous avez transformer votre colonie en ville !");
                                 nombreVilles++;
                                 nombreColonies--;
                                 return true;
@@ -514,6 +514,9 @@ public class Humain extends Joueur{
         addRessource(Ressource.LAINE,20);
         addRessource(Ressource.BLE,20);
         addRessource(Ressource.ROCHE,20);
+        addCarte(new Chevalier());
+        addCarte(new Chevalier());
+        addCarte(new Chevalier());
         addCarte(new Chevalier());
         cartesUtilisables();
         afficheCartes();

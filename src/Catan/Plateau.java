@@ -397,6 +397,7 @@ public class Plateau {
                     if ( x == cases.length - 1 ) {
                         if(cases[y][x].getHD().getPort() != null) {
                             System.out.print(cases[y][x].getHD().getPort());
+                            System.out.print(vague(2));
                         }
                     }
                 }
@@ -405,7 +406,7 @@ public class Plateau {
             }
             else{
                 if(cases[y][1].getHG().getPort() != null) {
-                    System.out.print(cases[y][1].getHG().getPort()+" ");
+                    System.out.print(cases[y][1].getHG().getPort()+vague(1));
                 }
                 else {
                     System.out.print(vague(2));
@@ -417,27 +418,39 @@ public class Plateau {
                 System.out.print(cases[y][x].getHD());
                 if (x == cases.length - 1 && y != 1) {
                     if(cases[y][x].getHD().getPort() != null) {
-                        System.out.print(" "+cases[y][x].getHD().getPort());
+                        System.out.print(vague(1)+cases[y][x].getHD().getPort());
+                    }
+                    else {
+                        System.out.print(vague(2));
                     }
                 }
             }
             System.out.println();
             System.out.print(vague(2) +cases[y][1].getG().toStringV());
             for (int x = 1; x < cases[y].length; x++) {
-                cases[y][x].affichageNum();
+                cases[y][x].affichageNum(this);
                 System.out.print(cases[y][x].getD().toStringV());
+                if (x == cases[y].length - 1) {
+                    System.out.print(vague(2));
+                }
             }
             System.out.println();
             System.out.print(vague(2) +cases[y][1].getG().toStringV());
             for (int x = 1; x < cases[y].length; x++) {
                 cases[y][x].affichageRes();
                 System.out.print(cases[y][x].getD().toStringV());
+                if (x == cases[y].length - 1) {
+                    System.out.print(vague(2));
+                }
             }
             System.out.println();
             System.out.print(vague(2) + cases[y][1].getG().toStringV());
             for (int x = 1; x < cases[y].length; x++) {
                 cases[y][x].affichagePts();
                 System.out.print(cases[y][x].getD().toStringV());
+                if (x == cases[y].length - 1) {
+                    System.out.print(vague(2));
+                }
             }
             System.out.println();
         }
@@ -445,6 +458,9 @@ public class Plateau {
         for (int x = 1; x < cases.length; x++) {
             System.out.print(cases[cases.length - 1][x].getB().toStringH());
             System.out.print(cases[cases.length -1][x].getBD());
+            if( x == cases.length) {
+                System.out.println(vague(2));
+            }
         }
         System.out.println();
         System.out.print(vague(2));
@@ -458,9 +474,12 @@ public class Plateau {
             if ( x == cases.length - 1 ) {
                 if(cases[cases.length -1][x].getBD().getPort() != null) {
                     System.out.print(" "+cases[cases.length -1][x].getBD().getPort());
+                    System.out.print(vague(2));
+
                 }
             }
         }
+        System.out.print(vague(3));
         System.out.println();
     }
 

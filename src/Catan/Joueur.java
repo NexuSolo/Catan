@@ -182,7 +182,14 @@ public abstract class Joueur {
         cartes.add(e);
     }
     public void removeCarte(Carte e){
-        cartes.remove(e);
+        for(Carte c : cartes){
+            if (c.getClass() == e.getClass() ){
+                cartes.remove(c);
+                return;
+            }
+        }
+        System.out.println("Taille"+cartes.size());
+
     }
 
     public abstract boolean placerColonie(Jeu jeu, boolean premierTour, boolean secondTour, Intersection intersection) throws IOException, InterruptedException;
@@ -309,7 +316,6 @@ public abstract class Joueur {
             addCarte(achetee);
             plateau.getCartes().remove(random);
             System.out.println("Vous avez obtenu une carte "+achetee);
-            //plateau.afficheCartes();
         }
         else {
             System.out.print("Vous n'avez pas les ressources nécessaire. Il vous manque");
@@ -487,11 +493,14 @@ public abstract class Joueur {
     }
 
     public void setTailleRoute(Jeu jeu){
+        System.out.println(this);
         //TODO : Appel dès que route placée
         LinkedList<Integer> tailleRoute = new LinkedList<Integer>();
         LinkedList<Chemin> cheminParcourus = new LinkedList<>();
         LinkedList<Intersection> parc = new LinkedList<>();
+        int d = 0;
         for(Chemin c : routes) {
+            System.out.println(this + "route"+ ++d);
             cheminParcourus.clear();
             parc.clear();
             tailleRoute.add(c.tailleRouteMax(this, cheminParcourus,parc));
