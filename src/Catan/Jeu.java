@@ -21,18 +21,6 @@ public class Jeu {
     public boolean graphique = false;
     public Vue vue;
     public Joueur actuel;
- 
-    public Jeu(boolean b) throws IOException, InterruptedException {
-        joueurs.add(new IA("Miz", "vert"));
-        joueurs.add(new Humain("Nex", "bleu"));
-        joueurs.add(new IA("Mizaxus", "jaune"));
-      
-        // joueurs.add(new IA("Nexaka", "rouge"));
-        actuel = joueurs.get(0);
-        plateau = new Plateau(7);
-        graphique = true;
-        jouer();
-    }
 
     public Jeu() throws IOException, InterruptedException {
         String reponse; 

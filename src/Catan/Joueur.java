@@ -181,8 +181,15 @@ public abstract class Joueur {
     public void addCarte(Carte e){
         cartes.add(e);
     }
+
     public void removeCarte(Carte e){
-        cartes.remove(e);
+        for(Carte c : cartes){
+            if (c.getClass() == e.getClass() ){
+                cartes.remove(c);
+                return;
+            }
+        }
+
     }
 
     public abstract boolean placerColonie(Jeu jeu, boolean premierTour, boolean secondTour, Intersection intersection) throws IOException, InterruptedException;
@@ -216,6 +223,8 @@ public abstract class Joueur {
         }
         return res;
     }
+
+    
 
     public void freeRessource(Jeu jeu,Intersection intersection) {
         System.out.println("e");
@@ -299,16 +308,20 @@ public abstract class Joueur {
         return this.nombreChevalier;
     }
 
-    public void achatDeveloppement(Plateau plateau) {
+    public void achatDeveloppement(Jeu jeu) {
         if(possede(Ressource.ROCHE) && possede(Ressource.BLE) && possede(Ressource.LAINE)) {
             removeRessource(Ressource.ROCHE);
             removeRessource(Ressource.BLE);
             removeRessource(Ressource.LAINE);
-            int random = new Random().nextInt(plateau.getCartes().size());
-            Carte achetee = plateau.getCartes().get(random);
+            int random = new Random().nextInt(jeu.getPlateau().getCartes().size());
+            Carte achetee = jeu.getPlateau().getCartes().get(random);
             addCarte(achetee);
-            plateau.getCartes().remove(random);
-            System.out.println("Vous avez obtenu une carte "+achetee);
+            jeu.getPlateau().getCartes().remove(random);
+            System.out.println("Vous avez obtenu une carte " + achetee);
+            if(jeu.graphique) {
+                jeu.vue.getTerminal().append("Vous avez obtenu une carte " + achetee + "\n");
+                jeu.vue.setAction(jeu.vue.actionPrincipale(false));
+            }
             //plateau.afficheCartes();
         }
         else {
@@ -487,7 +500,6 @@ public abstract class Joueur {
     }
 
     public void setTailleRoute(Jeu jeu){
-        //TODO : Appel dès que route placée
         LinkedList<Integer> tailleRoute = new LinkedList<Integer>();
         LinkedList<Chemin> cheminParcourus = new LinkedList<>();
         LinkedList<Intersection> parc = new LinkedList<>();

@@ -83,7 +83,6 @@ public class IA extends Joueur{
         for (Intersection colonie : colonies) {
             int x = colonie.getX();
             int y = colonie.getY();
-            // System.out.println("Inter départ : x"+x+"y"+y);
             if (x + 1 <= jeu.getPlateau().getLength()) {
                 if (y + 1 <= jeu.getPlateau().getLength()) {
                     coloniesPossible.add(jeu.getPlateau().getIntersection(x+1, y+1));
@@ -123,9 +122,6 @@ public class IA extends Joueur{
             }
         }
         coloniesPossible = tmp;
-        // for (Intersection colonie : coloniesPossible){
-        //     System.out.println("Inter x"+colonie.getX()+"y"+colonie.getY());
-        // }
         Intersection ValMax = null;
         for (Intersection colonie : coloniesPossible){
             if(ValMax == null || valeurIntersection.get(colonie) > valeurIntersection.get(ValMax)) {
@@ -157,8 +153,6 @@ public class IA extends Joueur{
             }
         }
         parcourus.add(plusProche);
-        // System.out.println("Colo PlusProche =x"+plusProche.getX()+" y"+plusProche.getY()+" Colo Cible =x"+prochaineColonie.getX()+"y"+prochaineColonie.getY());
-        // System.out.println("diff x ="+(prochaineColonie.getX()-plusProche.getX())+" y"+(prochaineColonie.getY()-plusProche.getY()));
         Chemin prochaineRoute = null;
         if (prochaineColonie.getY() < plusProche.getY()) {
             if(plusProche.getCheminH().getRoute() == null || plusProche.getCheminH().getRoute() == this) {
