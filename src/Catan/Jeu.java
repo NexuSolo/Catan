@@ -201,10 +201,6 @@ public class Jeu {
                         if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
                             break;
                         }
-                        else {
-                            this.vue.getTerminal().append("Impossible" + "\n");
-                            this.vue.setSelectionIntersection(null);
-                        }
                     }
                     Thread.sleep(5);
                 }
@@ -214,6 +210,7 @@ public class Jeu {
                 else {
                     vue.refresh(joueurs.get(i + 1), true, false);
                 }
+                vue.resetTerminal();
             }
             for (int i = joueurs.size() - 1; i >= 0; i--) {
                 vue.actionPlacerColonie(true);
@@ -222,26 +219,26 @@ public class Jeu {
                         if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
                             break;
                         }
-                        else {
-                            this.vue.getTerminal().append("Impossible" + "\n");
-                            this.vue.setSelectionIntersection(null);
-                        }
                     }
                     Thread.sleep(5);
                 }
-                if(graphique) {
-                    if(i == 0) {
-                        vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
-                    }
-                    else {
-                        vue.refresh(joueurs.get(i - 1), true, false);
-                    }
+                vue.resetTerminal();
+                if(i == 0) {
+                    vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
+                }
+                else {
+                    vue.refresh(joueurs.get(i - 1), true, false);
                 }
             }
         }
         else {
             plateau.affiche();
-            //TODO REFAIRE LE NON GRAPHIQUE
+            for (int i = 0; i < joueurs.size(); i++) {
+                joueurs.get(i).placerColonie(this, true, null);
+            }
+            for (int i = joueurs.size() - 1; i >= 0; i--) {
+                joueurs.get(i).placerColonie(this, true, null);
+            }
         }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {

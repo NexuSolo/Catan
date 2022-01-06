@@ -294,7 +294,7 @@ public class Plateau {
         if (total != 7) {
             LinkedList<Case> lol = valDe.get(valeur);
             for (Case c : lol) {
-                c.production();
+                c.production(jeu);
             }
         }
         else {

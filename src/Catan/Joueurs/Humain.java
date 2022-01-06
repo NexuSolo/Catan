@@ -16,7 +16,7 @@ public class Humain extends Joueur{
         if(nombreColonies >= 5) {
             System.out.println("Le nombre maximum de colonie est de 5.");
             if(jeu.graphique) {
-                jeu.vue.getTerminal().append("Le nombre maximum de colonie est de 5.");
+                jeu.vue.getTerminal().append("Le nombre maximum de colonie est de 5. \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
             }
@@ -71,8 +71,10 @@ public class Humain extends Joueur{
                                 }
                                 Thread.sleep(5);
                             }
-                            
                         }
+                        jeu.vue.getTerminal().append("Vous avez placé une nouvelleroute " + "\n");
+                        jeu.vue.repaint();
+                        jeu.vue.revalidate();
                         return true;
                     }
                     else {
@@ -169,7 +171,7 @@ public class Humain extends Joueur{
                         return true;
                     }
                     else {
-                        jeu.vue.getTerminal().append("Vous devez placer une route a coté de vottre nouvelle colonie");
+                        jeu.vue.getTerminal().append("Vous devez placer une route a coté de vottre nouvelle colonie  \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         return false;
@@ -189,7 +191,7 @@ public class Humain extends Joueur{
                         return true;
                     }
                     else {
-                        jeu.vue.getTerminal().append("Vous devez placer une route a coté d'une de vos colonies'");
+                        jeu.vue.getTerminal().append("Vous devez placer une route a coté d'une de vos colonies  \n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         return false;
@@ -197,7 +199,7 @@ public class Humain extends Joueur{
                 }
             }
             else {
-                jeu.vue.getTerminal().append("Cette route appartiens deja a un joueur");
+                jeu.vue.getTerminal().append("Cette route appartiens deja a un joueur \n");
                 jeu.vue.repaint();
                 jeu.vue.revalidate();
                 return false;
@@ -290,46 +292,85 @@ public class Humain extends Joueur{
         }
     }
 
-    public boolean placerVille(Plateau plateau) {
+    public boolean placerVille(Jeu jeu, Intersection intersection) {
         if(nombreVilles >= 4) {
             System.out.println("Le nombre maximum de ville est de 4.");
+            if(jeu.graphique) {
+                jeu.vue.getTerminal().append("Le nombre maximum de ville est de 4. + \n");
+                jeu.vue.repaint();
+                jeu.vue.revalidate();
+            }
             return false;
         }
-        System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
-        System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
-        while(true) {
-            String reponse = Jeu.scan();
-            if(reponse.equals("annuler")) {
-                return false;
-            }
-            Intersection inter = coordonéesToIntersection(plateau, reponse);
-            if(inter != null) {
-                if(inter.getColonie() != null) {
-                    if(inter.getColonie().getJoueur().equals(this)) {
-                        if(!(inter.getColonie() instanceof Ville)) {
-                            removeRessource(Ressource.ROCHE, 3);
-                            removeRessource(Ressource.BLE, 2);
-                            inter.setColonie(new Ville(this));
-                            System.out.println("Félicitation vous avez transformer votre colonie en ville !");
-                            nombreVilles++;
-                            nombreColonies--;
-                            point++;
-                            return true;
-                        }
-                        else {
-                            System.out.println("Vous avez deja une ville a cet emplacement");
-                        }
+        if(jeu.graphique) {
+            if(possedeRessourcesVille().size() == 0) {
+                if(intersection.getColonie() != null) {
+                    if(intersection.getColonie().getJoueur().equals(this)) {
+                        removeRessource(Ressource.ROCHE, 3);
+                        removeRessource(Ressource.BLE, 2);
+                        intersection.setColonie(new Ville(this));
+                        System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                        nombreVilles++;
+                        nombreColonies--;
+                        return true;
                     }
                     else {
-                        System.out.println("Vous ne possedez pas cette colonie");
+                        jeu.vue.getTerminal().append("Cette colonie ne vous appatient pas + \n");
+                        jeu.vue.repaint();
+                        jeu.vue.revalidate();
+                        return false;
                     }
                 }
                 else {
-                    System.out.println("Vous ne possedez pas de colonie a cet endroit");
+                    jeu.vue.getTerminal().append("Cette intersection n'est pas une colonie + \n");
+                    jeu.vue.repaint();
+                    jeu.vue.revalidate();
+                    return false;
                 }
             }
             else {
-                System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+                jeu.vue.getTerminal().append("Vous n'avez pas les ressources nécéssaire + \n");
+                jeu.vue.repaint();
+                jeu.vue.revalidate();
+                return false;
+            }
+        }
+        else {
+            System.out.println("Ou voulez vous transformer votre colonie en Ville ? Exemple 1:1HG transforme la colonie en haut a gauche en ville");
+            System.out.println("Ou annuler l'action en écrivant \"Annuler\"");
+            while(true) {
+                String reponse = Jeu.scan();
+                if(reponse.equals("annuler")) {
+                    return false;
+                }
+                Intersection inter = coordonéesToIntersection(jeu.getPlateau(), reponse);
+                if(inter != null) {
+                    if(inter.getColonie() != null) {
+                        if(inter.getColonie().getJoueur().equals(this)) {
+                            if(!(inter.getColonie() instanceof Ville)) {
+                                removeRessource(Ressource.ROCHE, 3);
+                                removeRessource(Ressource.BLE, 2);
+                                inter.setColonie(new Ville(this));
+                                System.out.println("Félicitation vous avez transformer votre colonie en ville !");
+                                nombreVilles++;
+                                nombreColonies--;
+                                return true;
+                            }
+                            else {
+                                System.out.println("Vous avez deja une ville a cet emplacement");
+                            }
+                        }
+                        else {
+                            System.out.println("Vous ne possedez pas cette colonie");
+                        }
+                    }
+                    else {
+                        System.out.println("Vous ne possedez pas de colonie a cet endroit");
+                    }
+                }
+                else {
+                    System.out.println("Les coordonnées sont mal écrites. Exemple : 1:1HG représente l'emplacement en haut a gauche de la case x = 1 y = 1");
+                }
             }
         }
     }
@@ -401,7 +442,6 @@ public class Humain extends Joueur{
         if(ressources.size() > 7) {
             if(jeu.graphique) {
                 int i = ressources.size()/2 + ressources.size()%2;
-                System.out.println("taille voulu " + i);
                 jeu.vue.setAction(jeu.vue.actionVoleurDefausse(this, new int[5]));
                 while(ressources.size() != i) {
                     try {
@@ -444,6 +484,8 @@ public class Humain extends Joueur{
     @Override
     public void deplaceVoleur(Jeu jeu) {
         jeu.getPlateau().affiche();
+        jeu.vue.repaint();
+        jeu.vue.revalidate();
         Case c = null;
         if(jeu.graphique) {
             c = jeu.vue.getSelectionCase();
@@ -1200,7 +1242,7 @@ public class Humain extends Joueur{
             case "ville":
                 l = possedeRessourcesVille();
                 if(l.size() == 0) {
-                    placerVille(jeu.getPlateau());
+                    placerVille(jeu, null);
                 }
                 else {
                     System.out.print("Il vous manque ");

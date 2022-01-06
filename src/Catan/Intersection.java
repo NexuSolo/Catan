@@ -86,7 +86,23 @@ public class Intersection {
         if (colonie == null) {
             return Color.BLACK;
         }
-        return colonie.getJoueur().couleur;
+        if(colonie instanceof Ville) {
+            if(colonie.getJoueur().couleur.equals(Color.BLUE)) {
+                return new Color(0,0,200);
+            }
+            if(colonie.getJoueur().couleur.equals(Color.RED)) {
+                return new Color(200,0,0);
+            }
+            if(colonie.getJoueur().couleur.equals(Color.GREEN)) {
+                return new Color(0,200,0);
+            }
+            else {
+                return new Color(200,200,0);
+            }
+        }
+        else {
+            return colonie.getJoueur().couleur;
+        }
     }
 
     public String toString() {

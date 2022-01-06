@@ -16,7 +16,6 @@ public class IA extends Joueur{
     Intersection prochaineColonie = null;
     Chemin prochaineRoute = null;
 
-
     public IA(String pseudo, String color) {
         super(pseudo, color);
     }
@@ -213,6 +212,12 @@ public class IA extends Joueur{
 
     @Override
     public boolean echange(Jeu jeu) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean placerVille(Jeu jeu, Intersection intersection) {
         // TODO Auto-generated method stub
         return false;
     }

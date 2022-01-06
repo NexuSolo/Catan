@@ -145,20 +145,13 @@ public class Vue extends JFrame {
 
         if(!echange) {
 
-            // model.remove(information);
-            // information = afficheInformations();
-            // information.setBackground(Color.ORANGE);
-            // information.setBounds(1200,202,400,696);
-            // model.add(information);
-
             model.remove(action);
             action = actionPrincipale(premierTour);
             action.setBackground(Color.ORANGE);
             action.setBounds(0,202,500,598);
             model.add(action);
         }
-
-
+        
         revalidate();
         repaint();
     }
@@ -605,9 +598,11 @@ public class Vue extends JFrame {
         else {
             selectionIntersection = null;
             valider.addActionListener(event -> {
-                if(selectionChemin != null) {
+                System.out.println("yo");
+                if(selectionIntersection != null) {
                     try {
                         joueur.placerColonie(jeu, false, selectionIntersection);
+                        refresh(joueur, false, false);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -626,7 +621,7 @@ public class Vue extends JFrame {
                 if(selectionChemin != null) {
                     actions = true;
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(20);
                     }
                     catch (InterruptedException e) {
                         e.printStackTrace();
@@ -636,15 +631,35 @@ public class Vue extends JFrame {
             });
         }
         else {
-            System.out.println("yo");
             selectionChemin = null;
             valider.addActionListener(event -> {
-                System.out.println("action route");
                 if(selectionChemin != null) {
                     joueur.placerRoute(jeu, false, null, selectionChemin, false);
                 }
+                try {
+                    refresh(joueur, false, false);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             });
         }
+    }
+
+    public void actionPlacerVille() {
+        for (ActionListener al : valider.getActionListeners()) {
+            valider.removeActionListener(al);
+        }
+        selectionIntersection = null;
+        valider.addActionListener(event -> {
+            if(selectionIntersection != null) {
+                joueur.placerVille(jeu, selectionIntersection);
+            }
+            try {
+                refresh(joueur, false, false);
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public JPanel actionPrincipale(boolean premierTour) {
@@ -696,7 +711,13 @@ public class Vue extends JFrame {
             boutonPlacement.add(Box.createHorizontalGlue());
             JButton ville = new JButton("Ville");
             ville.addActionListener(event -> {
-                //actionPlacerColonie(false); // TODO
+                actionPlacerVille();
+                try {
+                    refresh(this.joueur, false, false);
+                } catch (IOException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             });
             boutonPlacement.add(ville);
         }
@@ -741,20 +762,22 @@ public class Vue extends JFrame {
         choix.setLayout(new GridLayout(1,7));
         choix.setBackground(new Color(0,0,0,0));
         choix.add(Box.createHorizontalGlue());
-        valider = new JButton("Valider");
-        valider.addActionListener( event -> {
-            if(selectionIntersection != null) {
-                actions = true;
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+        if(valider == null) {
+            valider = new JButton("Valider");
+            valider.addActionListener( event -> {
+                if(selectionIntersection != null) {
+                    actions = true;
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    actions = false;
                 }
-                actions = false;
-            }
-            
-        });
+                
+            });
+        }
         choix.add(valider);
         choix.add(Box.createHorizontalGlue());
         if(!premierTour) {
@@ -976,6 +999,68 @@ public class Vue extends JFrame {
         moins.add(rocheM);
         moins.add(Box.createHorizontalGlue());
         jp.add(moins);
+
+        return jp;
+    }
+
+    public JPanel actionDeveloppement() {
+        JPanel jp = new JPanel();
+        jp.setBackground(new Color(0,0,0,0));
+        jp.setLayout(new GridLayout(7,1));
+
+        JLabel jo = new JLabel("Tour de " + joueur.getPseudo());
+        jo.setFont(new Font(null, 0,40));
+        JPanel joueur = new JPanel();
+        joueur.add(Box.createHorizontalGlue());
+        joueur.add(jo);
+        joueur.add(Box.createHorizontalGlue());
+        joueur.setBackground(new Color(0,0,0,0));
+        jp.add(joueur);
+
+        jp.add(Box.createVerticalGlue());
+
+        JPanel l1 = new JPanel();
+        l1.setBackground(new Color(0,0,0,0));
+        l1.setLayout(new GridLayout(1,3));
+        JButton b1 = new JButton( " Chevalier"); // ajouter la nombres de cartes
+        l1.add(b1);
+        l1.add(Box.createHorizontalGlue());
+        JButton b2 = new JButton( " Construction"); // ajouter la nombres de cartes
+        l1.add(b2);
+        jp.add(l1);
+
+        JPanel l2 = new JPanel();
+        l2.setBackground(new Color(0,0,0,0));
+        l2.setLayout(new GridLayout(1,3));
+        JButton b3 = new JButton( " Invention"); // ajouter la nombres de cartes
+        l2.add(b3);
+        l2.add(Box.createHorizontalGlue());
+        JButton b4 = new JButton( " Monopole"); // ajouter la nombres de cartes
+        l2.add(b4);
+        jp.add(l2);
+
+        JPanel l3 = new JPanel();
+        l3.setBackground(new Color(0,0,0,0));
+        l3.setLayout(new GridLayout(1,3));
+        JButton b5 = new JButton( " Invention"); // ajouter la nombres de cartes
+        l3.add(Box.createHorizontalGlue());
+        l3.add(b5);
+        l3.add(Box.createHorizontalGlue());
+        jp.add(l3);
+
+        jp.add(Box.createVerticalGlue());
+
+        JPanel a = new JPanel();
+        a.setBackground(new Color(0,0,0,0));
+        a.setLayout(new GridLayout(1,5));
+        a.add(Box.createHorizontalGlue());
+        JButton acheter = new JButton("Acheter");
+        a.add(acheter);
+        a.add(Box.createHorizontalGlue());
+        JButton annuler = new JButton("Annuler");
+        a.add(annuler);
+        a.add(Box.createHorizontalGlue());
+        jp.add(a);
 
         return jp;
     }

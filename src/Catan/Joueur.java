@@ -190,6 +190,8 @@ public abstract class Joueur {
 
     public abstract boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour, Chemin cheminn, boolean premierTourB);
 
+    public abstract boolean placerVille(Jeu jeu, Intersection intersection);
+
     public abstract void defausseVoleur(Jeu jeu);
 
     public abstract void deplaceVoleur(Jeu jeu);
@@ -382,22 +384,22 @@ public abstract class Joueur {
         }
         if(!premierTour) {
             if(inter.getCheminH() != null) {
-                if(inter.getCheminH().getRoute().equals(this)) {
+                if(inter.getCheminH().getRoute() != null && inter.getCheminH().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminB() != null) {
-                if(inter.getCheminB().getRoute().equals(this)) {
+                if(inter.getCheminB().getRoute() != null && inter.getCheminB().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminG() != null) {
-                if(inter.getCheminG().getRoute().equals(this)) {
+                if(inter.getCheminG().getRoute() != null && inter.getCheminG().getRoute().equals(this)) {
                     return true;
                 }
             }
             if(inter.getCheminD() != null) {
-                if(inter.getCheminD().getRoute().equals(this)) {
+                if(inter.getCheminD().getRoute() != null && inter.getCheminD().getRoute().equals(this)) {
                     return true;
                 }
             }
