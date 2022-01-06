@@ -23,45 +23,14 @@ public class Jeu {
  
     public Jeu(boolean b) throws IOException, InterruptedException {
         joueurs.add(new IA("Nex", "bleu"));
-        joueurs.add(new Humain("Miz", "vert"));
-        // joueurs.add(new IA("Mizaxus", "jaune"));
-        // joueurs.add(new IA("Nexaka", "rouge"));
+        joueurs.add(new IA("Miz", "vert"));
+        joueurs.add(new IA("Mizaxus", "jaune"));
+        joueurs.add(new IA("Nexaka", "rouge"));
         actuel = joueurs.get(0);
-        plateau = new Plateau(5);
-        graphique = false;
+        plateau = new Plateau(8);
+        graphique = true;
         jouer();
     }
-
-    // public Jeu(int i) throws IOException, InterruptedException {
-    //     switch (i) {
-    //         default : break;
-    //         case 1 : joueurs.add(new Humain("Iruma","bleu"));
-    //         joueurs.get(0).addRessource(Ressource.LAINE, 20);
-    //         joueurs.get(0).addRessource(Ressource.ROCHE, 20);
-    //         joueurs.get(0).addRessource(Ressource.BLE, 20);
-    //         joueurs.get(0).addRessource(Ressource.BOIS, 20);
-    //         joueurs.get(0).addRessource(Ressource.ARGILE, 20);
-    //         plateau = new Plateau(8);
-    //         jouer();
-    //         break;
-    //         case 2 : joueurs.add(new Humain("Iruma","bleu"));
-    //         joueurs.add(new Humain("Ameri","rouge"));
-    //         joueurs.get(0).addRessource(Ressource.LAINE, 20);
-    //         joueurs.get(0).addRessource(Ressource.ROCHE, 20);
-    //         joueurs.get(0).addRessource(Ressource.BLE, 20);
-    //         joueurs.get(1).addRessource(Ressource.LAINE, 20);
-    //         joueurs.get(1).addRessource(Ressource.ROCHE, 20);
-    //         joueurs.get(1).addRessource(Ressource.BLE, 20);
-    //         joueurs.get(1).addRessource(Ressource.BOIS, 20);
-    //         joueurs.get(1).addRessource(Ressource.ARGILE, 20);
-    //         joueurs.get(0).addRessource(Ressource.BOIS, 20);
-    //         joueurs.get(0).addRessource(Ressource.ARGILE, 20);
-
-    //         plateau = new Plateau(5);
-    //         jouer();
-    //         break;
-    //     }
-    // } 
 
     public Jeu() throws IOException, InterruptedException {
         String reponse; 
@@ -199,14 +168,21 @@ public class Jeu {
         if(graphique) {
             vue = new Vue(this, this.control);
             for (int i = 0; i < joueurs.size(); i++) {
-                vue.actionPlacerColonie(true);
-                while(true) {
-                    if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
-                        if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
-                            break;
+                Joueur actuel = joueurs.get(i);
+                if(actuel instanceof Humain) {
+                    vue.actionPlacerColonie(true);
+                    while(true) {
+                        if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                            if(joueurs.get(i).placerColonie(this, true, false, this.vue.getSelectionIntersection())) {
+                                break;
+                            }
                         }
+                        Thread.sleep(5);
                     }
-                    Thread.sleep(5);
+                    vue.resetTerminal();
+                }
+                else {
+                    actuel.placerColonie(this, true, false, null);
                 }
                 if(i == joueurs.size() - 1) {
                     vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
@@ -214,19 +190,24 @@ public class Jeu {
                 else {
                     vue.refresh(joueurs.get(i + 1), true, false);
                 }
-                vue.resetTerminal();
             }
             for (int i = joueurs.size() - 1; i >= 0; i--) {
-                vue.actionPlacerColonie(true);
-                while(true) {
-                    if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
-                        if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
-                            break;
+                Joueur actuel = joueurs.get(i);
+                if(actuel instanceof Humain) {
+                    vue.actionPlacerColonie(true);
+                    while(true) {
+                        if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                            if(joueurs.get(i).placerColonie(this, true, true, this.vue.getSelectionIntersection())) {
+                                break;
+                            }
                         }
+                        Thread.sleep(5);
                     }
-                    Thread.sleep(5);
+                    vue.resetTerminal();
                 }
-                vue.resetTerminal();
+                else {
+                    actuel.placerColonie(this, true, true, null);
+                }
                 if(i == 0) {
                     vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
                 }
@@ -238,10 +219,10 @@ public class Jeu {
         else {
             plateau.affiche();
             for (int i = 0; i < joueurs.size(); i++) {
-                joueurs.get(i).placerColonie(this, true, null);
+                joueurs.get(i).placerColonie(this, true, false, null);
             }
             for (int i = joueurs.size() - 1; i >= 0; i--) {
-                joueurs.get(i).placerColonie(this, true, null);
+                joueurs.get(i).placerColonie(this, true, true, null);
             }
         }
         while (!gagne()) {

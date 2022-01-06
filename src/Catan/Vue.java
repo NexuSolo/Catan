@@ -686,7 +686,7 @@ public class Vue extends JFrame {
                 System.out.println("yo");
                 if(selectionIntersection != null) {
                     try {
-                        joueur.placerColonie(jeu, false, selectionIntersection);
+                        joueur.placerColonie(jeu, false, false, selectionIntersection);
                         refresh(joueur, false, false);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();

@@ -186,7 +186,7 @@ public abstract class Joueur {
         cartes.remove(e);
     }
 
-    public abstract boolean placerColonie(Jeu jeu,boolean premierTour, Intersection intersection) throws IOException, InterruptedException;
+    public abstract boolean placerColonie(Jeu jeu, boolean premierTour, boolean secondTour, Intersection intersection) throws IOException, InterruptedException;
 
     public abstract boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour, Chemin cheminn, boolean premierTourB);
 

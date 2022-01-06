@@ -23,7 +23,7 @@ public class IA extends Joueur{
     }
 
     @Override
-    public boolean placerColonie(Jeu jeu, boolean premierTour, Intersection intersetcion) {
+    public boolean placerColonie(Jeu jeu, boolean premierTour, boolean secondTour, Intersection intersetcion) {
         Intersection[] intersectionTri = jeu.getPlateau().getIntersectionTri();
         int [] valeurInter = jeu.getPlateau().getValeurInter();
         int i = valeurInter.length-1;
@@ -70,7 +70,6 @@ public class IA extends Joueur{
             freeRessource(jeu,inter);
         }
         return true;
-        
     }
 
     public void setProchaineColonie(Jeu jeu){
@@ -262,7 +261,7 @@ public class IA extends Joueur{
     }
     
     @Override
-    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour) {
+    public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour, Chemin cheminn, boolean premierTourB) {
         System.out.println("Colonie prochaine = x"+prochaineColonie.getX() +"y"+prochaineColonie.getY());
         if (!gratuit) {
             removeRessource(Ressource.BOIS);
@@ -334,7 +333,7 @@ public class IA extends Joueur{
     }
 
     @Override
-    public void defausseVoleur() {
+    public void defausseVoleur(Jeu jeu) {
         if(this.ressources.size() > 7) {
             int cartesADefausser = this.ressources.size()/2  ;
             while(cartesADefausser > 0) {
@@ -348,19 +347,19 @@ public class IA extends Joueur{
     }
 
     @Override
-    public void deplaceVoleur(Plateau p) {
+    public void deplaceVoleur(Jeu jeu) {
         System.out.println(this+ " va choisir où va être placé le voleur ");
-        int random1 = new Random().nextInt(p.getLength()-1)+1;
-        int random2 = new Random().nextInt(p.getLength()-1)+1;
+        int random1 = new Random().nextInt(jeu.getPlateau().getLength()-1)+1;
+        int random2 = new Random().nextInt(jeu.getPlateau().getLength()-1)+1;
         System.out.println("x = " + random1 + " y = " + random2);
-        p.setVoleur(p.getCase(random1,random2));
+        jeu.getPlateau().setVoleur(jeu.getPlateau().getCase(random1,random2));
     }
 
     @Override
-    public void tour(Jeu jeu) {
+    public void tour(Jeu jeu) { // ENLEVER LES RESSOURCES
         System.out.println("Tour de "+ this +" il possède "+point+"points");
         cartesUtilisables();
-        jeu.getPlateau().LancerDes(this, jeu.getJoueurs());
+        jeu.getPlateau().LancerDes(jeu, this, jeu.getJoueurs());
         if(possede(Ressource.BLE,2) && possede(Ressource.ROCHE,3)) {
             for (Intersection colonie : colonies) {
                 if(!(colonie.getColonie() instanceof Ville) ) {
@@ -375,11 +374,11 @@ public class IA extends Joueur{
         if (possede(Ressource.BOIS) && possede(Ressource.ARGILE)) {
             if (colonieEstPlaceable(prochaineColonie,false)) {
                 if(possede(Ressource.LAINE) && possede(Ressource.BLE)){
-                        placerColonie(jeu,false, false);
+                        placerColonie(jeu,false, false, prochaineColonie);
                 }
             }
             else {
-                placerRoute(jeu, false, null);
+                placerRoute(jeu, false, null, prochaineRoute, false);
             }
 
         }
@@ -403,6 +402,12 @@ public class IA extends Joueur{
     public String toString() {
         // TODO Auto-generated method stub
         return "(BOT)"+super.toString();
+    }
+
+    @Override
+    public boolean placerVille(Jeu jeu, Intersection intersection) {
+        // TODO Auto-generated method stub
+        return false;
     }
     
 }

@@ -12,7 +12,7 @@ public class Humain extends Joueur{
         super(pseudo, color);
     }
 
-    public boolean placerColonie(Jeu jeu, boolean premierTour, Intersection intersection) throws IOException, InterruptedException {
+    public boolean placerColonie(Jeu jeu, boolean premierTour, boolean secondTour, Intersection intersection) throws IOException, InterruptedException {
         if(nombreColonies >= 5) {
             System.out.println("Le nombre maximum de colonie est de 5.");
             if(jeu.graphique) {
@@ -77,14 +77,12 @@ public class Humain extends Joueur{
                         return true;
                     }
                     jeu.getPlateau().affiche();
-                    if(jeu.graphique) {
-                        jeu.vue.refresh(this,true);
-                    }
+                    jeu.vue.refresh(this,premierTour, false);
                     if(premierTour) {
                         if(secondTour) {
-                            freeRessource(jeu,inter);
+                            freeRessource(jeu,intersection);
                         }
-                        placerRoute(jeu, true, inter);
+                        placerRoute(jeu, true, intersection, jeu.vue.getSelectionChemin(), premierTour);
                     }
                 }
                 else {
@@ -161,6 +159,7 @@ public class Humain extends Joueur{
                 }
             }
         }
+        return false;
     }
 
     public boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour, Chemin cheminn, boolean premierTourB) {
@@ -1222,7 +1221,7 @@ public class Humain extends Joueur{
             case "colonie":
                 l = possedeRessourcesColonie();
                 if(l.size() == 0) {
-                    placerColonie(jeu, false,null);
+                    placerColonie(jeu, false, false, null);
                 }
                 else {
                     System.out.print("Il vous manque ");
