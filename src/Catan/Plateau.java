@@ -31,7 +31,6 @@ public class Plateau {
         }        
     }
 
-
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -282,28 +281,49 @@ public class Plateau {
         valDe.put("12",douze);
     }
 
-    public void LancerDes(Joueur J,LinkedList<Joueur> listeJoueurs) {
+    public void LancerDes(Jeu jeu, Joueur J,LinkedList<Joueur> listeJoueurs) {
         int de1 = new Random().nextInt(6)+1;
         int de2 = new Random().nextInt(6)+1;
         int total = de1 + de2;
         System.out.println("Le résultat des dés est " + total);
+        if(jeu.graphique) {
+            jeu.vue.resetTerminal();
+            jeu.vue.getTerminal().append("Le résultat des dés est " + total + "\n");
+            jeu.vue.getTerminal().repaint();
+            jeu.vue.getTerminal().revalidate();
+        }
         String valeur = String.valueOf(total);
         if (total != 7) {
             LinkedList<Case> lol = valDe.get(valeur);
             for (Case c : lol) {
-                c.production();
+                c.production(jeu);
             }
         }
         else {
             for (Joueur joueurs : listeJoueurs) {
-                joueurs.defausseVoleur();
+                joueurs.defausseVoleur(jeu);
             }
-            deplaceVoleur(J);
+            deplaceVoleur(jeu, J);
         }     
     }
 
-    public void deplaceVoleur(Joueur j) {
-        j.deplaceVoleur(this);
+    public void deplaceVoleur(Jeu jeu, Joueur j) {
+        if(jeu.graphique) {
+            jeu.vue.setAction(jeu.vue.actionVoleur());
+            while(jeu.vue.getSelectionCase() == null || !jeu.vue.getActions()) {
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("fin");
+            j.deplaceVoleur(jeu);
+        }
+        else {
+            System.out.println("Veuillez choisir où vous souhaitez déplacer le voleur " + j);
+            j.deplaceVoleur(jeu);
+        }
         volRessource(j);
     }
 

@@ -156,7 +156,7 @@ public abstract class Joueur {
             while(nombre != 0) {
                 this.ressources.remove(ressource);
                 nombre--; 
-             }
+            }
         }
         else {
             System.out.println("Erreur : Pas Assez de Ressources !");
@@ -186,17 +186,19 @@ public abstract class Joueur {
         cartes.remove(e);
     }
 
-    public abstract boolean placerColonie(Jeu jeu,boolean premierTour,boolean secondTour) throws IOException, InterruptedException;
+    public abstract boolean placerColonie(Jeu jeu,boolean premierTour, Intersection intersection) throws IOException, InterruptedException;
 
-    public abstract boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour);
+    public abstract boolean placerRoute(Jeu jeu, boolean gratuit, Intersection premierTour, Chemin cheminn, boolean premierTourB);
 
-    public abstract void defausseVoleur();
+    public abstract boolean placerVille(Jeu jeu, Intersection intersection);
 
-    public abstract void deplaceVoleur(Plateau p);
+    public abstract void defausseVoleur(Jeu jeu);
+
+    public abstract void deplaceVoleur(Jeu jeu);
 
     public abstract void tour(Jeu jeu) throws IOException, InterruptedException;
 
-    public abstract boolean echange(Jeu jeu);
+    public abstract boolean echange(Jeu jeu) throws IOException, InterruptedException;
 
     public int calculPoint(boolean ArmeeLaPlusPuissante,boolean RouteLaPlusLongue,boolean PdV) {
         int res = point;
@@ -433,7 +435,7 @@ public abstract class Joueur {
                 }
             }
             if(inter.getCheminD() != null) {
-                if(inter.getCheminD().getRoute() != null && inter.getCheminD().getRoute().equals(this) ) {
+                if(inter.getCheminD().getRoute() != null && inter.getCheminD().getRoute().equals(this)) {
                     return true;
                 }
             }
@@ -551,6 +553,10 @@ public abstract class Joueur {
 
     public LinkedList<Intersection> getColonies() {
         return colonies;
+    }
+
+    public LinkedList<Port> getPorts() {
+        return ports;
     }
 
 

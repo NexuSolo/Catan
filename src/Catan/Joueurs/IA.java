@@ -18,13 +18,12 @@ public class IA extends Joueur{
     Intersection prochaineColonie = null;
     Chemin prochaineRoute = null;
 
-
     public IA(String pseudo, String color) {
         super(pseudo, color);
     }
 
     @Override
-    public boolean placerColonie(Jeu jeu, boolean premierTour,boolean secondTour) {
+    public boolean placerColonie(Jeu jeu, boolean premierTour, Intersection intersetcion) {
         Intersection[] intersectionTri = jeu.getPlateau().getIntersectionTri();
         int [] valeurInter = jeu.getPlateau().getValeurInter();
         int i = valeurInter.length-1;
@@ -65,7 +64,7 @@ public class IA extends Joueur{
         jeu.getPlateau().affiche();
         prochaineRoute();
         if(premierTour) {
-            placerRoute(jeu, true, inter);
+            placerRoute(jeu, true, inter, null, true);
         }
         if (secondTour) {
             freeRessource(jeu,inter);

@@ -8,7 +8,7 @@ public class Chevalier extends Carte{
 
     @Override
     public boolean utiliser(Joueur j,Jeu jeu) {
-        jeu.getPlateau().deplaceVoleur(j);
+        jeu.getPlateau().deplaceVoleur(jeu, j);
         j.addChevalier(jeu);
         return true;
     }

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
@@ -195,31 +198,52 @@ public class Jeu {
     public void jouer() throws IOException, InterruptedException {
         if(graphique) {
             vue = new Vue(this, this.control);
-        }
-        plateau.affiche();
-        for (int i = 0; i < joueurs.size(); i++) {
-            joueurs.get(i).placerColonie(this, true,false);
-            if(graphique) {
+            for (int i = 0; i < joueurs.size(); i++) {
+                vue.actionPlacerColonie(true);
+                while(true) {
+                    if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                        if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
+                            break;
+                        }
+                    }
+                    Thread.sleep(5);
+                }
                 if(i == joueurs.size() - 1) {
-                    vue.refresh(joueurs.get(joueurs.size() - 1), true);
+                    vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
                 }
                 else {
-                    vue.refresh(joueurs.get(i + 1), true);
+                    vue.refresh(joueurs.get(i + 1), true, false);
                 }
+                vue.resetTerminal();
             }
-        }
-        for (int i = joueurs.size() - 1; i >= 0; i--) {
-            joueurs.get(i).placerColonie(this, true,true);
-            if(graphique) {
+            for (int i = joueurs.size() - 1; i >= 0; i--) {
+                vue.actionPlacerColonie(true);
+                while(true) {
+                    if(this.vue.getActions() && this.vue.getSelectionIntersection() != null) {
+                        if(joueurs.get(i).placerColonie(this, true, this.vue.getSelectionIntersection())) {
+                            break;
+                        }
+                    }
+                    Thread.sleep(5);
+                }
+                vue.resetTerminal();
                 if(i == 0) {
-                    vue.refresh(joueurs.get(0), true);
+                    vue.refresh(joueurs.get(joueurs.size() - 1), true, false);
                 }
                 else {
-                    vue.refresh(joueurs.get(i - 1), true);
+                    vue.refresh(joueurs.get(i - 1), true, false);
                 }
             }
         }
-        plateau.affiche();
+        else {
+            plateau.affiche();
+            for (int i = 0; i < joueurs.size(); i++) {
+                joueurs.get(i).placerColonie(this, true, null);
+            }
+            for (int i = joueurs.size() - 1; i >= 0; i--) {
+                joueurs.get(i).placerColonie(this, true, null);
+            }
+        }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
                 plateau.affiche();
@@ -230,7 +254,14 @@ public class Jeu {
                 }
             }
         }
-        // System.out.println(vainqueur.pseudo + "a gagné");
+        if(graphique) {
+            JLabel victoire = new JLabel(vainqueur.pseudo + "a gagné");
+            vue.model.removeAll();
+            vue.model.add(victoire);
+            vue.repaint();
+            vue.revalidate();
+        }
+        System.out.println(vainqueur.pseudo + "a gagné");
     }
 
     public int joueurSuivant() {
