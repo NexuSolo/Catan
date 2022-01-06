@@ -262,6 +262,10 @@ public abstract class Joueur {
     public LinkedList<Ressource> getRessources() {
         return ressources;
     }
+
+    public LinkedList<Carte> getCartes() {
+        return cartes;
+    }
     
     public String getPseudo() {
         return pseudo;
@@ -269,10 +273,6 @@ public abstract class Joueur {
 
     public int getPoint() {
         return point;
-    }
-
-    public void setPoint(int point) {
-        this.point = point;
     }
 
     @Override

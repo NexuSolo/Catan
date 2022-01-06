@@ -227,6 +227,7 @@ public class Jeu {
         }
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
+                afficheStats();
                 plateau.affiche();
                 joueur.afficheRessource();
                 joueur.tour(this);
@@ -266,6 +267,75 @@ public class Jeu {
             }
         }
         return false;
+    }
+
+    /**
+     *  *----------------*
+     *  |      Nexus     |
+     *  |    2 Points    |
+     *  | 10 Ressources  |
+     *  | 2 Developpement|
+     *  | 6 Longue route |
+     *  |   2 chevalier  |
+     *  *----------------*
+     * 
+     */
+
+    public void afficheStats() {
+        System.out.print("*");
+        for (Joueur joueur : joueurs) {
+            System.out.print("----------------*");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            int espace = 16 - joueur.getPseudo().length();
+            for (int j = 0; j < espace/2; j++) {
+                System.out.print(" ");
+            }
+            System.out.print(joueur.getPseudo());
+            for (int j = 0; j < espace/2; j++) {
+                System.out.print(" ");
+            }
+            if(espace % 2 == 1) {
+                System.out.print(" ");
+            }
+            System.out.print("|");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print("    " + joueur.getPoint() + " Points    |");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print("  " + joueur.getRessources().size() + " Ressources  |");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print(" " + joueur.getCartes().size() + " Developpement|");
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print(" 6 Longue route |");
+            
+        }
+        System.out.println();
+        System.out.print("|");
+        for (Joueur joueur : joueurs) {
+            System.out.print("   2 chevalier  |");
+            
+        }
+        System.out.println();
+        System.out.print("*");
+        for (Joueur joueur : joueurs) {
+            System.out.print("----------------*");
+            
+        }
+        System.out.println();
     }
 
     public static boolean estNombre(String s) {
