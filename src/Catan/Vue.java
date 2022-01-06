@@ -186,12 +186,7 @@ public class Vue extends JFrame {
         model.add(stats);
 
         if(!echange) {
-
-            model.remove(action);
-            action = actionPrincipale(premierTour);
-            action.setBackground(Color.ORANGE);
-            action.setBounds(0,202,500,598);
-            model.add(action);
+            setAction(actionPrincipale(premierTour));
         }
 
         revalidate();
@@ -222,7 +217,7 @@ public class Vue extends JFrame {
                                         case LAINE : pan.setImage(portGLaine);break;
                                     }
                                 }
-                                //pan.setImage(portG);
+                                pan.setImage(portG);
                             }
                         }
                         else if(y == 0) {
@@ -355,8 +350,6 @@ public class Vue extends JFrame {
                     IntersectionImage hgh = new IntersectionImage(jeu.getPlateau().getIntersection(x, y));
                     IntersectionImage hdh = new IntersectionImage(jeu.getPlateau().getIntersection(x+1, y));
                     h.setLayout(new GridLayout(1,0,tailleCroixX,0));
-                    // hgh.setBackground(jeu.getPlateau().getIntersection(x, y).intersectionToColor());
-                    // hdh.setBackground(jeu.getPlateau().getIntersection(x+1, y).intersectionToColor());
                     h.add(hgh);
                     h.add(hdh);
 
@@ -535,7 +528,6 @@ public class Vue extends JFrame {
         }
 
     }
-
 
     public class CaseImage extends ImagePane implements MouseInputListener{
         Case c = null;
@@ -765,7 +757,7 @@ public class Vue extends JFrame {
         JPanel boutonPlacement = new JPanel();
         boutonPlacement.setBackground(new Color(0,0,0,0));
         boutonPlacement.setLayout(new GridLayout(1,7));
-        if(this.joueur.possedeRessourcesRoute().size() == 0) {
+        if(this.joueur.possedeRessourcesRoute().size() == 0 && !premierTour) {
             boutonPlacement.add(Box.createHorizontalGlue());
             JButton route = new JButton("Route");
             route.addActionListener(event -> {
@@ -779,7 +771,7 @@ public class Vue extends JFrame {
             });
             boutonPlacement.add(route);
         }
-        if(this.joueur.possedeRessourcesColonie().size() == 0) {
+        if(this.joueur.possedeRessourcesColonie().size() == 0 && !premierTour) {
             boutonPlacement.add(Box.createHorizontalGlue());
             JButton colonie = new JButton("Colonie");
             colonie.addActionListener(event -> {
@@ -793,7 +785,7 @@ public class Vue extends JFrame {
             });
             boutonPlacement.add(colonie);
         }
-        if(this.joueur.possedeRessourcesVille().size() == 0) {
+        if(this.joueur.possedeRessourcesVille().size() == 0 && !premierTour) {
             boutonPlacement.add(Box.createHorizontalGlue());
             JButton ville = new JButton("Ville");
             ville.addActionListener(event -> {
@@ -815,15 +807,15 @@ public class Vue extends JFrame {
         JPanel devEchange = new JPanel();
         devEchange.setBackground(new Color(0,0,0,0));
         devEchange.setLayout(new GridLayout(1,5));
-        if(this.joueur.possedeRessourcesDeveloppement().size() == 0 || this.joueur.cartesUtilisables) { // TODO verifier carteUtilisable
-            devEchange.add(Box.createHorizontalGlue());
-            JButton dev = new JButton("Developpement");
-            dev.addActionListener(event -> {
-                setAction(actionDeveloppement());
-            });
-            devEchange.add(dev);
-        }
         if(!premierTour) {
+            if(this.joueur.possedeRessourcesDeveloppement().size() == 0 || this.joueur.getCartes().size() != 0) {
+                devEchange.add(Box.createHorizontalGlue());
+                JButton dev = new JButton("Developpement");
+                dev.addActionListener(event -> {
+                    setAction(actionDeveloppement());
+                });
+                devEchange.add(dev);
+            }
             devEchange.add(Box.createHorizontalGlue());
             JButton echange = new JButton("Echange");
             echange.addActionListener(event -> {
@@ -842,7 +834,7 @@ public class Vue extends JFrame {
         jp.add(Box.createVerticalGlue());
 
         JPanel choix = new JPanel();
-        choix.setLayout(new GridLayout(1,7));
+        choix.setLayout(new GridLayout(1,6));
         choix.setBackground(new Color(0,0,0,0));
         choix.add(Box.createHorizontalGlue());
         if(valider == null) {
@@ -864,8 +856,6 @@ public class Vue extends JFrame {
         choix.add(valider);
         choix.add(Box.createHorizontalGlue());
         if(!premierTour) {
-            JButton annuler = new JButton("annuler");
-            choix.add(annuler);
             choix.add(Box.createHorizontalGlue());
             JButton next = new JButton("Suivant");
             next.addActionListener(event -> {
@@ -996,13 +986,7 @@ public class Vue extends JFrame {
         ac.add(Box.createHorizontalGlue());
         JButton annuler = new JButton("Annuler");
         annuler.addActionListener(event -> {
-            model.remove(action);
-            action = actionPrincipale(false);
-            action.setBackground(Color.ORANGE);
-            action.setBounds(0,202,500,598);
-            model.add(action);
-            revalidate();
-            repaint();
+            setAction(actionPrincipale(false));
         });
         ac.add(annuler);
         ac.add(Box.createHorizontalGlue());
@@ -1104,56 +1088,87 @@ public class Vue extends JFrame {
 
         JPanel l1 = new JPanel();
         l1.setBackground(new Color(0,0,0,0));
-        l1.setLayout(new GridLayout(1,3));
-        JButton b1 = new JButton( " Chevalier");
+        l1.setLayout(new GridLayout(1,5));
+        int [] nbr = joueur.getNombreCartesChevalier();
+        JButton b1 = new JButton( " Chevalier " + nbr[0] + "("+ nbr[1] + ")");
         b1.addActionListener( event -> {
+            if(nbr[1] >= 1) {
+
+            }
+            else {
+                terminal.append("Vous ne possedez pas ou ne pouvez pas encore utiliser cette carte \n");
+                repaint();
+                revalidate();
+            }
             ((Humain) this.joueur).utiliserCarte(jeu,new Chevalier());
         }
-        );// ajouter la nombres de cartes
+        );
         l1.add(b1);
-        int [] nbr = joueur.getNombreCartesChevalier();
-        l1.add(new JLabel(nbr[0]+"("+nbr[1]+")"));
+
         l1.add(Box.createHorizontalGlue());
-        JButton b2 = new JButton( " Construction");
+
+        int [] nbr2 = joueur.getNombreCartesConstructionRoute();
+        JButton b2 = new JButton( " Construction " + (nbr2[0]+"("+nbr2[1]+")"));
         b2.addActionListener( event -> {
-            ((Humain) this.joueur).utiliserCarte(jeu,new ConstructionRoute());
+            if(nbr2[1] >= 1) {
+                
+            }
+            else {
+                terminal.append("Vous ne possedez pas ou ne pouvez pas encore utiliser cette carte \n");
+                repaint();
+                revalidate();
+            }
         }
         );
-         // ajouter la nombres de cartes
         l1.add(b2);
         jp.add(l1);
 
         JPanel l2 = new JPanel();
         l2.setBackground(new Color(0,0,0,0));
         l2.setLayout(new GridLayout(1,3));
-        JButton b3 = new JButton( " Invention");
-        b2.addActionListener( event -> {
-            ((Humain) this.joueur).utiliserCarte(jeu,new Invention());
+        int[] nbr3 = joueur.getNombreCartesInvention();
+        JButton b3 = new JButton( " Invention " + (nbr3[0]+"("+nbr3[1]+")"));
+        b3.addActionListener( event -> {
+            if(nbr3[0] >= 1) {
+                joueur.removeCarte(new Invention());
+                terminal.append("Choisissez 2 ressources que vous voullez obtenir \n");
+                repaint();
+                revalidate();
+                setAction(actionInvention(new int[5]));
+            }
+            else {
+                terminal.append("Vous ne possedez pas ou ne pouvez pas encore utiliser cette carte \n");
+                repaint();
+                revalidate();
+            }
         }
         );
-         // ajouter la nombres de cartes
         l2.add(b3);
-        int [] nbr2 = joueur.getNombreCartesInvention();
-        l1.add(new JLabel(nbr2[0]+"("+nbr2[1]+")"));
         l2.add(Box.createHorizontalGlue());
-        JButton b4 = new JButton( " Monopole");
-        b2.addActionListener( event -> {
-            ((Humain) this.joueur).utiliserCarte(jeu,new Monopole());
+        int[] nbr4 = joueur.getNombreCartesMonopole();
+        JButton b4 = new JButton( " Monopole " + (nbr4[0]+"("+nbr4[1]+")"));
+        b4.addActionListener( event -> {
+            if(nbr4[0] >= 1) {
+                joueur.removeCarte(new Monopole());
+                terminal.append("Choisissez quelle ressource monopoliser \n");
+                repaint();
+                revalidate();
+                setAction(actionMonopole());
+            }
+            else {
+                terminal.append("Vous ne possedez pas ou ne pouvez pas encore utiliser cette carte \n");
+                repaint();
+                revalidate();
+            }
         }
         );
-         // ajouter la nombres de cartes
         l2.add(b4);
         jp.add(l2);
 
         JPanel l3 = new JPanel();
         l3.setBackground(new Color(0,0,0,0));
         l3.setLayout(new GridLayout(1,3));
-        JButton b5 = new JButton( " Bonus");
-        b2.addActionListener( event -> {
-            ((Humain) this.joueur).utiliserCarte(jeu,new PointDeVictoire());
-        }
-        );
-         // ajouter la nombres de cartes
+        JButton b5 = new JButton( " Bonus " + joueur.getNombreCartesPointDeVictoire()[1]);
         l3.add(Box.createHorizontalGlue());
         l3.add(b5);
         l3.add(Box.createHorizontalGlue());
@@ -1166,6 +1181,22 @@ public class Vue extends JFrame {
         a.setLayout(new GridLayout(1,5));
         a.add(Box.createHorizontalGlue());
         JButton acheter = new JButton("Acheter");
+        acheter.addActionListener(event -> {
+            if(this.joueur.possedeRessourcesDeveloppement().size() == 0) {
+                this.joueur.achatDeveloppement(jeu);
+                try {
+                    refresh(joueur, false, false);
+                } catch (IOException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            else {
+                terminal.append("Vous n'avez pas assez de ressource pour acheter une carte \n");
+                repaint();
+                revalidate();
+            }
+        });
         a.add(acheter);
         a.add(Box.createHorizontalGlue());
         JButton annuler = new JButton("Annuler");
@@ -1177,6 +1208,288 @@ public class Vue extends JFrame {
         jp.add(a);
 
         return jp;
+    }
+
+    public JPanel actionMonopole() {
+        JPanel jp = new JPanel();
+        jp.setBackground(new Color(0, 0, 0,0));
+        jp.setLayout(new GridLayout(6,1));
+        jp.add(new JLabel(this.joueur + " choisissez quelle ressource monopoliser"));
+        jp.add(Box.createVerticalGlue());
+        
+        JPanel ressource = new JPanel();
+        ressource.setLayout(new GridLayout(1,11));
+        ressource.add(Box.createHorizontalGlue());
+        JButton bois = new JButton(new ImageIcon(bois40));
+        bois.addActionListener(event -> {
+            ((Humain) this.joueur).monopoleIG(jeu, Ressource.BOIS);
+            try {
+                refresh(this.joueur, false, false);
+            } catch (IOException | InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            setAction(actionPrincipale(false));
+        });
+        ressource.add(bois);
+        ressource.add(Box.createHorizontalGlue());
+        JButton argile = new JButton(new ImageIcon(argile40));
+        argile.addActionListener(event -> {
+            ((Humain) this.joueur).monopoleIG(jeu, Ressource.ARGILE);
+            try {
+                refresh(this.joueur, false, false);
+            } catch (IOException | InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            setAction(actionPrincipale(false));
+        });
+        ressource.add(argile);
+        ressource.add(Box.createHorizontalGlue());
+        JButton laine = new JButton(new ImageIcon(laine40));
+        laine.addActionListener(event -> {
+            ((Humain) this.joueur).monopoleIG(jeu, Ressource.LAINE);
+            try {
+                refresh(this.joueur, false, false);
+            } catch (IOException | InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            setAction(actionPrincipale(false));
+        });
+        ressource.add(laine);
+        ressource.add(Box.createHorizontalGlue());
+        JButton ble = new JButton(new ImageIcon(ble40));
+        ble.addActionListener(event -> {
+            ((Humain) this.joueur).monopoleIG(jeu, Ressource.BLE);
+            try {
+                refresh(this.joueur, false, false);
+            } catch (IOException | InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            setAction(actionPrincipale(false));
+        });
+        ressource.add(ble);
+        ressource.add(Box.createHorizontalGlue());
+        JButton roche = new JButton(new ImageIcon(roche40));
+        roche.addActionListener(event -> {
+            ((Humain) this.joueur).monopoleIG(jeu, Ressource.ROCHE);
+            try {
+                refresh(this.joueur, false, false);
+            } catch (IOException | InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            setAction(actionPrincipale(false));
+        });
+        ressource.add(roche);
+        ressource.add(Box.createHorizontalGlue());
+        jp.add(ressource);
+        
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+
+        return jp;
+
+    }
+
+    public JPanel actionInvention(int[] tab) {
+        JPanel jp = new JPanel();
+        jp.setLayout(new GridLayout(10,1));
+
+        JButton boisP = new JButton("+");
+        boisP.addActionListener(event -> {
+            tab[0]++;
+            setAction(actionInvention(tab));
+        });
+        JButton boisM  = new JButton("-");
+        boisM.addActionListener(event -> {
+            tab[0]--;
+            setAction(actionInvention(tab));
+        });
+        JButton argileP = new JButton("+");
+        argileP.addActionListener(event -> {
+            tab[1]++;
+            setAction(actionInvention(tab));
+        });
+        JButton argileM  = new JButton("-");
+        argileM.addActionListener(event -> {
+            tab[1]--;
+            setAction(actionInvention(tab));
+        });
+        JButton laineP = new JButton("+");
+        laineP.addActionListener(event -> {
+            tab[2]++;
+            setAction(actionInvention(tab));
+        });
+        JButton laineM  = new JButton("-");
+        laineM.addActionListener(event -> {
+            tab[2]--;
+            setAction(actionInvention(tab));
+        });
+        JButton bleP = new JButton("+");
+        bleP.addActionListener(event -> {
+            tab[3]++;
+            setAction(actionInvention(tab));
+        });
+        JButton bleM  = new JButton("-");
+        bleM.addActionListener(event -> {
+            tab[3]--;
+            setAction(actionInvention(tab));
+        });
+        JButton rocheP = new JButton("+");
+        rocheP.addActionListener(event -> {
+            tab[4]++;
+            setAction(actionInvention(tab));
+        });
+        JButton rocheM  = new JButton("-");
+        rocheM.addActionListener(event -> {
+            tab[4]--;
+            setAction(actionInvention(tab));
+        });
+
+        JLabel jo = new JLabel("Echange de " + joueur.getPseudo());
+        jo.setFont(new Font(null, 0,40));
+        JPanel joueur = new JPanel();
+        joueur.add(Box.createHorizontalGlue());
+        joueur.add(jo);
+        joueur.add(Box.createHorizontalGlue());
+        joueur.setBackground(new Color(0,0,0,0));
+        jp.add(joueur);
+
+        jp.add(Box.createVerticalGlue());
+        jp.add(Box.createVerticalGlue());
+
+        JPanel ac = new JPanel();
+        ac.setBackground(new Color(0,0,0,0));
+        ac.setLayout(new GridLayout(1,5));
+        ac.add(Box.createHorizontalGlue());
+        JButton valider = new JButton("Valider");
+        valider.addActionListener(event -> {
+            if(Math.abs(tab[0]) >= 0 && Math.abs(tab[1]) >= 0 && Math.abs(tab[2]) >= 0 && Math.abs(tab[3]) >= 0 && Math.abs(tab[4]) >= 0 ) {
+                if(Math.abs(tab[0]) + Math.abs(tab[1]) + Math.abs(tab[2]) + Math.abs(tab[3]) + Math.abs(tab[4]) == 2 ) {
+                    this.joueur.addRessource(Ressource.BOIS,tab[0]);
+                    this.joueur.addRessource(Ressource.ARGILE,tab[1]);
+                    this.joueur.addRessource(Ressource.LAINE,tab[2]);
+                    this.joueur.addRessource(Ressource.BLE,tab[3]);
+                    this.joueur.addRessource(Ressource.ROCHE,tab[4]);
+                    String s = "Vous avez recu ";
+                    if(tab[0] > 0) {
+                        s+= tab[0] + " bois ";
+                    }
+                    if(tab[1] > 0) {
+                        s+= tab[1] + " argile ";
+                    }
+                    if(tab[2] > 0) {
+                        s+= tab[2] + " laine ";
+                    }
+                    if(tab[3] > 0) {
+                        s+= tab[3] + " ble ";
+                    }
+                    if(tab[4] > 0) {
+                        s+= tab[4] + " roche ";
+                    }
+                    terminal.append(s + "\n");
+                    try {
+                        refresh(this.joueur, false, false);
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    setAction(actionPrincipale(false));
+                }
+                else {
+                    terminal.append("La sommes des valeurs doit etre égale a 2 \n");
+                    repaint();
+                    revalidate();
+                }
+            }
+            else {
+                terminal.append("Les valeurs doivent etre positive \n");
+                repaint();
+                revalidate();
+            }
+        });
+        ac.add(Box.createHorizontalGlue());
+        ac.add(valider);
+        jp.add(Box.createVerticalGlue());
+        jp.add(ac);
+        jp.add(Box.createVerticalGlue());
+
+        JPanel ressource = new JPanel();
+        ressource.setBackground(new Color(0,0,0,0));
+        ressource.setLayout(new GridLayout(1,11));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(bois40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(argile40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(laine40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(ble40, 12));
+        ressource.add(Box.createVerticalGlue());
+        ressource.add(new ImagePane(roche40, 12));
+        ressource.add(Box.createVerticalGlue());
+        for (Component c : ressource.getComponents()) {
+            c.setBackground(new Color(0,0,0,0));
+        }
+        jp.add(ressource);
+
+        JPanel plus = new JPanel();
+        plus.setBackground(new Color(0,0,0,0));
+        plus.setLayout(new GridLayout(1,11));
+        plus.add(Box.createHorizontalGlue());
+        plus.add(boisP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(argileP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(laineP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(bleP);
+        plus.add(Box.createHorizontalGlue());
+        plus.add(rocheP);
+        plus.add(Box.createHorizontalGlue());
+        jp.add(plus);
+
+        JPanel numero = new JPanel();
+        numero.setBackground(new Color(0,0,0,0));
+        numero.setLayout(new GridLayout(1,11));
+        numero.add(Box.createHorizontalGlue());
+        JLabel b = new JLabel("       " + tab[0]);
+        numero.add(b);
+        numero.add(Box.createHorizontalGlue());
+        JLabel a = new JLabel("       " + tab[1]);
+        numero.add(a);
+        numero.add(Box.createHorizontalGlue());
+        JLabel l = new JLabel("       " + tab[2]);
+        numero.add(l);
+        numero.add(Box.createHorizontalGlue());
+        JLabel bl = new JLabel("       " + tab[3]);
+        numero.add(bl);
+        numero.add(Box.createHorizontalGlue());
+        JLabel r = new JLabel("       " + tab[4]);
+        numero.add(r);
+        numero.add(Box.createHorizontalGlue());
+        jp.add(numero);
+
+        JPanel moins = new JPanel();
+        moins.setBackground(new Color(0,0,0,0));
+        moins.setLayout(new GridLayout(1,11));
+        moins.add(Box.createHorizontalGlue());
+        moins.add(boisM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(argileM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(laineM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(bleM);
+        moins.add(Box.createHorizontalGlue());
+        moins.add(rocheM);
+        moins.add(Box.createHorizontalGlue());
+        jp.add(moins);
+
+        return jp;
+
     }
 
     public JPanel actionVoleur() {
@@ -1462,7 +1775,7 @@ public class Vue extends JFrame {
         carteDev.add(Box.createHorizontalGlue());
         ImagePane im3 = new ImagePane(dvpt,10);
         im3.setBackground(new Color(0,0,0,0));
-        JLabel s3 = new JLabel("" + j.getCartes().size()); //TODO
+        JLabel s3 = new JLabel("" + j.getCartes().size());
         im3.setToolTipText("Cartes Développement");
         carteDev.add(im3);
         carteDev.add(s3);
@@ -1477,7 +1790,7 @@ public class Vue extends JFrame {
         route.add(Box.createHorizontalGlue());
         ImagePane im4 = new ImagePane(rlpl,10);
         im4.setBackground(new Color(0,0,0,0));
-        JLabel s4 = new JLabel("" + j.getTailleRoute()); // TODO
+        JLabel s4 = new JLabel("" + j.getTailleRoute());
         im4.setToolTipText("Route la plus longue");
         route.add(im4);
         route.add(s4);

@@ -159,8 +159,6 @@ public class IA extends Joueur{
             }
         }
         parcourus.add(plusProche);
-        // System.out.println("Colo PlusProche =x"+plusProche.getX()+" y"+plusProche.getY()+" Colo Cible =x"+prochaineColonie.getX()+"y"+prochaineColonie.getY());
-        // System.out.println("diff x ="+(prochaineColonie.getX()-plusProche.getX())+" y"+(prochaineColonie.getY()-plusProche.getY()));
         Chemin prochaineRoute = null;
         if (prochaineColonie.getY() < plusProche.getY()) {
             if(plusProche.getCheminH().getRoute() == null || plusProche.getCheminH().getRoute() == this) {

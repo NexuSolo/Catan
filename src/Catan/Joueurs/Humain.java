@@ -409,6 +409,30 @@ public class Humain extends Joueur{
         }
     }
 
+    public void monopoleIG(Jeu jeu, Ressource ressource) {
+        int actuel = 0;
+        for (Ressource r : ressources) {
+            if(r.equals(ressource)) {
+                actuel++;
+            }
+        }
+        int ajout = 0;
+        for (Joueur j : jeu.getJoueurs()) {
+            int ressj = 0;
+            for (Ressource r : j.getRessources()) {
+                if(r.equals(ressource)) {
+                    ressj++;
+                }
+            }
+            j.removeRessource(ressource, ressj);
+            ajout+= ressj;
+        }
+        this.addRessource(ressource, ajout);
+        jeu.vue.getTerminal().append("Vous avez aggner " + (ajout - actuel) + " " + ressource);
+        jeu.vue.repaint();
+        jeu.vue.revalidate();
+    }
+
     public Chemin coordonéesToChemin(Plateau plateau, String s) {
         if(s.length() == 4 && Jeu.estNombre(s.substring(0,1)) && Jeu.estNombre(s.substring(2,3))) {
             int x = Integer.valueOf(s.substring(0,1));
@@ -508,18 +532,7 @@ public class Humain extends Joueur{
     
     @Override
     public void tour(Jeu jeu) throws IOException, InterruptedException {
-        addRessource(Ressource.ARGILE,20);
-        addRessource(Ressource.BOIS,20);
-        addRessource(Ressource.LAINE,20);
-        addRessource(Ressource.BLE,20);
-        addRessource(Ressource.ROCHE,20);
-        addCarte(new Chevalier());
-        addCarte(new Chevalier());
-        addCarte(new Chevalier());
-        addCarte(new Chevalier());
         cartesUtilisables();
-        afficheCartes();
-        System.out.println(cartesUtilisables);
         jeu.getPlateau().LancerDes(jeu, this, jeu.getJoueurs());
         if(jeu.graphique){
             jeu.vue.refresh(this, false, false);
@@ -1216,10 +1229,7 @@ public class Humain extends Joueur{
         return tab;
     }
 
-
-
     public void reponseToAction(Jeu jeu, String reponse, Controleur control) throws IOException, InterruptedException {
-        //IMPLEMENTER VERSION GRAPHIQUE
         LinkedList<Ressource> l;
         switch (reponse) {
             default:
@@ -1273,7 +1283,7 @@ public class Humain extends Joueur{
                     return;
                 }
                 else if(rep.equals("acheter")) {
-                    achatDeveloppement(jeu.getPlateau());
+                    achatDeveloppement(jeu);
                     afficheCartes();
                     return;
                 }
