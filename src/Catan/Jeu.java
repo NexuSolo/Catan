@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import Catan.Joueurs.Humain;
 import Catan.Joueurs.IA;
 
@@ -248,6 +251,13 @@ public class Jeu {
                     break;
                 }
             }
+        }
+        if(graphique) {
+            JLabel victoire = new JLabel(vainqueur.pseudo + "a gagné");
+            vue.model.removeAll();
+            vue.model.add(victoire);
+            vue.repaint();
+            vue.revalidate();
         }
         System.out.println(vainqueur.pseudo + "a gagné");
     }

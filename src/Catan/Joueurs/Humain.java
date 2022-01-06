@@ -72,7 +72,6 @@ public class Humain extends Joueur{
                                 Thread.sleep(5);
                             }
                         }
-                        jeu.vue.getTerminal().append("Vous avez placé une nouvelleroute " + "\n");
                         jeu.vue.repaint();
                         jeu.vue.revalidate();
                         return true;
@@ -309,6 +308,9 @@ public class Humain extends Joueur{
                         removeRessource(Ressource.ROCHE, 3);
                         removeRessource(Ressource.BLE, 2);
                         intersection.setColonie(new Ville(this));
+                        jeu.vue.getTerminal().append("Félicitation vous avez transformer votre colonie en ville ! \n");
+                        jeu.vue.repaint();
+                        jeu.vue.revalidate();
                         System.out.println("Félicitation vous avez transformer votre colonie en ville !");
                         nombreVilles++;
                         nombreColonies--;

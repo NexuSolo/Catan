@@ -151,7 +151,7 @@ public class Vue extends JFrame {
             action.setBounds(0,202,500,598);
             model.add(action);
         }
-        
+
         revalidate();
         repaint();
     }
@@ -732,6 +732,9 @@ public class Vue extends JFrame {
         if(this.joueur.possedeRessourcesDeveloppement().size() == 0 || !this.joueur.cartesUtilisables) { // TODO verifier carteUtilisable
             devEchange.add(Box.createHorizontalGlue());
             JButton dev = new JButton("Developpement");
+            dev.addActionListener(event -> {
+                setAction(actionDeveloppement());
+            });
             devEchange.add(dev);
         }
         if(!premierTour) {
@@ -744,13 +747,7 @@ public class Vue extends JFrame {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                model.remove(action);
-                action = actionEchange(new int[5]);
-                action.setBackground(Color.ORANGE);
-                action.setBounds(0,202,500,598);
-                model.add(action);
-                action.revalidate();
-                action.repaint();
+                setAction(actionEchange(new int[5]));
             });
             devEchange.add(echange);
         }
