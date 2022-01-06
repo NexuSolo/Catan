@@ -218,6 +218,42 @@ public abstract class Joueur {
         return res;
     }
 
+    public void freeRessource(Jeu jeu,Intersection intersection) {
+        System.out.println("e");
+        int x = intersection.getX();
+        int y = intersection.getY();
+        int taillePlateau = jeu.getPlateau().getLength();
+        if (x > 1) {
+            if (y > 1) {
+                if(jeu.getPlateau().getCase(x-1, y-1).ressource != null) {
+                    System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x-1, y-1).ressource);
+                    addRessource(jeu.getPlateau().getCase(x-1, y-1).ressource);
+                }
+            }
+            if (y < taillePlateau) {
+                if(jeu.getPlateau().getCase(x-1, y).ressource != null) {
+                System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x-1, y).ressource);
+                addRessource(jeu.getPlateau().getCase(x-1,y).ressource);
+                }
+            }
+        
+        }
+        if (x < taillePlateau) {
+            if (y > 1) {
+                if(jeu.getPlateau().getCase(x, y-1).ressource != null) {
+                System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x, y-1).ressource);
+                addRessource(jeu.getPlateau().getCase(x, y-1).ressource);
+                }
+            }
+            if (y < taillePlateau) {
+                if(jeu.getPlateau().getCase(x, y).ressource != null) {
+                System.out.println(this + "gagne de la case x"+x+"y"+y+jeu.getPlateau().getCase(x, y).ressource);
+                addRessource(jeu.getPlateau().getCase(x,y).ressource);
+                }
+            }
+        }
+    }
+
     public void afficheRessource() {
         int[] tab = listeRessources();
         System.out.println("Vous avez : " + tab[0] + " bois " + tab[1] + " argile " + tab[2] + " laine " + tab[3] + " blé " + tab[4] + " roche ");

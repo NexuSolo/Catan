@@ -2,6 +2,7 @@ package Catan;
 
 import java.awt.Color;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class Intersection {
     public final int x, y;
@@ -159,68 +160,69 @@ public class Intersection {
         return Math.abs(x-intersection.x) + Math.abs(y-intersection.y);
     }
 
-    public Chemin routeIA(Joueur j,Intersection cible,Intersection derniere) {
-        if (cible.y < y &&  cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
-            return cheminH.routeIA(j,cible,this);
+    public Chemin routeIA(Joueur j,Intersection cible,Set<Intersection> parcourus) {
+        parcourus.add(this);
+        if (cible.y < y &&  cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null) && !parcourus.contains(cheminH.getIntersection1())) { // Cible + haute
+            return cheminH.routeIA(j,cible,parcourus);
         }
-        if (cible.x < x && cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
-            return cheminG.routeIA(j,cible,this);
+        if (cible.x < x && cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) && !parcourus.contains(cheminG.getIntersection1()) ) { // Cible à gauche
+            return cheminG.routeIA(j,cible,parcourus);
         }
-        if (cible.y >= y && cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
-            return cheminB.routeIA(j,cible,this);
+        if (cible.y >= y && cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null) && !parcourus.contains(cheminB.getIntersection2()) ) { // Cible en dessous
+            return cheminB.routeIA(j,cible,parcourus);
         }
-        if (cible.x >= x && cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
-            return cheminD.routeIA(j,cible,this);
+        if (cible.x >= x && cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null) && !parcourus.contains(cheminD.getIntersection2()) ) { // Cible à droite
+            return cheminD.routeIA(j,cible,parcourus);
         }
         
         if (cible.y < y) {
-            if (cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
-                return cheminG.routeIA(j,cible,this);
+            if (cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) && !parcourus.contains(cheminG.getIntersection1())  ) { // Cible à gauche
+                return cheminG.routeIA(j,cible,parcourus);
             }
-            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
-                return cheminD.routeIA(j,cible,this);
+            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null) && !parcourus.contains(cheminD.getIntersection2()) ) { // Cible à droite
+                return cheminD.routeIA(j,cible,parcourus);
             }
-            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
-                return cheminB.routeIA(j,cible,this);
+            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null) && !parcourus.contains(cheminB.getIntersection2()) ) { // Cible en dessous
+                return cheminB.routeIA(j,cible,parcourus);
             }
 
         }
 
         if (cible.x < x) {
-            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
-                return cheminH.routeIA(j,cible,this);
+            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null) && !parcourus.contains(cheminH.getIntersection1()) ) { // Cible + haute
+                return cheminH.routeIA(j,cible,parcourus);
             }
-            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
-                return cheminB.routeIA(j,cible,this);
+            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null) && !parcourus.contains(cheminB.getIntersection2()) ) { // Cible en dessous
+                return cheminB.routeIA(j,cible,parcourus);
             }
-            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
-                return cheminD.routeIA(j,cible,this);
+            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null) && !parcourus.contains(cheminD.getIntersection2()) ) { // Cible à droite
+                return cheminD.routeIA(j,cible,parcourus);
             } 
         }
         if (cible.y > y) {
-            if (cible.x < x && cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
-                return cheminG.routeIA(j,cible,this);
+            if (cible.x < x && cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) && !parcourus.contains(cheminG.getIntersection1())  ) { // Cible à gauche
+                return cheminG.routeIA(j,cible,parcourus);
             }
-            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null)) { // Cible à droite
-                return cheminD.routeIA(j,cible,this);
+            if (cheminD != null && (cheminD.getRoute() == j || cheminD.getRoute() == null) && !parcourus.contains(cheminD.getIntersection2()) ) { // Cible à droite
+                return cheminD.routeIA(j,cible,parcourus);
             }
-            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
-                return cheminH.routeIA(j,cible,this);
+            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null) && !parcourus.contains(cheminH.getIntersection1()) ) { // Cible + haute
+                return cheminH.routeIA(j,cible,parcourus);
             }
         }
 
         if (cible.x > x) {
-            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)) { // Cible + haute
-                return cheminH.routeIA(j,cible,this);
+            if (cheminH != null && (cheminH.getRoute() == j || cheminH.getRoute() == null)&& !parcourus.contains(cheminH.getIntersection1()) ) { // Cible + haute
+                return cheminH.routeIA(j,cible,parcourus);
             }
-            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)) { // Cible en dessous
-                return cheminB.routeIA(j,cible,this);
+            if (cheminB != null && (cheminB.getRoute() == j|| cheminB.getRoute() == null)&& !parcourus.contains(cheminB.getIntersection2()) ) { // Cible en dessous
+                return cheminB.routeIA(j,cible,parcourus);
             }
-            if (cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) ) { // Cible à gauche
-                return cheminG.routeIA(j,cible,this);
+            if (cheminG != null && (cheminG.getRoute() == j || cheminG.getRoute() == null) && !parcourus.contains(cheminG.getIntersection1()) ) { // Cible à gauche
+                return cheminG.routeIA(j,cible,parcourus);
             }
         }
-        System.out.println("pls que  ça n'arrive jamais");
+        System.out.println("Route set Random");
         return null;
     }
 

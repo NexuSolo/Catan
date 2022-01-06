@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import Catan.Cartes.*;
+import Catan.Joueurs.Humain;
+
 import java.util.TreeMap;
 
 public class Plateau {
@@ -351,20 +353,26 @@ public class Plateau {
         Joueur victime = null;
         if (!cibles.isEmpty()) {
             if (cibles.size() > 1) {
-                do{
-                    System.out.print("Veuillez choisir la couleur du joueur à qui vous voulez voler une ressource aléatoire : ");
-                    for (Joueur v : cibles) {
-                        System.out.print(v + " ");
-                    }
-                    System.out.println();
-                    String scan = Jeu.scan();
-                    for (Joueur v : cibles) {
-                        if (v.couleur.equals(Joueur.stringToColor(scan.toLowerCase()))) {
-                            victime = v;
+                if (j instanceof Humain){
+                    do{
+                        System.out.print("Veuillez choisir la couleur du joueur à qui vous voulez voler une ressource aléatoire : ");
+                        for (Joueur v : cibles) {
+                            System.out.print(v + " ");
                         }
-                    }
-
-                } while(victime == null);
+                        System.out.println();
+                        String scan = Jeu.scan();
+                        for (Joueur v : cibles) {
+                            if (v.couleur.equals(Joueur.stringToColor(scan.toLowerCase()))) {
+                                victime = v;
+                            }
+                        }
+                        
+                    } while(victime == null);
+                }
+                else {
+                    int r = new Random().nextInt(cibles.size());
+                    victime = cibles.get(r);
+                }
             }
             else {
                 victime = cibles.get(0);

@@ -76,11 +76,15 @@ public class Humain extends Joueur{
                         jeu.vue.revalidate();
                         return true;
                     }
-                    else {
-                        jeu.vue.getTerminal().append("Impossible de placer unecolonie ici" + "\n");
-                        jeu.vue.repaint();
-                        jeu.vue.revalidate();
-                        return false;
+                    jeu.getPlateau().affiche();
+                    if(jeu.graphique) {
+                        jeu.vue.refresh(this,true);
+                    }
+                    if(premierTour) {
+                        if(secondTour) {
+                            freeRessource(jeu,inter);
+                        }
+                        placerRoute(jeu, true, inter);
                     }
                 }
                 else {

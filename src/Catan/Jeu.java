@@ -22,12 +22,13 @@ public class Jeu {
     public Joueur actuel;
  
     public Jeu(boolean b) throws IOException, InterruptedException {
-        joueurs.add(new Humain("Nex", "bleu"));
+        joueurs.add(new IA("Nex", "bleu"));
         joueurs.add(new Humain("Miz", "vert"));
-        joueurs.add(new Humain("Mizaxus", "jaune"));
+        // joueurs.add(new IA("Mizaxus", "jaune"));
+        // joueurs.add(new IA("Nexaka", "rouge"));
         actuel = joueurs.get(0);
         plateau = new Plateau(5);
-        graphique = true;
+        graphique = false;
         jouer();
     }
 
@@ -246,6 +247,7 @@ public class Jeu {
         while (!gagne()) {
             for (Joueur joueur : joueurs) {
                 plateau.affiche();
+                joueur.afficheRessource();
                 joueur.tour(this);
                 if(gagne()) {
                     break;
@@ -264,6 +266,7 @@ public class Jeu {
 
     public int joueurSuivant() {
         int i = joueurs.indexOf(actuel);
+        System.out.println("Index "+i);
         if(i == joueurs.size() - 1) {
             actuel = joueurs.get(0);
             return 0;
